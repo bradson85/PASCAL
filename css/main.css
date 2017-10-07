@@ -17,3 +17,8 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+.form input,
+.form select {
+    max-width: 150px;
+}
