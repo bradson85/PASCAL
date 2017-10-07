@@ -1,1 +1,19 @@
 /* This is a CSS file */
+
+* {
+    /* Need to decide on universal design elements and put them here */
+}
+
+#CreateAccount {
+    text-align: left;
+
+}
+
+.form {
+    width: 80%;
+    margin: 0 auto;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

@@ -6,28 +6,31 @@
     </head>
 
     <body>
-        <h1>Create Account</h1>
-        <form action="" method="POST">
-            <div>Account Type: 
-                <select id="accountType" name="accountType" required>
-                    <option>Administrator</option>
-                    <option>Teacher</option>
-                    <option>Student</option>
-                </select>
-            </div>
+        <div id="CreateAccount">
+            <h1>Create Account</h1>
+            <form action="" method="POST" class="form">
+                <div><p>Account Type:</p>
+                    <select id="accountType" name="accountType" required>
+                        <option>Select Account Type...</option>
+                        <option>Administrator</option>
+                        <option>Teacher</option>
+                        <option>Student</option>
+                    </select>
+                </div>
 
-            <div>Name: <input type="text" id="name" name="name" required>
-            </div>
+                <div><p>Name:</p> <input type="text" id="name" name="name" required>
+                </div>
 
-            <div>Username: <input type="text" id="username" name="username">
-            </div>
+                <div><p>Username:</p> <input type="text" id="username" name="username">
+                </div>
 
-            <div>Email: <input type="email" id="email" name="email" required>
-            </div>
+                <div><p>Email:</p> <input type="email" id="email" name="email" required>
+                </div>
 
-            <div><button id="submit" type="submit">Submit</button> </div>
+                <div> <button id="submit" type="submit">Submit</button> </div>
 
-        </form>
+            </form>
+        </div>
     </body>
 
 </html>
