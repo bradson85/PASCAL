@@ -3,22 +3,46 @@
 <head>
 <title>Add Words To Assesment Backlog</title>
 <link rel="stylesheet"
-    href="cssAddWords.css" />
+    href="css/cssAddWords.css" />
 </head>
 <body>
-    <p><br></p>
-<table>
+    
+    <p id="menubar" >Sub for menu bar</p>
+    <div id= "sidemenu">  <ul>
+            <li>This</li>
+            <li>Is A Test</li>
+            <li>Place Holder</li>
+            <li>Menu</li>
+            <li>Location</li>
+          </ul></div>
+    <div class = "table_container">
+<table id= "word_table">
     <tr>
         <th>ID</th>
+        <th>Category</th>
         <th>Word</th>
         <th>Definition</th>
+        <th>Difficulty Level </th>
+        <th> &nbsp;</th>
       </tr>
       <tr>
-        <td>1</td>
-        <td>example</td>
-        <td>This has lots of words in it to add the defintion later</td>
+        <td contenteditable= 'true' id = "cell 1_1">1</td>
+        <td contenteditable= 'true' id = "cell 1_2"> category 1</td>
+        <td contenteditable= 'true' id = "cell 1_3"> word</td>
+        <td contenteditable= 'true' id = "cell 1_4">definition goes here placeholder</td>
+        <td contenteditable= 'true' id = "cell 1_5">5</td>
+        <td  id = "cell 1_6"><button id = "deleteRow1" class="deleteRow">Delete</button></td>
       </tr>
     </table>
-
+    <p class = "Buttons"><button id="addRow">Create Row</button></p>
+</div>
+    <!-- Uses Google as the Content Delivery
+ Network -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</script>
+<!-- Fallback if CDN not accessible. Local
+copy is downloaded from jquery.org -->
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/Addwords.js"></script>
 </body>
 </html>
