@@ -11,7 +11,7 @@
             <form action="" method="POST" class="form">
                 <div><p>Account Type:</p>
                     <select id="accountType" name="accountType" required>
-                        <option>Select Account Type...</option>
+                        <option>Select Account Type</option>
                         <option>Administrator</option>
                         <option>Teacher</option>
                         <option>Student</option>
