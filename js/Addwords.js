@@ -18,14 +18,15 @@ $(document).ready(function(){
         });
         
         
-         
+         // this is for deleteing words and definition 
         $(document).on("click",".deleteRow" ,function(){
            $( $(this).parents('tr')).remove();
             var wordnumber= $('#word_table tr:last-child td:first-child').html();
             var totalnumber = parseInt(wordnumber)
         });
 
-        $('[contenteditable="true"]').focus(function(){
+        // reload the origingal data database
+        $(document).on("focus",'[contenteditable="true"]' ,function(){
             $(this).on('keydown', function(e) {
                 if (e.which == 13 && e.shiftKey == false) {
                     $.post( 
@@ -60,7 +61,7 @@ $(document).ready(function(){
                 }
               });
         });
-
+        // saving new stuff to database
         $('[contenteditable="true"]').blur(function(){
             // save using ajax
         });
