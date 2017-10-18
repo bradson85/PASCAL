@@ -6,10 +6,11 @@
 
 #CreateAccount {
     text-align: left;
+    max-width: 70%;
 
 }
 
-.form {
+/* .form {
     width: 80%;
     margin: 0 auto;
 
@@ -21,4 +22,4 @@
 .form input,
 .form select {
     max-width: 150px;
-}
+} */
