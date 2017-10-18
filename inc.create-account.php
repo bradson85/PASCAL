@@ -1,20 +1,22 @@
 <?php
-    $name = $username = $email = $accountType = "";
+
+    require_once('dbconfig.php');
+
+    $name = $email = $accountType = "";
 
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
-        $username = $_POST['username'];
         $email = $_POST['email'];
         $accountType = $_POST['accountType'];
-
+        echo "$accountType";
         clean_data($name);
-        clean_data($username);
         clean_data($email);
-        clean_data($accountType);
 
-        if(insert_to_db($name, $username, $email, $accountType))
             // Echo return window location
-            echo '<script type="text/javascript">window.location = "create-account.php"</script>';
+        if(insert_to_db($name, $email, $accountType)){
+
+        }
+            //echo '<script type="text/javascript">window.location = "create-account.php"</script>';
     }
 
 
@@ -26,10 +28,27 @@
         return $data;
     }
 
-    function insert_to_db($name, $username, $email, $accountType){
+    function insert_to_db($name, $email, $accountType){
         // do db processing
+        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        echo 'before admins sql build';
+        if(strcmp($accountType, "Administrator") == 0){
+            $sql = "INSERT INTO admins (name, email) VALUES ('$name', '$email')";
+            echo 'Ready to insert into admins';
+        }
+           
 
-        return true;
+        elseif(strcmp($accountType, "Teacher") == 0){
+            $sql = "INSERT INTO teachers (name, email, classID, schoolID) VALUES ('$name', '$email', 1, 1)";
+        }
+            
+        elseif(strcmp($accountType, "Student") == 0) {
+            $sql = "INSERT INTO students (classID, schoolID) VALUES (1, 1)";
+        }
+            
+        $pdo->exec($sql);
+            
     }
 
 ?>

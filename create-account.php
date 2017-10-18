@@ -9,7 +9,7 @@
     <body>
         <div class="container" id="CreateAccount">
             <h1>Create Account</h1>
-            <form action="" method="POST" class="form">
+            <form action="inc.create-account.php" method="POST" class="form">
                 <div class="form-group"><label for="accountType">Account Type:</label>
                     <select id="accountType" class="form-control" name="accountType" required>
                         <option>Select Account Type</option>
@@ -20,9 +20,6 @@
                 </div>
 
                 <div class="form-group"><label for="name">Name:</label> <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-
-                <div class="form-group"><label for="username">Username:</label> <input type="text" class="form-control" id="username" name="username">
                 </div>
 
                 <div class="form-group"><label for="email">Email:</label> <input type="email" class="form-control" id="email" name="email" required>
