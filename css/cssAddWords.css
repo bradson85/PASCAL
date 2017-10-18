@@ -3,73 +3,99 @@ css doc for addwords.html
  could be added to a larger css doc.
 */
 
-* {
-    box-sizing: border-box;
-}
+/*
+ * Base structure
+ */
 
-.table_container{
-
-margin: auto;
-width: 100%;
-padding-left: 25px;
-
-}
+/* Move down content because we have a fixed navbar that is 3.5rem tall */
+body {
+    padding-top: 3.5rem;
+  }
 
 
+  /* Navbar*/
 
-#sidemenu{
-
-    height: 400px; /* 100% Full-height */
-    width: 150px; /* 0 width - change this with JavaScript */
-    z-index: 1; /* Stay on top */
-    float: left;
-    padding: 15px;
-    color: white;
-    background-color: #111; /* Black*/
-    padding-top: 0px;
-   
-}
-
-#sidemenu ul{
-
-    list-style-type: none;
-    margin: 10px;
-    padding: 10px;
-
-}
-
-#menubar {
-    overflow: auto;
-    background-color: #1a1010;
-    color: white;
-    height: 75px;
-    width: 100%;
-}
-
-#word_table {
-    font-family: roboto condensed, arial, sans-serif;
-    border-collapse: collapse;
-    width: 85%;
-    padding: 15px;
-    border: 1px solid red;
-}
-
-#word_table th {
-    border: 1px solid #000000;
-    color: #FFFFFF;
-    background-color: #1418DF;
-    text-align: center;
-    padding: 8px;
-}
-
-#word_table td {
-    border: 1px solid #000000;
-    text-align: center;
-    padding: 8px;
-}
-
-#word_table tr:nth-child(odd) {
-    background-color: #dddddd;
+  .navbar-dark .navbar-nav .nav-link  {
     
+        color: rgb(255, 254, 254);
+    }
+
+    .navbar-dark .navbar-nav a.nav-link{
+        
+            color: #eee;
+        }
+
+    .navbar-dark .navbar-nav a:hover  {
+            background: rgb(39, 39, 39);
+          
+        }
+  
+  /*
+   * Typography
+   */
+  
+  h1 {
+    margin-bottom: 20px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  /*
+   * Sidebar
+   */
+  
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    border-right: 1px solid #eee;
+  }
+
+  .sidebar .nav-pills .nav-link.active, .show>.nav-pills .nav-link{
+   background: #000000;
+   color: rgb(255, 255, 255);
+
+  }
+.sidebar a.nav-link{
+
+    color: #eee;
 }
 
+.sidebar a:hover{
+
+    background:  rgb(39, 39, 39);
+}
+  
+  /* Sidebar navigation */
+  .sidebar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .sidebar .nav {
+    margin-bottom: 20px;
+  }
+  
+  .sidebar .nav-item {
+    width: 100%;
+  }
+  
+  .sidebar .nav-item + .nav-item {
+    margin-left: 0;
+  }
+  
+  .sidebar .nav-link {
+    border-radius: 0;
+  }
+  
+  /*
+   * Dashboard
+   */
+  
+   
+  
