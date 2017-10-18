@@ -101,3 +101,11 @@ CREATE TABLE IF NOT EXISTS assessmentQuestions (
     FOREIGN KEY (termID) REFERENCES terms(ID),
     FOREIGN KEY (assessmentID) REFERENCES assessments(ID)
 );
+
+CREATE TABLE IF NOT EXISTS password_change_requests (
+    ID char(64) NOT NULL,
+    time datetime NOT NULL,
+    userID varchar(50),
+
+    PRIMARY KEY (ID) 
+);
