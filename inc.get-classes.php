@@ -1,6 +1,6 @@
 <?php
     require_once('dbconfig.php');
-
+    // Takes the selected item from the school select in create-account.php and returns classes associated with selected school
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $data = $_POST['school'];
 

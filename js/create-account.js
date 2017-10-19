@@ -1,8 +1,7 @@
 $(document).ready(function() {
-    //var value = document.getElementById('school');
-    //console.log(value);
     
     $('#accountType').change(function (e) {
+        // check account type to disable/enable different fields relevant to account type
         if(this.options[e.target.selectedIndex].text === "Teacher"){
             $('#school').removeAttr('disabled');
             
@@ -21,12 +20,14 @@ $(document).ready(function() {
     
     
     $('#school').change(function() {
+        //if there are values previously added, remove the values
         if($('#class').val !== "")
             $('#class').empty();
-        //var index = $('select#school').serialize();
-        //var inputText = this.children[index].innerHTML.trim();
+        //debug
         console.log('index changed');
         console.log(document.getElementById('school').value);
+
+        //send ajax request to get the classes in a school
         $.ajax({
             type: "POST",
             url: "inc.get-classes.php",
@@ -37,15 +38,14 @@ $(document).ready(function() {
             }
         });
     });
-
+    //add options to the 'class' select
     function addOptions(result){
-            //console.log(result);
             var obj = JSON.parse(result);
             obj.forEach(function(element) {
                 $('#class').append(new Option(element, element));
             }, this);
             $('#class').removeAttr('disabled');
-            //$('#class').append(new Option(obj, obj));
+            //debug
             console.log("success");
     }
 });
