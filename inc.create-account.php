@@ -16,7 +16,7 @@
         if(insert_to_db($name, $email, $accountType)){
 
         }
-            //echo '<script type="text/javascript">window.location = "create-account.php"</script>';
+            echo '<script type="text/javascript">window.location = "create-account.php"</script>';
     }
 
 
@@ -50,5 +50,20 @@
         $pdo->exec($sql);
             
     }
+
+    function schoolOptions(){
+        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+        $sql = "SELECT * FROM schools";
+        $result = $pdo->query($sql);
+
+        while($row = $result->fetch()){
+            $name = $row['name'];
+            echo "<option>$name</option>";
+        }
+
+        echo "<option>Test</option>";
+    }
+
+    return;
 
 ?>
