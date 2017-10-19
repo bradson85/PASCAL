@@ -28,42 +28,22 @@ $(document).ready(function(){
         // reload the origingal data database
         $(document).on("focus",'[contenteditable="true"]' ,function(){
             $(this).on('keydown', function(e) {
-                if (e.which == 13 && e.shiftKey == false) {
-                    $.post( 
-                        "save.php",
-                        { id: "Zara",
-                        category: "",
-                        word: "",
-                        definition: "",
-                        difficulty: "",
-                        save: "true"
-                      },
-                        function(data) {
-                           //do nothing
-                        }
-                     );
+                if (e.which == 13 && e.shiftKey == false) {                  
                    $ (this).blur();
                   return false;
-                }else if(e.which == 27){
-                    $.post( 
-                        "save.php",
-                        { id: "Zara",
-                          category: "",
-                          word: "",
-                          definition: "",
-                          difficulty: "",
-                          save: "false"
-                        },
-                        function(data) {
-                           $(this).html(data);
-                        }
-                     );
+                }else if(e.which == 27){  // undo 
+                    $.get("../php/inc-addwords.php", function(data, status){
+                        alert("Data: " + data + "\nStatus: " + status);
+                        $ (this).blur();
+                    });
                 }
               });
         });
         // saving new stuff to database
-        $('[contenteditable="true"]').blur(function(){
-            // save using ajax
+        $('[contenteditable="true"]').one('blur', function() {
+            $.get("../php/inc-addwords.php", function(data, status){
+                alert("Data: " + data + "\nStatus: " + status);
+            });
         });
 
 });
