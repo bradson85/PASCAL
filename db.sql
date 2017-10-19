@@ -11,13 +11,6 @@ CREATE TABLE IF NOT EXISTS admins (
     PRIMARY KEY(ID)
 );
 
-CREATE TABLE IF NOT EXISTS classes (
-    ID int NOT NULL AUTO_INCREMENT,
-    gradeLevel int NOT NULL,
-
-    PRIMARY KEY (ID)
-);
-
 CREATE TABLE IF NOT EXISTS schools (
     ID int NOT NULL AUTO_INCREMENT,
     name varchar(100) NOT NULL,
@@ -25,16 +18,24 @@ CREATE TABLE IF NOT EXISTS schools (
     PRIMARY KEY (ID)
 );
 
+CREATE TABLE IF NOT EXISTS classes (
+    ID int NOT NULL AUTO_INCREMENT,
+    name varchar(50) NOT NULL,
+    gradeLevel int NOT NULL,
+    schoolID int NOT NULL,
+
+    PRIMARY KEY (ID),
+    FOREIGN KEY (schoolID) REFERENCES schools(ID)
+);
+
 CREATE TABLE IF NOT EXISTS teachers (
     ID int NOT NULL AUTO_INCREMENT,
     name varchar(50),
     email varchar(50) NOT NULL,
     password char(128) NOT NULL,
-    schoolID int NOT NULL,
     classID int NOT NULL,
 
     PRIMARY KEY (ID),
-    FOREIGN KEY (schoolID) REFERENCES schools(ID),
     FOREIGN KEY (classID) REFERENCES classes(ID) 
 );
 
@@ -58,11 +59,9 @@ CREATE TABLE IF NOT EXISTS terms (
 
 CREATE TABLE IF NOT EXISTS students (
     ID int NOT NULL AUTO_INCREMENT,
-    schoolID int NOT NULL,
     classID int NOT NULL,
 
     PRIMARY KEY (ID),
-    FOREIGN KEY (schoolID) REFERENCES schools(ID),
     FOREIGN KEY (classID) REFERENCES classes(ID)
 );
 
