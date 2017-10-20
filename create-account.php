@@ -29,14 +29,14 @@
 
                 <div class="form-group"><label for="school">School:</label> 
                     <select id="school" class="form-control" name="school" disabled>
-                        <option>Select A School</option>
+                        <option>Select a School</option>
                         <?php schoolOptions(); ?>
                     </select>
                 </div>
 
                 <div class="form-group"><label for="class">Class:</label>
                     <select id="class" class="form-control" name="class" disabled>
-                        <option>Select A Class</option>
+                        <option>Select a Class</option>
                     </select>
                 </div>
 
