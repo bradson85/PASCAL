@@ -45,14 +45,15 @@
         <ul class="nav nav-pills flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="#">DashBoard
-              <span class="sr-only">(current)</span>
+            <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Reports</a>
+            <a class="nav-link" href="#">Edit Words</a>
+            
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Analytics</a>
+            <a class="nav-link" href="#">Import</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Export</a>
@@ -87,7 +88,26 @@
         </ul>
       </nav>
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+      <div class="row">
+  <div class="col-sm-6">
+    <form action="inc-addwords-importFile.php" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+  <div class="form-group">
+  <label for="InputFile">Import CSV</label>
+  <input type="file" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
+  <small id="fileHelp" class="form-text text-muted">Warning. This Will Overwrite Currently Saved Words List.</small>
+  <button type="submit" class="btn btn-primary" value = "submit">Upload</button>
+  </div>
+</form></div>
+  <div class="col-sm-6"><label >Export CSV</label><br><br>
+  <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
+  <a href="inc-addwords-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
+  
+  </div>
+  
+</div>
+      
         <div class="table-responsive">
+          <H2> Words and Defintions</H2>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
@@ -95,25 +115,14 @@
                 <th>Category</th>
                 <th>Word</th>
                 <th>Definition</th>
-                <th>Difficulty Level </th>
+                <th>Difficulty <br> Level </th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td contenteditable='true' id="cell 1_1">1</td>
-                <td contenteditable='true' id="cell 1_2"> category 1</td>
-                <td contenteditable='true' id="cell 1_3"> word</td>
-                <td contenteditable='true' id="cell 1_4">definition goes here placeholder</td>
-                <td contenteditable='true' id="cell 1_5">5</td>
-                <td id="cell 1_6">
-                  <button id="deleteRow1" class="deleteRow">Delete</button>
-                </td>
-              </tr>
-            </tbody>
+            <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button id="addRow">Create Row</button>
+            <button class = "btn-primary" id="addRow">Add Words</button>
           </p>
         </div>
       </main>

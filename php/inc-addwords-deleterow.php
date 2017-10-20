@@ -1,28 +1,26 @@
 <?php
 require_once("../db/dbconfig.php");
 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // collect value of input field
+    $data = $_POST['data'];
+}
+
 try {
     $pdo = new PDO(DB_CONNECTION_STRING,
     DB_USER, DB_PWD);
     $pdo->setAttribute(PDO::ATTR_ERRMODE,
     PDO::ERRMODE_EXCEPTION);
-
+   
     // prepare sql and bind parameters
-    $sql = $pdo->prepare("INSERT INTO Terms (id, word, defintion, catID) 
-    VALUES (:id, :word, :definition,:catID)");
+    // example query. updates if an update has happend INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
+    $sql = $pdo->prepare("DELETE FROM terms
+    WHERE ID = :id");
      $sql->bindParam(':id', $id);
-     $sql->bindParam(':word', $word);
-     $sql->bindParam(':definitniion', $definition);
-     $sql->bindParam(':catID', $catID);
-
-    // insert a row
-    $id = "5";
-    $word = "test";
-    $defintion = "def";
-    $catID = "1";
+    $id = $data;
     $sql->execute();
-
-
+     
     echo "Saved successfully";
     }
 catch(PDOException $e)
@@ -30,4 +28,5 @@ catch(PDOException $e)
     echo "Error: " . $e->getMessage();
     }
 $pdo = null;
+
 ?>
