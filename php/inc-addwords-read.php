@@ -1,6 +1,6 @@
  <?php 
     require_once("../db/dbconfig.php");
-    //include "wordsclass.php";
+   
  $json;
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
