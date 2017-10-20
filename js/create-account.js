@@ -41,10 +41,11 @@ $(document).ready(function() {
     //add options to the 'class' select
     function addOptions(result){
             var obj = JSON.parse(result);
+            $('#class').removeAttr('disabled');
             obj.forEach(function(element) {
                 $('#class').append(new Option(element, element));
             }, this);
-            $('#class').removeAttr('disabled');
+            
             //debug
             console.log("success");
     }

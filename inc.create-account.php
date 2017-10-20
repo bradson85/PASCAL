@@ -14,11 +14,16 @@
         echo "$school";
         clean_data($name);
         clean_data($email);
-
-
-        insert_to_db($name, $email, $accountType, $school, $class);
-            // Echo return window location
-            echo '<script type="text/javascript">window.location = "create-account.php"</script>';
+        
+        if($name != null && $email != null && name != "" && $email != "")
+            if(!insert_to_db($name, $email, $accountType, $school, $class)){
+                $errMsg = "Invalid Email)";
+            }
+        else{
+            $errMsg = "Invalid input (Name or Email)";
+        }
+        // Echo return window location
+        echo '<script type="text/javascript">window.location = "create-account.php"</script>';
     }
 
     //sanitizes data before insertion
@@ -32,7 +37,10 @@
     //inserts items to database
     function insert_to_db($name, $email, $accountType, $school, $class){
         // do db processing
-
+        if($name == "" || $name == null || $email == "" || $email == null || $accountType == "")
+            return false;
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+            return false;
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -63,7 +71,7 @@
         }
             
         $pdo->exec($sql);
-            
+        return true;
     }
     // Get school options and add to the school 'select'
     function schoolOptions(){

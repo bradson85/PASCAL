@@ -21,10 +21,10 @@
                     </select>
                 </div>
 
-                <div class="form-group"><label for="name">Name:</label> <input type="text" class="form-control" id="name" name="name">
+                <div class="form-group"><label for="name">Name:</label> <input type="text" class="form-control" id="name" name="name" placeholder="First Last">
                 </div>
 
-                <div class="form-group"><label for="email">Email:</label> <input type="email" class="form-control" id="email" name="email">
+                <div class="form-group"><label for="email">Email:</label> <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                 </div>
 
                 <div class="form-group"><label for="school">School:</label> 
