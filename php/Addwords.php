@@ -13,6 +13,7 @@
 </head>
 
 <body>
+<!--  Nav Bar Part-->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="#">Dashboard</a>
     <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
@@ -87,6 +88,10 @@
           </li>
         </ul>
       </nav>
+
+      <!-- End Of Nav Bar part-->
+
+      <!-- File Import/Export stuff-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
       <div class="row">
   <div class="col-sm-6">
@@ -105,7 +110,8 @@
   </div>
   
 </div>
-      
+<!--  End of File Import/Export stuff-->
+      <!--  Table Part-->
         <div class="table-responsive">
           <H2> Words and Defintions</H2>
           <table id="word_table" class="table table-striped table-bordered">
@@ -122,7 +128,7 @@
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = "btn-primary" id="addRow">Add Words</button>
+            <button class = " btn btn-primary" id="addRow">Add Words</button>
           </p>
         </div>
       </main>

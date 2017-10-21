@@ -12,12 +12,17 @@ function loadDB(){
         success: function (data) {
             $.each(data, function(i, value){
                 var rows = $('<tr><td>'+ value.ID +'</td>'+
-                '<td contenteditable= "true">'+ value.category +'</td>' 
-              + '<td contenteditable= "true">'+ value.name+'</td>'
+                '<td contenteditable= "true">'
+                +'<select class="form-control" id="selcat">'
+               + '</select></td>' 
+              + '<td contenteditable= "true">'+ value.name+'</td>'  // term name
                 + '<td contenteditable= "true">'+ value.definition +'</td>'
-                + '<td>'+value.level+'</td>'
+                +'<td contenteditable= "true">'        /// for level
+                +'<select class="form-control" id="sellev">'
+                + '</select></td>' 
                 + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
               $('#word_table').append(rows);
+            
               });
         
         }
@@ -33,10 +38,18 @@ function loadDB(){
            var id = 0;
         }
         var newRow = $('<tr><td>'+ (id+1) +'</td>'+
-          '<td contenteditable= "true">Science</td>' 
+        '<td contenteditable= "true">'
+        +'<select class="form-control" id="selcat">'
+        + '<option>1</option>'
+        + '<option>2</option>'
+        + '<option>3</option>'
+        + '<option>4</option>'
+       + '</select></td>' 
         + '<td contenteditable= "true">Example Word</td>'
           + '<td contenteditable= "true">New Defintion Goes Here</td>'
-          + '<td>N/A</td>'
+          +'<td contenteditable= "true">'
+          +  +'<select class="form-control" id="sellev">'
+          + '</select></td>' 
           + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
         $('#word_table').append(newRow);
         });
@@ -59,15 +72,15 @@ function loadDB(){
             
         });
 
-        // reload the original data database
+        //This fucntion causes a blur when the Enter Key is hit 
+        // it blurs the table so it appears that the editing is done
+        // Also it doesnt save changes when escape is entered
         $(document).on("focus",'[contenteditable="true"]' ,function(){
             $(this).on('keydown', function(e) {
                 if (e.which == 13 && e.shiftKey == false) {                  
                    $ (this).blur();
                   return false;
-                }else if(e.which == 27){  // undo 
-                   
-                        $(this).blur();
+                }else if(e.which == 27){  // to exit editing without saving then reload db
                         $("#t_body").empty();
                         loadDB();
                         return false;

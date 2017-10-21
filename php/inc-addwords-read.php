@@ -1,5 +1,6 @@
  <?php 
     require_once("../db/dbconfig.php");
+    include"inc-addwords-matchcatid.php";
    
  $json;
     try {
@@ -14,7 +15,8 @@
         categories.level FROM terms INNER JOIN categories ON terms.catID = categories.ID';
         $result = $pdo->query($sql);
          $row = $result->fetchAll(PDO::FETCH_ASSOC) ;
-         $json=json_encode($row);
+
+        $json=json_encode($row);
              
             $pdo = null;
             } catch (PDOException $e) {
@@ -23,6 +25,6 @@
         
        
         
-       echo $json;
+      echo ($json);
         
      ?>
