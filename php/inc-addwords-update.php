@@ -15,16 +15,14 @@ try {
    
     // prepare sql and bind parameters
     // example query. updates if an update has happend INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
-    $sql = $pdo->prepare("INSERT INTO terms (id, name, definition, catID) 
-    VALUES (:id, :word, :definition, :catID) 
-    ON DUPLICATE KEY UPDATE  id = :id, name = :word, definition = :definition, catID = :catID");
-     $sql->bindParam(':id', $id);
+    $sql = $pdo->prepare("INSERT INTO terms (name, definition, catID) 
+    VALUES ( :word, :definition, :catID) 
+    ON DUPLICATE KEY UPDATE   name = :word, definition = :definition, catID = :catID");
      $sql->bindParam(':word', $word);
      $sql->bindParam(':definition', $definition);
      $sql->bindParam(':catID', $catID);
     
     for ($i=0; $i < count($TableData) ; $i++) { 
-    $id =  $TableData[$i]["ID"];
     $word = $TableData[$i]["word"];
     $definition = $TableData[$i]["definition"];
     $catID= matchCatID($TableData[$i]["category"]);

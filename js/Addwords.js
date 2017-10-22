@@ -9,8 +9,9 @@ function loadDB(){
         url: 'inc-addwords-read.php',
         type: "GET",
         dataType: "json",
-        success: function (data) {
-            $.each(data, function(i, value){
+        success: function (termdata) {
+            // second call to get categories
+            $.each(termdata, function(i, value){
                 var rows = $('<tr><td>'+ value.ID +'</td>'+
                 '<td contenteditable= "true">'
                 +'<select class="form-control" id="selcat">'
@@ -24,10 +25,12 @@ function loadDB(){
               $('#word_table').append(rows);
             
               });
-        
         }
         });
     }
+
+
+    
     // this adds a new row for adding more words
        $('#addRow').click(function(event){
         event.preventDefault();
@@ -37,21 +40,34 @@ function loadDB(){
         }else{
            var id = 0;
         }
-        var newRow = $('<tr><td>'+ (id+1) +'</td>'+
-        '<td contenteditable= "true">'
-        +'<select class="form-control" id="selcat">'
-        + '<option>1</option>'
-        + '<option>2</option>'
-        + '<option>3</option>'
-        + '<option>4</option>'
-       + '</select></td>' 
-        + '<td contenteditable= "true">Example Word</td>'
-          + '<td contenteditable= "true">New Defintion Goes Here</td>'
-          +'<td contenteditable= "true">'
-          +  +'<select class="form-control" id="sellev">'
-          + '</select></td>' 
-          + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
-        $('#word_table').append(newRow);
+      $.ajax({
+                url: 'inc-addwords-getcategories.php',
+                type: "GET",
+                dataType: "json",
+                success: function (catdata) {
+                    
+                        var rows = $('<tr><td>#newID</td>'+
+                        '<td contenteditable= "true">'
+                        +'<select class="form-control" id="selcat">'
+                       + '</select></td>' 
+                      + '<td contenteditable= "true">Enter New Word</td>'  // term name
+                        + '<td contenteditable= "true">Enter New Definition</td>'
+                        +'<td contenteditable= "true">'        /// for level
+                        +'<select class="form-control" id="sellev">'
+                        + '</select></td>' 
+                        + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+                      $('#word_table').append(rows);
+                    
+                      $.each(catdata, function(i, value){
+                        $('#selcat').append($('<option>', { 
+                            value: value.catName,
+                            text : value.CatName 
+                        }));
+                    
+                      });
+                  
+                }
+                });
         });
         
         
