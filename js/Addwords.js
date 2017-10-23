@@ -1,132 +1,169 @@
-$(document).ready(function(){
-    
+$(document).ready(function () {
+
+    $('.alert').hide();
+
     // loads table when document loads
-    $(document).ready(function(){
-          loadDB();
-     });
-function loadDB(){
-     $.ajax({
-        url: 'inc-addwords-read.php',
-        type: "GET",
-        dataType: "json",
-        success: function (termdata) {
-            // second call to get categories
-            $.each(termdata, function(i, value){
-                var rows = $('<tr><td>'+ value.ID +'</td>'+
-                '<td contenteditable= "true">'
-                +'<select class="form-control" id="selcat">'
-               + '</select></td>' 
-              + '<td contenteditable= "true">'+ value.name+'</td>'  // term name
-                + '<td contenteditable= "true">'+ value.definition +'</td>'
-                +'<td contenteditable= "true">'        /// for level
-                +'<select class="form-control" id="sellev">'
-                + '</select></td>' 
-                + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
-              $('#word_table').append(rows);
-            
-              });
-        }
+    $(document).ready(function () {
+        loadDB();
+        setTimeout(
+            function () {
+                updateSelected();
+            }, 250);
+
+
+
+    });
+
+    function loadDB() {
+        $.get('inc-addwords-read.php', function (data) {
+            $("#t_body").html(data);
         });
     }
 
-
-    
-    // this adds a new row for adding more words
-       $('#addRow').click(function(event){
-        event.preventDefault();
-       var rowCount = $('#word_table tr').length -1; // because of the header row count is already plus 1
-        if($.isNumeric(rowCount)){
-        var id = rowCount
-        }else{
-           var id = 0;
-        }
-      $.ajax({
-                url: 'inc-addwords-getcategories.php',
-                type: "GET",
-                dataType: "json",
-                success: function (catdata) {
-                    
-                        var rows = $('<tr><td>#newID</td>'+
-                        '<td contenteditable= "true">'
-                        +'<select class="form-control" id="selcat">'
-                       + '</select></td>' 
-                      + '<td contenteditable= "true">Enter New Word</td>'  // term name
-                        + '<td contenteditable= "true">Enter New Definition</td>'
-                        +'<td contenteditable= "true">'        /// for level
-                        +'<select class="form-control" id="sellev">'
-                        + '</select></td>' 
-                        + '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
-                      $('#word_table').append(rows);
-                    
-                      $.each(catdata, function(i, value){
-                        $('#selcat').append($('<option>', { 
-                            value: value.catName,
-                            text : value.CatName 
-                        }));
-                    
-                      });
-                  
-                }
-                });
-        });
-        
-        
-         // this is for deleteing words and definition 
-        $(document).on("click",".deleteRow" ,function(){
-           var currID =  $(this).parent().siblings(":first").text();
-           $( $(this).parents('tr')).remove();
-            var wordnumber= $('#word_table tr:last-child td:first-child').html();
-          console.log(currID);
-            $.ajax({
-                type: "POST",
-                url: "inc-addwords-deleterow.php",
-                data: {data: currID},
-                success: function(data) {
-                    console.log(data);
-                }
-            });
-            
-        });
-
-        //This fucntion causes a blur when the Enter Key is hit 
-        // it blurs the table so it appears that the editing is done
-        // Also it doesnt save changes when escape is entered
-        $(document).on("focus",'[contenteditable="true"]' ,function(){
-            $(this).on('keydown', function(e) {
-                if (e.which == 13 && e.shiftKey == false) {                  
-                   $ (this).blur();
-                  return false;
-                }else if(e.which == 27){  // to exit editing without saving then reload db
-                        $("#t_body").empty();
-                        loadDB();
-                        return false;
-                }
-              });
-        });
-        // saving new stuff to database on the "blurring " of editable table
-        $("#word_table").on("blur" , '[contenteditable="true"]', function(){
-            var TableData = new Array();         
-        $('#word_table tr').each(function(row, tr){
-            TableData[row]={
-                    "ID" : $(tr).find('td:eq(0)').text() 
-                , "category" :$(tr).find('td:eq(1)').text()
-                , "word" : $(tr).find('td:eq(2)').text()
-                , "definition" : $(tr).find('td:eq(3)').text()
-                , "level" : $(tr).find('td:eq(4)').text()    // level may not be used since for now is dependent on category.
+    function updateSelected() {
+        var ID = new Array();
+        $('#word_table tr').each(function (row, tr) {
+            ID[row] = {
+                "ID": $(tr).find('td:eq(0)').text()
             }
-        }); 
-        TableData.shift();  // first row is the table header - so remove
-        TableData = JSON.stringify(TableData);
-           console.log(TableData);
-           $.ajax({
-                type: "POST",
-                url: "inc-addwords-update.php",
-                data: {data: TableData},
-                success: function(data) {
-                    console.log(data);
-                }
-            });
-            
+
         });
+        ID.shift();
+        ID = JSON.stringify(ID);
+        $.ajax({
+            type: "POST",
+            url: "inc-addwords-functions.php",
+            data: {
+                IDs: ID,
+                function: 1
+            },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                $('#word_table tr').not(":first").each(function (row, tr) {
+                    
+                    $(tr).find('td:eq(1)').find('select').val(data[row]);
+                    
+        
+                });
+            }
+        });
+
+    }
+
+    //for importing file
+    $('#fileup').click(function(e) {
+        e.preventDefault();
+        console.log($("#InputFile").val());
+        $.ajax({
+            url: "inc-addwords-importFile.php",
+            type: 'POST',
+            data: {file: $("#InputFile").val()},
+            success: function(data) {
+                console.log(data);
+            }
+        });
+    });
+
+    // this adds a new row for adding more words
+    $('#addRow').click(function (event) {
+        event.preventDefault();
+        $.get('inc-addwords-getcategories.php', function (data) {
+            $categoriesSel = data;
+            var rows = $('<tr><td>0</td>' +
+                $categoriesSel +
+                '<td contenteditable= "true">Enter A New Word</td>' // term name
+                +
+                '<td contenteditable= "true">Enter New Definition</td>' /// for level
+                +
+                '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+            $('#word_table').append(rows);
+        });
+    });
+
+    // this is for deleteing words and definition 
+    $(document).on("click", ".deleteRow", function () {
+        var currID = $(this).parent().siblings(":first").text();
+        $($(this).parents('tr')).remove();
+        var wordnumber = $('#word_table tr:last-child td:first-child').html();
+        $.ajax({
+            type: "POST",
+            url: "inc-addwords-deleterow.php",
+            data: {
+                data: currID
+            },
+            success: function (data) {
+                $('#success').show();
+                $('#success strong').text(data);
+                setTimeout(
+                    function () {
+                        $('#success').fadeOut();
+                    }, 3000);
+            }
+        });
+
+    });
+
+    //This fucntion causes a blur when the Enter Key is hit 
+    // it blurs the table so it appears that the editing is done
+    // Also it doesnt save changes when escape is entered
+    $(document).on("focus", '[contenteditable="true"]', function () {
+        $(this).on('keydown', function (e) {
+            if (e.which == 13 && e.shiftKey == false) {
+                $(this).blur();
+                return false;
+            } else if (e.which == 27) { // to exit editing without saving then reload db
+                $("#t_body").empty();
+                loadDB();
+                return false;
+            }
+        });
+    });
+    // saving new stuff to database on the "blurring " of editable table
+    $("#save").on("click", function () {
+        var TableData = new Array();
+        $('#word_table tr').each(function (row, tr) {
+            TableData[row] = {
+                "ID": $(tr).find('td:eq(0)').text(),
+                "category": $(tr).find('td:eq(1)').find('select').val(),
+                "word": $(tr).find('td:eq(2)').text(),
+                "definition": $(tr).find('td:eq(3)').text()
+            }
+        });
+        TableData.shift(); // first row is the table header - so remove
+        TableData = JSON.stringify(TableData);
+        $.ajax({
+            type: "POST",
+            url: "inc-addwords-update.php",
+            data: {
+                data: TableData
+            },
+            success: function (data) {
+                if(data== 0){
+                    $('#warning').show();
+                    $('#warning strong').text("Make Sure You Select A Category");
+                    setTimeout(
+                        function () {
+                            $('#warning').fadeOut();
+                        }, 3000);
+                }else {if (data== 1){
+                $('#success').show();
+                $('#success strong').text("Saved Successfully");
+                setTimeout(
+                    function () {
+                        $('#success').fadeOut();
+                    }, 3000);
+               
+               
+                loadDB();
+                setTimeout(
+                    function () {
+                        updateSelected();
+                    }, 200);
+            }
+        }}
+        });
+
+    });
 
 });

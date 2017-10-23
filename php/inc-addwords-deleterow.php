@@ -21,7 +21,7 @@ try {
     $id = $data;
     $sql->execute();
      
-    echo "Saved successfully";
+    echo "Deleted Item Successfully";
     }
 catch(PDOException $e)
     {

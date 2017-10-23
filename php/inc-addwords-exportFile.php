@@ -9,8 +9,6 @@ header('Content-Disposition: attachment; filename=export.csv');
 // create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
 
-// output the column headings
-fputcsv($output, array('ID', 'Word', 'Definition','CategoryID'));
 
  try {
     $pdo = new PDO(DB_CONNECTION_STRING,
@@ -18,13 +16,15 @@ fputcsv($output, array('ID', 'Word', 'Definition','CategoryID'));
     $pdo->setAttribute(PDO::ATTR_ERRMODE,
     PDO::ERRMODE_EXCEPTION);
    
-    $sql = 'SELECT * FROM terms';
+    $sql = 'SELECT terms.name, terms.definition, categories.name AS "category",
+    categories.level FROM terms INNER JOIN categories ON terms.catID = categories.ID';
+    
     $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         fputcsv($output, $row);
      
     }
-         
+        
         $pdo = null;
         } catch (PDOException $e) {
         die( $e->getMessage() );

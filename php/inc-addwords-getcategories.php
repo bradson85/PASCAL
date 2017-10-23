@@ -1,8 +1,7 @@
 <?php
 require_once("../db/dbconfig.php");
 
-
-$json;
+   $selectString = "<td><select class=\"form-control\" id=\"selcat\"><<option value = \"0\"> --Select Category/Level--</option>";
 
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -10,20 +9,25 @@ $json;
         $pdo->setAttribute(PDO::ATTR_ERRMODE,
         PDO::ERRMODE_EXCEPTION);
     
-     $sql = ("SELECT categories.name AS catName, categories.ID AS catID, categories.level From categories");
+     $sql = ("SELECT * FROM categories");
     
      $result = $pdo->query($sql);
-     $row = $result->fetchAll(PDO::FETCH_ASSOC) ;
+     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+           $catID = $row['ID'];
+           $catName = $row['name'];
+           $level = $row['level']; 
 
-    $json=json_encode($row);     
-    
+           $selectString.= "<option value = \"$catName $level\"> $catName - Level $level</option>";
+
+     }
     }
     catch(PDOException $e)
         {
         echo "Error: " . $e->getMessage();
         }
     $pdo = null;
-   echo ($json);
-    
+ 
+    $selectString.= "</select></td>";
+    echo $selectString;
 
 ?>

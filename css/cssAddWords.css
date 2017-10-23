@@ -12,7 +12,6 @@ body {
     padding-top: 3.5rem;
   }
 
-
   /* Navbar*/
 
   .navbar-dark .navbar-nav .nav-link  {
@@ -96,6 +95,42 @@ body {
   /*
    * Dashboard
    */
+
+
+    
+       #success{
+        position: fixed;
+        height:5em;
+        margin: auto;
+        width: 70%;
+        top: 15em;
+        z-index: 2;
+        display:none;
+        overflow-y: auto;
+       }
+    
+       #info{
+        position: fixed;
+        margin: auto;
+        height:5em;;
+        width: 70%;
+        top: 15em;
+        z-index: 3;
+        display:none;
+        overflow-y: auto;
+       }
+    
+       #warning{
+        position: fixed;
+        margin: auto;
+        height:5em;;
+        width: 70%;
+        top: 15em;
+        z-index: 4;
+        display:none;
+        overflow-y: auto;
+       }
   
+   
    
   

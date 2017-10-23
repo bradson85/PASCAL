@@ -90,19 +90,37 @@
       </nav>
 
       <!-- End Of Nav Bar part-->
-
+    
       <!-- File Import/Export stuff-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+  <div class="alert alert-success hide" role="alert" id = "success">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong></strong>
+</div>
+<div class="alert alert-info hide" role="alert" id = "info">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong></strong>
+</div>
+<div class="alert alert-danger hide" role="alert" id = "warning">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong></strong>
+</div>
+
       <div class="row">
   <div class="col-sm-6">
-    <form action="inc-addwords-importFile.php" method="post" accept-charset="utf-8" enctype="multipart/form-data">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
-  <input type="file" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Warning. This Will Overwrite Currently Saved Words List.</small>
-  <button type="submit" class="btn btn-primary" value = "submit">Upload</button>
+  <input type="file" accept=".csv" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Word, Definition, Category, Level.</small>
+  <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
-</form></div>
+</div>
   <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
   <a href="inc-addwords-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
@@ -117,11 +135,10 @@
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Category</th>
+                <th>Term ID</th>
+                <th>Category And Level</th>
                 <th>Word</th>
                 <th>Definition</th>
-                <th>Difficulty <br> Level </th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
@@ -129,6 +146,7 @@
           </table>
           <p class="Buttons">
             <button class = " btn btn-primary" id="addRow">Add Words</button>
+            <button class = " btn btn-primary" id="save">Save Changes</button>
           </p>
         </div>
       </main>
