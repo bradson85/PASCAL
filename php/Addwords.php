@@ -114,12 +114,14 @@
 
       <div class="row">
   <div class="col-sm-6">
+  <form method="POST" action="#" enctype="multipart/form-data" id="fileForm">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" aria-describedby="fileHelp">
   <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Word, Definition, Category, Level.</small>
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
+  </form>
 </div>
   <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>

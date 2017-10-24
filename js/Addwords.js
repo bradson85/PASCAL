@@ -51,19 +51,22 @@ $(document).ready(function () {
 
     }
 
-    //for importing file
-    $('#fileup').click(function(e) {
+    $("#fileForm").on('submit',(function(e) {
         e.preventDefault();
-        console.log($("#InputFile").val());
+        console.log(new FormData(jQuery('form')[0]));
         $.ajax({
-            url: "inc-addwords-importFile.php",
-            type: 'POST',
-            data: {file: $("#InputFile").val()},
-            success: function(data) {
-                console.log(data);
-            }
+        url: "inc-addwords-importFile.php", // Url to which the request is send
+        type: "POST",             // Type of request to be send, called as method
+        data: new FormData($('form')[0]), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+        contentType: false,       // The content type used when sending data to the server.
+        cache: false,             // To unable request pages to be cached
+        processData:false,        // To send DOMDocument or non processed data file it is set to false
+        success: function(data)   // A function to be called if request succeeds
+        {
+            console.log(data);
+        }
         });
-    });
+        }));
 
     // this adds a new row for adding more words
     $('#addRow').click(function (event) {
@@ -98,7 +101,7 @@ $(document).ready(function () {
                 setTimeout(
                     function () {
                         $('#success').fadeOut();
-                    }, 3000);
+                    }, 10000);
             }
         });
 

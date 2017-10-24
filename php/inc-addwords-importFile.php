@@ -1,10 +1,11 @@
 <?php
 require_once("../db/dbconfig.php");
 include "inc-addwords-functions.php";
-if(isset($_POST["data"]))
+echo ($_POST['data']);
+if(isset($_FILES["file"]["name"]))
 {
-
-    echo $filename= $_POST["file"];
+   
+    echo $filename= $_Files["file"]["name"];
     $ext=substr($filename,strrpos($filename,"."),(strlen($filename)-strrpos($filename,".")));
      
     //we check,file must be have csv extention
