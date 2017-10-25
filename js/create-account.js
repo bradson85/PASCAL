@@ -30,7 +30,7 @@ $(document).ready(function() {
         //send ajax request to get the classes in a school
         $.ajax({
             type: "POST",
-            url: "inc.get-classes.php",
+            url: "php/inc.get-classes.php",
             data: {school: document.getElementById('school').value},
             success: function(response){
                 console.log(response);

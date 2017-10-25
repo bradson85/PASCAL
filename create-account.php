@@ -1,4 +1,4 @@
-<?php include('inc.create-account.php'); ?>
+<?php include('php/inc.create-account.php'); ?>
 
 <html>
     <head>
