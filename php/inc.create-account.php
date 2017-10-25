@@ -1,6 +1,6 @@
 <?php
 
-    require_once('dbconfig.php');
+    include ('inc.functions.php');
 
     $name = $email = $accountType = "";
     //Insert form to database after checking textbox data
@@ -15,7 +15,7 @@
         clean_data($name);
         clean_data($email);
         
-        if($name != null && $email != null && name != "" && $email != "")
+        if($name != null && $email != null && $name != "" && $email != "")
             if(!insert_to_db($name, $email, $accountType, $school, $class)){
                 $errMsg = "Invalid Email)";
             }
@@ -23,26 +23,18 @@
             $errMsg = "Invalid input (Name or Email)";
         }
         // Echo return window location
-        echo '<script type="text/javascript">window.location = "create-account.php"</script>';
+        //echo '<script type="text/javascript">window.location = "../create-account.php"</script>';
     }
 
-    //sanitizes data before insertion
-    function clean_data($data){
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        
-        return $data;
-    }
     //inserts items to database
-    function insert_to_db($name, $email, $accountType, $school, $class){
+    function insert_to_db($name, $email, $accountType, $school, $class)
+    {
         // do db processing
-        if($name == "" || $name == null || $email == "" || $email == null || $accountType == "")
+        if($name == "" || $name == null || ($email == "" && strcmp($accountType != "Student")) || ($email == null && strcmp($accountType != "Student")) || $accountType == "")
             return false;
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL) && strcmp($accountType != "Student"))
             return false;
-        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = pdo_construct();
 
         $sql = "SELECT classes.ID FROM classes, schools WHERE classes.name = '$class' AND schools.ID = classes.schoolID AND schools.name = '$school'";
         $result = $pdo->query($sql);
@@ -51,30 +43,44 @@
         $classID = $row['ID'];
         echo "$classID";
         $pdo = null;
-
-        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = pdo_construct();
 
         //Compare strings because each account type has a separate table
-        if(strcmp($accountType, "Administrator") == 0){
+        if(strcmp($accountType, "Administrator") == 0)
+        {
             $sql = "INSERT INTO admins (name, email) VALUES ('$name', '$email')";
             echo 'Ready to insert into admins';
         }
            
 
-        elseif(strcmp($accountType, "Teacher") == 0){
+        elseif(strcmp($accountType, "Teacher") == 0)
+        {
             $sql = "INSERT INTO teachers (name, email, classID) VALUES ('$name', '$email', $classID)";
         }
             
-        elseif(strcmp($accountType, "Student") == 0) {
+        elseif(strcmp($accountType, "Student") == 0) 
+        {
             $sql = "INSERT INTO students (classID) VALUES ($classID)";
+        }
+
+        if($email != "" && $email != null)
+        {
+            $guid = uniqid();
+            $guid = hash("md5", $guid);
+
+            $pdo = null;
+            $pdo = pdo_construct();
+
+            $sql = "INSERT INTO password_change_requests (ID, time, userID) VALUES ('$guid', 'date()"
         }
             
         $pdo->exec($sql);
+        $pdo = null;
         return true;
     }
     // Get school options and add to the school 'select'
-    function schoolOptions(){
+    function schoolOptions()
+    {
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $sql = "SELECT * FROM schools";
         $result = $pdo->query($sql);
