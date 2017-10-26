@@ -23,7 +23,7 @@
             $errMsg = "Invalid input (Name or Email)";
         }
         // Echo return window location
-        //echo '<script type="text/javascript">window.location = "../create-account.php"</script>';
+        echo '<script type="text/javascript">window.location = "../create-account.php"</script>';
     }
 
     //inserts items to database
@@ -63,6 +63,11 @@
             $sql = "INSERT INTO students (classID) VALUES ($classID)";
         }
 
+        
+            
+        $pdo->exec($sql);
+        $pdo = null;
+
         if($email != "" && $email != null)
         {
             $guid = uniqid();
@@ -70,12 +75,22 @@
 
             $pdo = null;
             $pdo = pdo_construct();
+            $date = date('Y-m-d h:m:s');
+            echo ("\n" . $date . "\n");
+            $sql = "INSERT INTO password_change_requests (ID, time, userID) VALUES ('$guid', '$date', '$email')";
 
-            $sql = "INSERT INTO password_change_requests (ID, time, userID) VALUES ('$guid', 'date()"
+            $result = pdo_exec($pdo, $sql);
+
+            if($result)
+            {
+                $to = "bpshelton01@gmail.com";
+                $subject = "Create Your Password";
+                $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: localhost/form-assess/create-password.php?id=$guid";
+                $headers = "FROM: Formative Assessment <formassess-no-reply@siue.edu>";
+
+                mail($to, $subject, $txt, $headers);
+            }
         }
-            
-        $pdo->exec($sql);
-        $pdo = null;
         return true;
     }
     // Get school options and add to the school 'select'
