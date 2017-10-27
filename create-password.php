@@ -14,14 +14,25 @@
     <body>
         <div class="container">
             <h1>Create/Change Password</h1>
-            <form action="php/inc.create-password.php" method="POST" id="createPassword" novalidate>
+            <form id="createPassword" novalidate>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" readonly class="form-control-plaintext" name="email" id="email" value="<?php echo $user ?>">
+                </div>
+
                 <div class="form-group">
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <div class="invalid-feedback">
+                        Field cannot be blank.
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="confirm">Confirm Password:</label>
                     <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm Password" required>
+                    <div class="invalid-feedback">
+                        Field cannot be blank.
+                    </div>
                 </div>
     
                 <button id="submit" type="submit" class="btn btn-primary">Submit</button>

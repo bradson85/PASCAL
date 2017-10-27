@@ -1,15 +1,16 @@
 <?php
     include ('inc.functions.php');
 
-    $pwd = $confirmPwd = "";
+    $email = $pwd = $confirmPwd = "";
 
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
+        $email = $_POST['email'];
         $pwd = $_POST['password'];
         $confirmPwd = $_POST['confirm'];
 
-        echo $pwd;
-        echo " ". $confirmPwd;
+        //echo $pwd;
+        //echo " ". $confirmPwd;
         // Check for null or empty values
         if($pwd === null || $pwd === "" || $confirmPwd === null || $confirmPwd === "")
         {
@@ -22,9 +23,9 @@
         {
             // Salt and hash
             $pwd = password_hash($pwd, PASSWORD_DEFAULT);
-            echo $pwd;
+            //echo $pwd;
             // Insert to DB
-            insert("teacher@il.edu", $pwd);
+            insert($email, $pwd);
         }
 
         else

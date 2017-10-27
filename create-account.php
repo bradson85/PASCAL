@@ -8,9 +8,22 @@
 ?>
 
     <body>
-        <div class="container" id="CreateAccount">
+        <div class="container">
             <h1>Create Account</h1>
-            <form action="php/inc.create-account.php" method="POST" class="form">
+
+            <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+            <form class="form" id="createAccount">
                 <div class="form-group"><label for="accountType">Account Type:</label>
                     <select id="accountType" class="form-control" name="accountType" required>
                         <option>Select Account Type</option>
