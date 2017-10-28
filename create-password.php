@@ -12,8 +12,25 @@
 ?>
 
     <body>
+
+    
         <div class="container">
             <h1>Create/Change Password</h1>
+
+            <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
+                <span>Successfully updated password</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
+                <span>Problem updating password! Ensure passwords match.</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
             <form id="createPassword" novalidate>
                 <div class="form-group">
                     <label for="email">Email:</label>

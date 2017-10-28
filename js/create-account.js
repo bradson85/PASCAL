@@ -1,7 +1,7 @@
 $(document).ready(function() {
     
     var form = document.getElementById('createAccount');
-
+    $('.alert').hide();
     form.addEventListener('submit', function(e) {
         if(form.checkValidity() === false) {
             e.preventDefault();
@@ -23,16 +23,14 @@ $(document).ready(function() {
                     accountType: document.getElementById('accountType').value
                 },
                 success: function(response) {
-                    alert(response);
                     if(response === "true"){
                         //$('#alertSuccess span').remove();
-                        $('#alertSuccess button').after('<span>' + response + '</span>');
-                        $('#alertSuccess').fadeIn('slow');
+                        $('#alertSuccess').show();
+                        $('#createAccount')[0].reset();
                     }
                     else {
                         //$('#alertFail span').remove();
-                        $('#alertFail button').after('<span>' + response + '</span>');
-                        $('#alertFail').fadeIn('slow');
+                        $('#alertFail').show();
                     }
                     
                 }

@@ -12,15 +12,17 @@
             <h1>Create Account</h1>
 
             <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
+                <span>Successfully created account</span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <span>Problem creating account! E-mail may be a duplicate.</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
                 </div>
 
             <form class="form" id="createAccount">

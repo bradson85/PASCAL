@@ -1,14 +1,14 @@
 <?php
     include ('inc.functions.php');
 
-    $email = $pwd = $confirmPwd = "";
+    $email = $pwd = $confirmPwd = $errMsg = "";
 
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
         $email = $_POST['email'];
         $pwd = $_POST['password'];
         $confirmPwd = $_POST['confirm'];
-
+        $errMsg = "true";
         //echo $pwd;
         //echo " ". $confirmPwd;
         // Check for null or empty values
@@ -30,8 +30,10 @@
 
         else
         {
-            echo "Fields must match.";
+            $errMsg = "Fields must match.";
         }
+
+        echo $errMsg;
         
     }
 
@@ -50,20 +52,20 @@
 
     function insert($email, $pwd)
     {
-        if(checkType($email, "Teachers"))
-            $type = "Teachers";
+        if(checkType($email, "teachers"))
+            $type = "teachers";
         else
         {
-            $type = "Administrators";
+            $type = "admins";
         }
             
 
         $sql = "UPDATE $type SET password='$pwd' WHERE email='$email'";
         $pdo = pdo_construct();        
         if(pdo_exec($pdo, $sql))
-            echo "Successfully updated password";
+            $msg = "Successfully updated password";
         else
-            echo "Problem updating password";
+            $msg = "Problem updating password";
 
     }
 
@@ -76,4 +78,4 @@
 
         return($result->rowCount() > 0);
     }
-?> 
+?>
