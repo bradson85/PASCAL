@@ -1,6 +1,9 @@
 <?php
+
+// this returns all the categories in the database and places them inside of an a select option html dropdown
 require_once("../db/dbconfig.php");
 
+// start html selelct class
    $selectString = "<td><select class=\"form-control\" id=\"selcat\"><<option value = \"0\"> --Select Category/Level--</option>";
 
     try {
@@ -8,7 +11,7 @@ require_once("../db/dbconfig.php");
         DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE,
         PDO::ERRMODE_EXCEPTION);
-    
+    // query all the categories
      $sql = ("SELECT * FROM categories");
     
      $result = $pdo->query($sql);
@@ -16,7 +19,7 @@ require_once("../db/dbconfig.php");
            $catID = $row['ID'];
            $catName = $row['name'];
            $level = $row['level']; 
-
+// more of the html placing the variables inside
            $selectString.= "<option value = \"$catName $level\"> $catName - Level $level</option>";
 
      }
@@ -26,8 +29,8 @@ require_once("../db/dbconfig.php");
         echo "Error: " . $e->getMessage();
         }
     $pdo = null;
- 
+ // close the html brackets
     $selectString.= "</select></td>";
-    echo $selectString;
+    echo $selectString; // return string.
 
 ?>

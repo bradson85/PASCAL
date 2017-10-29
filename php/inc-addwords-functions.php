@@ -1,4 +1,6 @@
 <?php
+// this a file full of two functions that do some quering internally
+
 require_once("../db/dbconfig.php");
 
 if (isset($_POST['function'])) {

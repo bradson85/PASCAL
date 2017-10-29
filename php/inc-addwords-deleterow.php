@@ -7,6 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = $_POST['data'];
 }
 
+// Sql query to delete the terms from database.
 try {
     $pdo = new PDO(DB_CONNECTION_STRING,
     DB_USER, DB_PWD);

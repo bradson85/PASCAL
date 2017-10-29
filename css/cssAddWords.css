@@ -92,11 +92,9 @@ body {
     border-radius: 0;
   }
   
-  /*
-   * Dashboard
-   */
+ 
 
-
+/* For Alert items  */
     
        #success{
         position: fixed;
@@ -128,6 +126,16 @@ body {
         top: 15em;
         z-index: 4;
         display:none;
+        overflow-y: auto;
+       }
+
+       #special{
+        position: fixed;
+        margin: auto;
+        height:5em;;
+        width: 70%;
+        top: 15em;
+        z-index: 5;
         overflow-y: auto;
        }
   

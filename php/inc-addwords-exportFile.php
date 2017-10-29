@@ -8,8 +8,7 @@ header('Content-Disposition: attachment; filename=export.csv');
 
 // create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
-
-
+// run query that exports in the format     word , definition , category name , category level.
  try {
     $pdo = new PDO(DB_CONNECTION_STRING,
     DB_USER, DB_PWD);
@@ -21,7 +20,7 @@ $output = fopen('php://output', 'w');
     
     $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        fputcsv($output, $row);
+        fputcsv($output, $row); // phph function that saves to csv
      
     }
         
