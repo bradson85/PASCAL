@@ -3,19 +3,19 @@
 function simpleMessages(){
 
     $string = ('<div class="alert alert-success hide" role="alert" id = "success">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button type="button" class="close"  aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <strong></strong>
   </div>
   <div class="alert alert-info hide" role="alert" id = "info">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <button type="button" class="close"  aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <strong></strong>
   </div>
   <div class="alert alert-danger hide" role="alert" id = "warning">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <button type="button" class="close"  aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
     <strong></strong>
@@ -29,25 +29,25 @@ function specialMessages($message,$type){
     switch($type){
     case "success":   
     $string = ("<div class=\"alert alert-success hide \" role=\"alert\" id = \"success\">
-    <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+    <button type=\"button\" class=\"close\"  aria-label=\"Close\">
       <span aria-hidden=\"true\">&times;</span>
     </button>
     <strong></strong>
   </div>
   <div class=\"alert alert-success hide \" role=\"alert\" id = \"special\">
-  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+  <button type=\"button\" class=\"close\"  aria-label=\"Close\">
     <span aria-hidden=\"true\">&times;</span>
   </button>
   <strong>$message</strong>
 </div>
   <div class=\"alert alert-info hide\" role=\"alert\" id = \"info\">
-  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+  <button type=\"button\" class=\"close\"  aria-label=\"Close\">
       <span aria-hidden=\"true\">&times;</span>
     </button>
     <strong></strong>
   </div>
   <div class=\"alert alert-danger hide\" role=\"alert\" id = \"warning\">
-  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+  <button type=\"button\" class=\"close\"  aria-label=\"Close\">
       <span aria-hidden=\"true\">&times;</span>
     </button>
     <strong></strong>
@@ -56,25 +56,25 @@ function specialMessages($message,$type){
   case "error":
   // danger is not hidden and $message is inside
   $string = ("<div class=\"alert alert-success hide\" role=\"alert\" id = \"success\">
-  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+  <button type=\"button\" class=\"close\"  aria-label=\"Close\">
     <span aria-hidden=\"true\">&times;</span>
   </button>
   <strong></strong>
 </div>
 <div class=\"alert alert-info hide\" role=\"alert\" id = \"info\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+<button type=\"button\" class=\"close\"  aria-label=\"Close\">
     <span aria-hidden=\"true\">&times;</span>
   </button>
   <strong></strong>
 </div>
 <div class=\"alert alert-danger hide \" role=\"alert\" id = \"warning\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+<button type=\"button\" class=\"close\"  aria-label=\"Close\">
     <span aria-hidden=\"true\">&times;</span>
   </button>
   <strong></strong>
   </div>
   <div class=\"alert alert-danger hide \" role=\"alert\" id = \"special\">
-  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+  <button type=\"button\" class=\"close\"  aria-label=\"Close\">
       <span aria-hidden=\"true\">&times;</span>
     </button>
     <strong>$message</strong>
@@ -82,19 +82,19 @@ function specialMessages($message,$type){
 break;
 default:
  $string =("<div class=\"alert alert-success hide\" role=\"alert\" id = \"success\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+<button type=\"button\" class=\"close\"  aria-label=\"Close\">
   <span aria-hidden=\"true\">&times;</span>
 </button>
 <strong></strong>
 </div>
 <div class=\"alert alert-info hide\" role=\"alert\" id = \"info\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+<button type=\"button\" class=\"close\"  aria-label=\"Close\">
   <span aria-hidden=\"true\">&times;</span>
 </button>
 <strong></strong>
 </div>
 <div class=\"alert alert-danger hide\" role=\"alert\" id = \"warning\">
-<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+<button type=\"button\" class=\"close\"  aria-label=\"Close\">
   <span aria-hidden=\"true\">&times;</span>
 </button>
 <strong></strong>

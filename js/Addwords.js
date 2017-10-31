@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    
-    
+
+
 
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
     $(document).ready(function () {
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 "ID": $(tr).find('td:eq(0)').text()
             }
         });
-        ID.shift();  // moves past first row with headings
+        ID.shift(); // moves past first row with headings
         ID = JSON.stringify(ID);
         $.ajax({
             type: "POST",
@@ -107,58 +107,84 @@ $(document).ready(function () {
     });
     // saving new stuff to database by clicking save button of editable table
     $("#save").on("click", function () {
+        var save = true;
         // this iterates throught every value in the table and stores it in an array
         var TableData = new Array();
+        //first time throght retrns header so set ing up count
+        var count = 0
         $('#word_table tr').each(function (row, tr) {
-            TableData[row] = {
-                "ID": $(tr).find('td:eq(0)').text(),
-                "category": $(tr).find('td:eq(1)').find('select').val(),
-                "word": $(tr).find('td:eq(2)').text(),
-                "definition": $(tr).find('td:eq(3)').text()
-            }
-        });
-        TableData.shift(); // first row is the table header - so remove
-        TableData = JSON.stringify(TableData); // convert array to json
-        $.ajax({
-            type: "POST",
-            url: "/php/inc-addwords-update.php",
-            data: {
-                data: TableData
-            },
-            success: function (data) {
-                if (data == 0) {  // this is for if a category is not selected.
-                    $('#warning').show(); // show warning messagees
-                    $('#warning strong').text("Make Sure You Select A Category");// add that message to html
-                    setTimeout(
-                        function () {
-                            $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                        }, 7000);
-                } else {
-                    if (data == 1) { // if a categroy is selected
-                        $('#success').show();  //show success message
-                        $('#success strong').text("Saved Successfully");
-                        setTimeout(
-                            function () {
-                                $('#success').fadeOut(); // hide success messsage after 8 seconds
-                            }, 8000);
-
-
-                        loadDB(); // refresh the newly updated the database
-                        setTimeout(
-                            function () {
-                                updateSelected(); // waits 2 ms to make sure page is loaded before addeing selet values
-                            }, 200);
-                    }
+            // if text fields are empty
+            if (count > 0 && ($.trim($(tr).find('td:eq(2)').text()) == "" || $.trim($(tr).find('td:eq(3)').text()) == "" )) {
+                save = false; //false because of blank field somewhere
+              
+            } else {
+                TableData[row] = {
+                    "ID": $(tr).find('td:eq(0)').text(),
+                    "category": $(tr).find('td:eq(1)').find('select').val(),
+                    "word": $(tr).find('td:eq(2)').text(),
+                    "definition": $(tr).find('td:eq(3)').text()
                 }
             }
+            count ++;
         });
+        console.log(save);
+        ///  if blank fields havent occurred
+        if (save) {
+            TableData.shift(); // first row is the table header - so remove
+            TableData = JSON.stringify(TableData); // convert array to json
+            $.ajax({
+                type: "POST",
+                url: "/php/inc-addwords-update.php",
+                data: {
+                    data: TableData
+                },
+                success: function (data) {
+                    if (data == 0) { // this is for if a category is not selected.
+                        $('#warning').show(); // show warning messagees
+                        $('#warning strong').text("Make Sure You Select A Category"); // add that message to html
+                        setTimeout(
+                            function () {
+                                $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
+                            }, 7000);
+                    } else {
+                        if (data == 1) { // if a categroy is selected
+                            $('#success').show(); //show success message
+                            $('#success strong').text("Saved Successfully");
+                            setTimeout(
+                                function () {
+                                    $('#success').fadeOut(); // hide success messsage after 8 seconds
+                                }, 8000);
+
+
+                            loadDB(); // refresh the newly updated the database
+                            setTimeout(
+                                function () {
+                                    updateSelected(); // waits 2 ms to make sure page is loaded before addeing selet values
+                                }, 200);
+                        }
+                    }
+                }
+            });
+        } else {
+            $('#warning').show(); // show warning messagees
+            $('#warning strong').text("You have an empty field. \n Please enter data into all fields"); // add the message to html
+            setTimeout(
+                function () {
+                    $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
+                }, 5000);
+        }
+    });
+
+ // this is for the close button on alerts
+ $('.close').on("click", function () {
+    $('.alert').hide();
     });
 
     // Special errore messages can be retrieved form the the url GET that alert on load this hides them after 
     // a while from he messages phph section 
     setTimeout(
         function () {
-           $('#special').fadeOut();
+            $('#special').fadeOut();
         }, 5000); // this ensures the alerts from get message  are hidden
 
 });
