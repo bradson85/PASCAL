@@ -1,6 +1,6 @@
 <?php
 // This file imports CSV file into database
-require_once("../db/dbconfig.php");
+require_once("../dbconfig.php");
 include "inc-addwords-functions.php";
 if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploaded
 {

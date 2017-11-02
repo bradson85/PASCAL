@@ -1,7 +1,7 @@
  <?php 
  // this file simply queries the database to populate the tables.
  // it runs one query for the drop down menu then another for the rest of the table.
-    require_once("../db/dbconfig.php");
+    require_once("../dbconfig.php");
    
   
     try {

@@ -1,6 +1,6 @@
 <?php
 // this file updates the database to match the table recored on the webpage
-require_once("../db/dbconfig.php");
+require_once("../dbconfig.php");
 include "inc-addwords-functions.php";
 
 $success = 1; // used to detect if a category is not selected from dropdown menu

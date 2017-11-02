@@ -94,6 +94,8 @@
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
+  <script src="/tests/tests.js"></script>
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
       document.write('<script src="/js/bootstrap.min.js"><\/script>')

@@ -1,5 +1,5 @@
 <?php
-require_once("../db/dbconfig.php");
+require_once("../dbconfig.php");
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

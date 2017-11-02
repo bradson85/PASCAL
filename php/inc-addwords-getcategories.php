@@ -1,7 +1,7 @@
 <?php
 
 // this returns all the categories in the database and places them inside of an a select option html dropdown
-require_once("../db/dbconfig.php");
+require_once("../dbconfig.php");
 
 // start html selelct class
    $selectString = "<td><select class=\"form-control\" id=\"selcat\"><<option value = \"0\"> --Select Category/Level--</option>";
@@ -20,6 +20,7 @@ require_once("../db/dbconfig.php");
            $catName = $row['name'];
            $level = $row['level']; 
 // more of the html placing the variables inside
+//   . here for concatination you concat with . not + in php;
            $selectString.= "<option value = \"$catName $level\"> $catName - Level $level</option>";
 
      }

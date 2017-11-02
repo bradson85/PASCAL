@@ -127,7 +127,6 @@ $(document).ready(function () {
             }
             count ++;
         });
-        console.log(save);
         ///  if blank fields havent occurred
         if (save) {
             TableData.shift(); // first row is the table header - so remove
