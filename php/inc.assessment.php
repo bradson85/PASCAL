@@ -1,21 +1,27 @@
 <?php
     include ('inc.functions.php');
-
+    $assessID = $studentID = "";
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
+        echo $_POST['id'];
         $assessID = $_POST['id'];
         $studentID = $_POST['student'];
-
+        $studentID = clean_data($studentID);
+        $assessID = clean_data($assessID);
         $pdo = pdo_construct();
-        $sql = "SELECT catID, classID FROM assessments WHERE assessment.ID = $id";
+        $sql = "SELECT catID, classID FROM assessments WHERE assessments.ID = $assessID";
+        echo $sql;
         $result = pdo_query($pdo, $sql);
+        $row = $result->fetch();
+
+        $catID = $row['catID'];
 
         $pdo = null;
         $pdo = pdo_construct();
-        $sql = "SELECT terms.name, terms.definition FROM terms, categories WHERE categories.name = '$catName' AND categories.ID = terms.catID";
+        $sql = "SELECT * FROM terms WHERE terms.catID = $catID";
 
         // Execute the query, and return the tuples.
         $data = pdo_query($pdo, $sql);
-        echo $data;
+        echo json_encode($data->fetchAll());
     }
 ?>

@@ -4,9 +4,13 @@
 
     include ('php/inc.header.php');
     include ('php/inc.assessment.php');
+
+    $id = $_GET['id'];
+    $student = $_GET['student'];
 ?>
 
     <body>
+        <span><p name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
         <div class="container">
             <div class="row">
                 <div class="left col-sm-4">
