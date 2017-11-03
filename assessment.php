@@ -8,10 +8,129 @@
 
     <body>
         <div class="container">
-            <div class="card" id="test">
-                <div class="card-body">
-                    This is a test card
+            <div class="row">
+                <div class="left col-sm-4">
+                    <div class="card canDrag" id="term1">
+                        <div class="card-body">
+                            Term 1
+                        </div>
+                    </div>
+                    <div class="card canDrag" id="term2">
+                        <div class="card-body">
+                            Term 2
+                        </div>
+                    </div>
+                    <div class="card canDrag" id="term3">
+                        <div class="card-body">
+                            Term 3
+                        </div>
+                    </div>
+                    <div class="card canDrag" id="term4">
+                        <div class="card-body">
+                            Term 4
+                        </div>
+                    </div>
+                    <div class="card canDrag" id="term5">
+                        <div class="card-body">
+                            Term 5
+                        </div>
+                    </div>
                 </div>
+
+                <div class="right col-sm-8">
+                    <div class="row">
+                        <div class="card canDrop" id="def1">
+                            <div class="card-body">
+                                Definition 1 
+                                Definition 1
+                                Definition 1
+                                Definition 1
+                            </div>
+                        </div>
+                        <div class="card definition" id="def1">
+                            <div class="card-body">
+                                Definition 1 
+                                Definition 1
+                                Definition 1
+                                Definition 1
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card canDrop" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                        <div class="card definition" id="def2">
+                            <div class="card-body">
+                                Definition 2
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Next Page</button>
+                </div> <!-- end col-->
             </div>
         </div>
 

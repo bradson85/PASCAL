@@ -1,3 +1,4 @@
 $(document).ready(function() {
-    $('#test').draggable();
+    $('.canDrag').draggable({revert: "invalid"});
+    $('.canDrop').droppable();
 });
