@@ -19,24 +19,24 @@
                             <span id="term1">Term 1</span>
                         </div>
                     </div>
-                    <div class="card canDrag" id="term2">
+                    <div class="card canDrag">
                         <div class="card-body">
-                            Term 2
+                            <span id="term2">Term 2</span>
                         </div>
                     </div>
-                    <div class="card canDrag" id="term3">
+                    <div class="card canDrag">
                         <div class="card-body">
-                            Term 3
+                            <span id="term3">Term 3</span>
                         </div>
                     </div>
-                    <div class="card canDrag" id="term4">
+                    <div class="card canDrag">
                         <div class="card-body">
-                            Term 4
+                            <span id="term4">Term 4</span>
                         </div>
                     </div>
-                    <div class="card canDrag" id="term5">
+                    <div class="card canDrag">
                         <div class="card-body">
-                            Term 5
+                            <span id="term5">Term 5</span>
                         </div>
                     </div>
                 </div>
