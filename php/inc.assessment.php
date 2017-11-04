@@ -3,14 +3,14 @@
     $assessID = $studentID = "";
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-        echo $_POST['id'];
         $assessID = $_POST['id'];
         $studentID = $_POST['student'];
         $studentID = clean_data($studentID);
         $assessID = clean_data($assessID);
+
         $pdo = pdo_construct();
         $sql = "SELECT catID, classID FROM assessments WHERE assessments.ID = $assessID";
-        echo $sql;
+        
         $result = pdo_query($pdo, $sql);
         $row = $result->fetch();
 

@@ -10,13 +10,13 @@
 ?>
 
     <body>
-        <span><p name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
+        <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
         <div class="container">
             <div class="row">
                 <div class="left col-sm-4">
-                    <div class="card canDrag" id="term1">
+                    <div class="card canDrag">
                         <div class="card-body">
-                            Term 1
+                            <span id="term1">Term 1</span>
                         </div>
                     </div>
                     <div class="card canDrag" id="term2">
@@ -45,10 +45,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def1">
                             <div class="card-body">
-                                Definition 1 
-                                Definition 1
-                                Definition 1
-                                Definition 1
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def1">
@@ -63,7 +60,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
@@ -76,7 +73,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
@@ -88,7 +85,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
@@ -100,7 +97,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
@@ -112,7 +109,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
@@ -124,7 +121,7 @@
                     <div class="row">
                         <div class="card canDrop" id="def2">
                             <div class="card-body">
-                                Definition 2
+                                
                             </div>
                         </div>
                         <div class="card definition" id="def2">
