@@ -17,6 +17,13 @@ body {
   .navbar-dark .navbar-nav .nav-link  {
     
         color: rgb(255, 254, 254);
+        
+        
+    }
+
+ .customlink  {
+      border-right: 1px solid rgb(255, 255, 255);
+
     }
 
     .navbar-dark .navbar-nav a.nav-link{
@@ -55,6 +62,13 @@ body {
     border-right: 1px solid #eee;
   }
 
+  .sidebar-brand a{
+
+    color: rgb(255, 255, 255);
+    border-bottom: 1px solid #eee;
+    font-size: 1.5em;
+  }
+
   .sidebar .nav-pills .nav-link.active, .show>.nav-pills .nav-link{
    background: #000000;
    color: rgb(255, 255, 255);
@@ -71,24 +85,24 @@ body {
 }
   
   /* Sidebar navigation */
-  .sidebar {
+  .sidebar{
     padding-left: 0;
     padding-right: 0;
   }
   
-  .sidebar .nav {
+  .sidebar .nav{
     margin-bottom: 20px;
   }
   
-  .sidebar .nav-item {
+  .sidebar .nav-item{
     width: 100%;
   }
   
-  .sidebar .nav-item + .nav-item {
+  .sidebar .nav-item + .nav-item{
     margin-left: 0;
   }
   
-  .sidebar .nav-link {
+  .sidebar .nav-link{
     border-radius: 0;
   }
   

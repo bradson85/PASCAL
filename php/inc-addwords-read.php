@@ -3,7 +3,7 @@
  // it runs one query for the drop down menu then another for the rest of the table.
     require_once("../dbconfig.php");
    
-  
+  $categories ="";
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
         DB_USER, DB_PWD);

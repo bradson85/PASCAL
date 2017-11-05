@@ -4,7 +4,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Edit Terms and Definitions</title>
+  <title>Edit Categories</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
     crossorigin="anonymous">
@@ -17,14 +17,35 @@
 
 <!-- Add Nav Bar part-->
 <?php include "topbar-header.php"; 
-  include "sidebar-header.php"
+include "sidebar-header.php"
 ?>
-
-
-
 
 <!-- Start main html-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+
+
+
+<!-- Modal to alert that updating categories affects children-->
+<div id ="sure" class="modal fade">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are You Sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modalsave" class="btn btn-warning">Overwrite</button>
+        <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Alert boxes stuff-->
       <?php
       include("alertmessages-header.php");
@@ -48,18 +69,18 @@
 
       <div class="row">
   <div class="col-sm-6">
-  <form method="POST" action="php/inc-addwords-importFile.php" enctype="multipart/form-data" id="fileForm">
+  <form method="POST" action="php/inc-addcategories-importFile.php" enctype="multipart/form-data" id="fileForm">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Word, Definition, Category, Level.</small>
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Category, Level.</small>
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
   </form>
 </div>
   <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
-  <a href="/php/inc-addwords-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
+  <a href="/php/inc-addcategories-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
   
   </div>
   
@@ -71,10 +92,9 @@
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Term ID</th>
-                <th>Category And Level</th>
-                <th>Word</th>
-                <th>Definition</th>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Level</th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
@@ -114,7 +134,7 @@
       }
     });
   </script>
-  <script src="/js/Addwords.js"></script>
+  <script src="/js/Addcategories.js"></script>
 </body>
 
 </html>
