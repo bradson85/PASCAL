@@ -1,9 +1,50 @@
 $(document).ready(function() {
     
+    var form = document.getElementById('createAccount');
+    $('.alert').hide();
+    form.addEventListener('submit', function(e) {
+        if(form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else {
+            $('.invalid-feedback').hide();
+            e.preventDefault();
+            e.stopPropagation();
+
+            $.ajax({
+                type: "POST",
+                url: "php/inc.create-account.php",
+                data: {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    school: document.getElementById('school').value,
+                    class: document.getElementById('class').value,
+                    accountType: document.getElementById('accountType').value
+                },
+                success: function(response) {
+                    if(response === "true"){
+                        //$('#alertSuccess span').remove();
+                        $('#alertSuccess').show();
+                        $('#createAccount')[0].reset();
+                    }
+                    else {
+                        //$('#alertFail span').remove();
+                        $('#alertFail').show();
+                    }
+                    
+                }
+            });
+        }
+
+    });
+
+
     $('#accountType').change(function (e) {
         // check account type to disable/enable different fields relevant to account type
         if(this.options[e.target.selectedIndex].text === "Teacher"){
             $('#school').removeAttr('disabled');
+            $('#email').removeAttr('disabled');
             
         }
         
@@ -30,7 +71,7 @@ $(document).ready(function() {
         //send ajax request to get the classes in a school
         $.ajax({
             type: "POST",
-            url: "inc.get-classes.php",
+            url: "php/inc.get-classes.php",
             data: {school: document.getElementById('school').value},
             success: function(response){
                 console.log(response);
@@ -42,6 +83,7 @@ $(document).ready(function() {
     function addOptions(result){
             var obj = JSON.parse(result);
             $('#class').removeAttr('disabled');
+            $('#class').append(new Option("Select a Class", "None"));
             obj.forEach(function(element) {
                 $('#class').append(new Option(element, element));
             }, this);

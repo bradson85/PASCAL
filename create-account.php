@@ -1,17 +1,31 @@
-<?php include('inc.create-account.php'); ?>
+<?php 
+    $page_title = "Create Account";
+    $css_path = "css/main.css";
 
-<html>
-    <head>
-        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create Account</title>
-        <link href="css/main.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    </head>
+    include('php/inc.header.php');
+    include('php/inc.create-account.php'); 
+    
+?>
 
     <body>
-        <div class="container" id="CreateAccount">
+        <div class="container">
             <h1>Create Account</h1>
-            <form action="inc.create-account.php" method="POST" class="form">
+
+            <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
+                <span>Successfully created account</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
+                <span>Problem creating account! E-mail may be a duplicate.</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+
+            <form class="form" id="createAccount">
                 <div class="form-group"><label for="accountType">Account Type:</label>
                     <select id="accountType" class="form-control" name="accountType" required>
                         <option>Select Account Type</option>
