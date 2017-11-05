@@ -1,0 +1,11 @@
+/* This is a CSS file */
+
+* {
+    /* Need to decide on universal design elements and put them here */
+}
+
+#CreateAccount {
+    text-align: left;
+    max-width: 70%;
+
+}
