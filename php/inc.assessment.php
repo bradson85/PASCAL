@@ -19,7 +19,7 @@
         // $pdo = null;
         // $pdo = pdo_construct();
         // $sql = "SELECT * FROM terms WHERE terms.catID = $catID";
-        $sql = "SELECT t.ID, t.name, t.definition FROM assessmentquestions AS a, terms AS t WHERE a.assessmentID = $assessID AND t.ID = a.termID";
+        $sql = "SELECT t.ID, t.name, t.definition, a.isMatch FROM assessmentquestions AS a, terms AS t WHERE a.assessmentID = $assessID AND t.ID = a.termID";
         // Execute the query, and return the tuples.
         $data = pdo_query($pdo, $sql);
 
