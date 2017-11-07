@@ -43,94 +43,91 @@
 
                 <div class="right col-sm-8">
                     <div class="row">
-                        <div class="card canDrop" id="def1">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def1">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 1 
-                                Definition 1
-                                Definition 1
-                                Definition 1
+                                <span id="def1">Definition 1</span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def2">Definition 2</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def3">Definition 3</span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def4">Definition 4</span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def5">Definition 5</span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def6">Definition 6</span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop" id="def2">
+                        <div class="card canDrop">
                             <div class="card-body">
                                 
                             </div>
                         </div>
-                        <div class="card definition" id="def2">
+                        <div class="card definition">
                             <div class="card-body">
-                                Definition 2
+                                <span id="def7">Definition 7</span>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary">Next Page</button>
+                    <button class="btn btn-primary" id="next">Next Page</button>
                 </div> <!-- end col-->
             </div>
         </div>

@@ -9,17 +9,10 @@
         $assessID = clean_data($assessID);
 
         $pdo = pdo_construct();
-        // $sql = "SELECT catID, classID FROM assessments WHERE assessments.ID = $assessID";
-        // //asdf
-        // $result = pdo_query($pdo, $sql);
-        // $row = $result->fetch();
 
-        // $catID = $row['catID'];
-
-        // $pdo = null;
-        // $pdo = pdo_construct();
-        // $sql = "SELECT * FROM terms WHERE terms.catID = $catID";
-        $sql = "SELECT t.ID, t.name, t.definition, a.isMatch FROM assessmentquestions AS a, terms AS t WHERE a.assessmentID = $assessID AND t.ID = a.termID";
+        $sql = "SELECT t.ID, t.name, t.definition, a.isMatch, c.level "
+        ."FROM assessmentquestions AS a, terms AS t, categories AS c " 
+        ."WHERE a.assessmentID = $assessID AND t.ID = a.termID AND t.catID = c.ID ORDER BY c.level";
         // Execute the query, and return the tuples.
         $data = pdo_query($pdo, $sql);
 
