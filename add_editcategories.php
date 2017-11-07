@@ -101,7 +101,7 @@ include "sidebar-header.php"
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Words</button>
+            <button class = " btn btn-primary" id="addRow">Add Category</button>
             <button class = " btn btn-primary" id="save">Save Changes</button>
           </p>
         </div>
