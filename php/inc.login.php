@@ -9,10 +9,14 @@ function displayHeader(){
 
 function displayLogin(){
     
-        $form = '<form class="form-inline">
+        $form = '<form class="form-horizontal">
                     <div class="form-group">
                         <label for="username">Username:</label>
-        
+                        <input type="username" class="form-control" id="username">
+                    </div>
+
+
+                </form>
         '
         /*'<section>
                 <form id="login-form" class="form-inline" method="post" action="inc-login.php">
