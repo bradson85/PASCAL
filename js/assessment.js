@@ -1,12 +1,12 @@
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid"});
     $('.canDrop').droppable();
-    terms = [[]];
-    defs = [[]];
+    terms = [];
+    defs = [];
     correct = [];
-    currLevel = 0;
-    minLevel = 0;
-    maxLevel = 0;
+    currLevel = 1;
+    minLevel = 1;
+    maxLevel = 3;
     page = 1;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
@@ -22,7 +22,7 @@ $(document).ready(function() {
             if(currLevel > minLevel )
                 currLevel--;
         }
-        displayItems(5*page, 7*page);
+        displayItems(page);
     });
     
     $.ajax({
@@ -37,12 +37,12 @@ $(document).ready(function() {
         success: function(response){
             console.log(response);
             console.log(response[0]['name']);
-            getTerms(response, 0);
+            getTerms(response);
             console.log(terms);
-            terms = randomize(terms);
-            defs = getDefs(response, 0);
-            defs = randomize(defs);
-            displayItems(terms, defs);
+            //randomize(terms);
+            getDefs(response);
+            //randomize(defs);
+            displayItems(page);
         },
         error: function(){
             console.log("Error!");
@@ -77,20 +77,32 @@ $(document).ready(function() {
         return result;
     }
 
-    function getTerms(array, start) {
-        for(let i = minLevel; i < maxLevel; i++){
+    function getTerms(array) {
+        let curr = 0;
+        for(let i = minLevel; i <= maxLevel; i++){
+            terms[i] = [];
+            curr = 0;
             for(let j = 0; j < array.length; j++){
-                if(array[j]['level'] === i)
+                if(parseInt(array[j]['level']) === i){
                     terms[i][j] = array[j]['name'];
+                    curr++;
+                }
+                    
             }
         }
     }
 
-    function getDefs(array, start) {
-        for(let i = minLevel; i < maxLevel; i++){
+    function getDefs(array) {
+        let curr = 0;
+        for(let i = minLevel; i <= maxLevel; i++){
+            defs[i] = [];
+            curr = 0;
             for(let j = 0; j < array.length; j++){
-                if(array[j]['level'] === i)
-                    defs[i][j] = array[j]['definition'];
+                if(parseInt(array[j]['level']) === i){
+                    defs[i][curr] = array[j]['definition'];
+                    curr++;
+                }
+                    
             }
         }
     }
@@ -108,18 +120,19 @@ $(document).ready(function() {
     // Takes an array of terms and an array of definitions and displays them
     // Currently it will only accept the exact number of terms and definitions
     // specified in the project specifcation, though that could be changed.
-    function displayItems(terms, defs) {
-        console.log(terms[0]['name']);
-        for(let i = 0; i < terms.length; i++) {
-            termID = 'term' + (i+1);
+    function displayItems(n) {
+        console.log(terms[1]);
+        for(let i = 5*(n-1); i < 5*n; i++) {
+            termID = 'term' + ((i+1) - (5 * (n - 1)));
             console.log(termID);
             document.getElementById(termID).innerHTML = terms[currLevel][i];
-        }
-
-        for(let i = 0; i < defs.length; i++) {
-            defID = 'def' + (i+1);
+            defID = 'def' + ((i+1) - (5 * (n - 1)));
+            console.log(defID);
             document.getElementById(defID).innerHTML = defs[currLevel][i];
         }
+
+        document.getElementById('def6').innerHTML = defs[currLevel][20 + n - 1];
+        document.getElementById('def7').innerHTML = defs[currLevel][20 + n];
     }
 
     function checkResults() {
