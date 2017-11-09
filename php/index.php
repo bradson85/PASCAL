@@ -1,4 +1,4 @@
-<?php include('inc.create-account.php'); ?>
+<?php include('inc.login.php'); ?>
 
 <html>
 <head>
@@ -8,10 +8,7 @@
     <body>
     <main id="login-page" class="rounded">
     <header id="login-header">
-        <div id="app-title">Formative Assessment</div>
-        <div id="app-image">
-        <img src="../images/assessment.png" alt="assessment icon" />
-        </div> 
+        <div id="app-title">Formative Assessment</div> 
     </header>
     
     <?php displayLogin(); ?>

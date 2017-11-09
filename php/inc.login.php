@@ -1,7 +1,7 @@
 <?php
 
 function displayHeader(){
-	echo 'meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+	echo '<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">';
@@ -9,9 +9,16 @@ function displayHeader(){
 
 function displayLogin(){
     
-        $form = '<section>
-                <form id="login-form" class="rounded" method="post" action="inc-login.php">
-                    <p><input type="text" name="username" placeholder="username" id="login-username"/></p>
+        $form = '<form class="form-inline">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+        
+        '
+        /*'<section>
+                <form id="login-form" class="form-inline" method="post" action="inc-login.php">
+
+                
+                   <p><input type="text" name="username" placeholder="username" id="login-username"/></p>
                     <p><input type="password" name="password" placeholder="password" id="login-password" /></p>
                     
                     <footer id="login-footer">
@@ -20,7 +27,7 @@ function displayLogin(){
                         <button id="signIn-button" name="signIn"><a id="theButton" href="assess-summary.php">Sign in</a></button>
                     </footer>
                 </form>
-            </section>';
+            </section>'*/;
         
         echo $form;
     }
