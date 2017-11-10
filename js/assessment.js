@@ -8,7 +8,7 @@ $(document).ready(function() {
     correct = [];
     currLevel = 1;
     minLevel = 1;
-    maxLevel = 3;
+    maxLevel = 1;
     page = 1;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
@@ -75,11 +75,12 @@ $(document).ready(function() {
     $('#next').click(function() {
         console.log('Next was clicked');
         page++;
-        if(checkResults() == 5){
+        let correct = checkResults();
+        if(correct == 5){
             if(currLevel < maxLevel)
                 currLevel++;
         }
-        else if(checkResults() == 0){
+        else if(correct == 0){
             if(currLevel > minLevel )
                 currLevel--;
         }
@@ -152,10 +153,6 @@ $(document).ready(function() {
         }
     }
 
-    function addResult(event, ui) {
-        
-    }
-
     function getTerms(array) {
         let curr = 0;
         for(let i = minLevel; i <= maxLevel; i++){
@@ -222,14 +219,29 @@ $(document).ready(function() {
         let numCorrect = 0;
 
         for(let i = 1; i <= 7; i++) {
-            let filterTerm = terms.filter(function (e) {
-                return e.name == document.getElementById('term' + i);
-            });
-            let filterDef = defs.filter(function (e) {
-                return e.name == document.getElementById('def' + i);
-            });
+            if(results[i].termID !== ""){
+                let termName = document.getElementById(results[i].termID).innerHTML;
+                let filterTerm = terms[currLevel].filter(function (e) {
+                    return (e.name === termName);
+                });
+                let defName = document.getElementById('def' + i).innerHTML;
+                let filterDef = defs[currLevel].filter(function (e) {
+                    return e.name === defName;
+                });
+                if(filterTerm[0].id === filterDef[0].id) {
+                    console.log("Correct!");
+                    numCorrect++;
+                    correct.push({id: filterTerm[0].id, correct: 1});
+                }
+                else {
+                    correct.push({id: filterTerm[0].id, correct: 0});
+                }
+                    
+            }
+            
         }
-
+        console.log(correct);
+        console.log("Got " + numCorrect + "correct");
         return numCorrect;
     }
 
