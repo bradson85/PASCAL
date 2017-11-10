@@ -91,6 +91,7 @@ $(document).ready(function() {
         }
         else {
             // Go to results page
+            showResults();
         }
         
     });
@@ -243,6 +244,20 @@ $(document).ready(function() {
         console.log(correct);
         console.log("Got " + numCorrect + "correct");
         return numCorrect;
+    }
+
+    function showResults(){
+        $('.card').hide();
+        $('.btn').hide();
+
+        let numCorrect = 0;
+
+        for(let i = 0; i < correct.length; i++) {
+            if(correct[i].correct === 1)
+                numCorrect++;
+        }   
+
+        $('.container').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
     }
 
 });
