@@ -43,7 +43,7 @@
 
                 <div class="right col-sm-8">
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop1">
                             <div class="card-body">
                                 
                             </div>
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop2">
                             <div class="card-body">
                                 
                             </div>
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop3">
                             <div class="card-body">
                                 
                             </div>
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop4">
                             <div class="card-body">
                                 
                             </div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop5">
                             <div class="card-body">
                                 
                             </div>
@@ -104,7 +104,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop6">
                             <div class="card-body">
                                 
                             </div>
@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="card canDrop">
+                        <div class="card canDrop" id="drop7">
                             <div class="card-body">
                                 
                             </div>

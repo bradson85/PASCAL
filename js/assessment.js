@@ -1,8 +1,10 @@
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid"});
     $('.canDrop').droppable();
+
     terms = [];
     defs = [];
+    results = [];
     correct = [];
     currLevel = 1;
     minLevel = 1;
@@ -10,6 +12,65 @@ $(document).ready(function() {
     page = 1;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
+
+    setResults();
+
+    $('#drop1').droppable({
+        drop: function(event, ui) {
+            results[1].dropID = 'drop1';
+            results[1].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop2').droppable({
+        drop: function(event, ui) {
+            results[2].dropID = 'drop2';
+            results[2].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop3').droppable({
+        drop: function(event, ui) {
+            results[3].dropID = 'drop3';
+            results[3].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop4').droppable({
+        drop: function(event, ui) {
+            results[4].dropID = 'drop4';
+            results[4].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop5').droppable({
+        drop: function(event, ui) {
+            results[5].dropID = 'drop5';
+            results[5].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop6').droppable({
+        drop: function(event, ui) {
+            results[6].dropID = 'drop6';
+            results[6].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
+    $('#drop7').droppable({
+        drop: function(event, ui) {
+            results[7].dropID = 'drop7';
+            results[7].termID = ui.draggable.find('span').attr('id');
+            console.log(results);
+        }
+    });
+
 
     $('#next').click(function() {
         console.log('Next was clicked');
@@ -22,7 +83,15 @@ $(document).ready(function() {
             if(currLevel > minLevel )
                 currLevel--;
         }
-        displayItems(page);
+        if(page < 5){
+            displayItems(page);
+            $('.canDrag').css({'top':'', 'left':''});
+            setResults();
+        }
+        else {
+            // Go to results page
+        }
+        
     });
     
     $.ajax({
@@ -77,6 +146,16 @@ $(document).ready(function() {
         return result;
     }
 
+    function setResults() {
+        for(let i = 1; i <= 7; i++){
+            results[i] = {dropID: '', termID: ''}
+        }
+    }
+
+    function addResult(event, ui) {
+        
+    }
+
     function getTerms(array) {
         let curr = 0;
         for(let i = minLevel; i <= maxLevel; i++){
@@ -84,7 +163,9 @@ $(document).ready(function() {
             curr = 0;
             for(let j = 0; j < array.length; j++){
                 if(parseInt(array[j]['level']) === i){
-                    terms[i][j] = array[j]['name'];
+                    terms[i][curr] = {name: '', id: ''};
+                    terms[i][curr]['name'] = array[j]['name'];
+                    terms[i][curr]['id'] = array[j]['ID'];
                     curr++;
                 }
                     
@@ -99,7 +180,9 @@ $(document).ready(function() {
             curr = 0;
             for(let j = 0; j < array.length; j++){
                 if(parseInt(array[j]['level']) === i){
-                    defs[i][curr] = array[j]['definition'];
+                    defs[i][curr] = {name: '', id: ''};
+                    defs[i][curr]['name'] = array[j]['definition'];
+                    defs[i][curr]['id'] = array[j]['ID'];
                     curr++;
                 }
                     
@@ -125,18 +208,29 @@ $(document).ready(function() {
         for(let i = 5*(n-1); i < 5*n; i++) {
             termID = 'term' + ((i+1) - (5 * (n - 1)));
             console.log(termID);
-            document.getElementById(termID).innerHTML = terms[currLevel][i];
+            document.getElementById(termID).innerHTML = terms[currLevel][i]['name'];
             defID = 'def' + ((i+1) - (5 * (n - 1)));
             console.log(defID);
-            document.getElementById(defID).innerHTML = defs[currLevel][i];
+            document.getElementById(defID).innerHTML = defs[currLevel][i]['name'];
         }
 
-        document.getElementById('def6').innerHTML = defs[currLevel][20 + n - 1];
-        document.getElementById('def7').innerHTML = defs[currLevel][20 + n];
+        document.getElementById('def6').innerHTML = defs[currLevel][20 + n - 1]['name'];
+        document.getElementById('def7').innerHTML = defs[currLevel][20 + n]['name'];
     }
 
     function checkResults() {
+        let numCorrect = 0;
 
+        for(let i = 1; i <= 7; i++) {
+            let filterTerm = terms.filter(function (e) {
+                return e.name == document.getElementById('term' + i);
+            });
+            let filterDef = defs.filter(function (e) {
+                return e.name == document.getElementById('def' + i);
+            });
+        }
+
+        return numCorrect;
     }
 
 });
