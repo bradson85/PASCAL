@@ -152,7 +152,11 @@ body {
         z-index: 5;
         overflow-y: auto;
        }
-  
+       #sure{
+        position: fixed;
+        margin: auto;
+        
+       }
    
    
   

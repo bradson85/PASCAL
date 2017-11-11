@@ -1,7 +1,6 @@
 <?php
 // This file imports CSV file into database
 require_once("../dbconfig.php");
-include "inc-addwords-functions.php";
 if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploaded
 {
    
@@ -21,39 +20,30 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         while (($data = fgetcsv($file, 10000, ",")) !== FALSE) // retrive data from csv
         {
            // query to see if data exists
-     $sql = $pdo->prepare("SELECT name, definition From terms WHERE name = :word AND definition = :definition");
-     $sql->bindParam(':word', $word);
-     $sql->bindParam(':definition', $def);
+     $sql = $pdo->prepare("SELECT name From schools WHERE name = :name");
+     $sql->bindParam(':name', $name);
      
-        $word = $data[0];
-        $def = $data[1];
+        $name = trim($data[0]," ");;
          $sql->execute();
          $row = $sql->fetch(PDO::FETCH_ASSOC) ;
            if(!$row) { // no data exists then insert
     
            
-            $sql = $pdo->prepare("INSERT INTO terms (name, definition, catID)
-             Values (:word , :definition, :catID)");
-            $sql->bindParam(':word', $word);
-           $sql->bindParam(':definition', $def);
-           $sql->bindParam(':catID', $catID); 
-            $word = trim($data[0]," ");
-            $def = trim($data[1]," ");
-            $catID = trim(matchCatID($data[2], $data[3])," ");
+            $sql = $pdo->prepare("INSERT INTO schools (name)
+             Values (:name)");
+            $sql->bindParam(':name', $name);
+            $name = trim($data[0]," ");
            $sql->execute();
           
                 
            }
             else{ // if data exists then update
                
-               $sql = $pdo->prepare("UPDATE terms SET name = :word , definition = :definition, catID = :catID WHERE name = :word AND definition = :definition");
+               $sql = $pdo->prepare("UPDATE schools SET name = :name WHERE name = :name");
 
-                $sql->bindParam(':word', $word);
-               $sql->bindParam(':definition', $def);
-               $sql->bindParam(':catID', $catID); 
-               $word = trim($data[0]," ");
-               $def = trim($data[1]," ");
-               $catID = trim(matchCatID($data[2], $data[3])," ");
+                $sql->bindParam(':name', $name);
+              
+               $name = trim($data[0]," ");
                $sql->execute();
     
                
@@ -65,7 +55,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         {
             // use "fal" in get for fail 
         $error = "Error: " . $e->getMessage();
-        header("Location: ../add_editwords.php?fal=$error");
+        header("Location: ../add_editschools.php?fal=$error");
         }
     $pdo = null;
 
@@ -73,13 +63,13 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
          // this redirects back to add words page with a message in the get
          // use "imp" in get for fail
         $success = "CSV import success" ;
-        header("Location: ../add_editwords.php?imp=$success");
+        header("Location: ../add_editschools.php?imp=$success");
     }
     else {
          // this redirects back to add words page with a message in the get
          // use "fal" in get for fail 
         $error=  "Error: No csv found";
-        header("Location: ../add_editwords.php?fal=$error");
+        header("Location: ../add_editschools.php?fal=$error");
     }
     }
     ?>

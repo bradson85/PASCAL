@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html>
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Edit Categories</title>
+  <title>Edit Schools</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
     crossorigin="anonymous">
@@ -69,18 +68,18 @@ include "sidebar-header.php"
 
       <div class="row">
   <div class="col-sm-6">
-  <form method="POST" action="php/inc-addcategories-importFile.php" enctype="multipart/form-data" id="fileForm">
+  <form method="POST" action="php/inc-addschools-importFile.php" enctype="multipart/form-data" id="fileForm">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Category, Level.</small>
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: SchoolName</small>
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
   </form>
 </div>
   <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
-  <a href="/php/inc-addcategories-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
+  <a href="/php/inc-addschools-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
   
   </div>
   
@@ -88,20 +87,19 @@ include "sidebar-header.php"
 <!--  End of File Import/Export stuff-->
       <!--  Table Part-->
         <div class="table-responsive">
-          <H2> Categories</H2>
+          <H2> School Name</H2>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Category ID</th>
-                <th>Category Name</th>
-                <th>Level</th>
+              <th>ID</th>
+                <th>School Name</th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Category</button>
+            <button class = " btn btn-primary" id="addRow">Add School</button>
             <button class = " btn btn-primary" id="save">Save Changes</button>
           </p>
         </div>
@@ -134,7 +132,7 @@ include "sidebar-header.php"
       }
     });
   </script>
-  <script src="/js/Addcategories.js"></script>
+  <script src="/js/Addschools.js"></script>
 </body>
 
 </html>

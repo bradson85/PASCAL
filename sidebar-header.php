@@ -24,16 +24,16 @@
 
         <ul class="nav nav-pills flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="#">Add or Edit Terms</a>
+            <a class="nav-link" href="add_editwords.php">Add or Edit Terms</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Import/Export Terms</a>
+            <a class="nav-link" href="add_editcategories.php">Add or Edit Categories</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Add or Edit Categories</a>
+            <a class="nav-link" href="add_editschools.php">Add or Edit Schools</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Import/Export Categores</a>
+            <a class="nav-link" href="add_editclasses.php">Add or Edit Classes</a>
           </li>
         </ul>
 

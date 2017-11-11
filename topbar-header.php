@@ -22,9 +22,9 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
       <li class="nav-item customlink">
-      <a class="nav-link" href="#">&#128274 &nbsp Login</a>
+      <a class="nav-link" href="#">&#128274 &nbsp Logout</a>
       <li class="nav-item">
-          <a class="nav-link" href="#">&#128100  &nbsp Sign Up</a>
+          <a class="nav-link" href="#">&#128100  &nbsp Account</a>
     </ul>
     </div>
   </nav>

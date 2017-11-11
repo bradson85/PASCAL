@@ -4,7 +4,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Edit Categories</title>
+  <title>Edit Classes</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
     crossorigin="anonymous">
@@ -92,16 +92,17 @@ include "sidebar-header.php"
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Category ID</th>
-                <th>Category Name</th>
-                <th>Level</th>
+                <th>Class ID</th>
+                <th>Class Name</th>
+                <th>Grade Level</th>
+                <th>School</th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Category</button>
+            <button class = " btn btn-primary" id="addRow">Add Class</button>
             <button class = " btn btn-primary" id="save">Save Changes</button>
           </p>
         </div>
@@ -134,7 +135,7 @@ include "sidebar-header.php"
       }
     });
   </script>
-  <script src="/js/Addcategories.js"></script>
+  <script src="/js/Addclasses.js"></script>
 </body>
 
 </html>

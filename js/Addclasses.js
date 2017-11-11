@@ -10,17 +10,15 @@ $(document).ready(function () {
                 updateSelected();
             }, 250);
     });
-        
- 
 
     // load the db function asynchronously 
     function loadDB() {
-        $.get('/php/inc-addcategories-getcategories.php', function (data) {
+        $.get('/php/inc-addclasses-getclasses.php', function (data) {
             $("#t_body").html(data);
         });
     }
 
-// update what select level is chosen when loading the db 
+    // update what select school is chosen when loading the db 
     // options based up on id:
     // This is what calls the php file to get which
     // option is the selected option.
@@ -31,11 +29,12 @@ $(document).ready(function () {
                 "ID": $(tr).find('td:eq(0)').text()
             }
         });
+    
         ID.shift(); // moves past first row with headings
         ID = JSON.stringify(ID);
         $.ajax({
             type: "POST",
-            url: "/php/inc-addcategories-getlevels.php",
+            url: "/php/inc-addclasses-getschools.php",
             data: {
                 IDs: ID,
             },
@@ -43,48 +42,41 @@ $(document).ready(function () {
             cache: false,
             success: function (data) {
                 $('#word_table tr').not(":first").each(function (row, tr) {
-                    $(tr).find('td:eq(2)').find('select').val(data[row]);
+                    $(tr).find('td:eq(3)').find('select').val(data[row]);
                 });
             }
         });
 
     }
+    
 
-    // this adds a new row for adding more categories
+    // this adds a new row for adding more words
     // generates a new row with 0 as id database generates new id.
     $('#addRow').click(function (event) {
         event.preventDefault();
-
-        var rows = $('<tr><td>0</td>' +
-            '<td contenteditable= "true">Enter A New Category</td>' // term name
-            +
-            '<td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>' /// for level
-            + 
-            '<option value = \"1\"> 1 </option>'
-            +
-            '<option value = \"2\"> 2 </option>'
-            +
-            '<option value = \"3\"> 3 </option>'
-            +
-            '<option value = \"4\"> 4 </option>'
-            +
-            '<option value = \"5\"> 5 </option>'
-            +
-            '<option value = \"6\"> 6 </option></select></td>'
-            +
-            '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
-        $('#word_table').append(rows);
+        $.get('php/inc-addclasses-getclassselected.php', function (data) {
+            $schoolsel = data;
+            var rows = $('<tr><td>0</td>' +
+                '<td contenteditable= "true">Enter A Class Name</td>' // class name
+                +
+                '<td contenteditable= "true">Enter Grade Level</td>' /// for level
+                +
+                $schoolsel
+                +
+                '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+            $('#word_table').append(rows);
+        });
     });
+   
 
-
-    // this is for deleteing categories and levels 
+    // this is for deleteing words and definition 
     $(document).on("click", ".deleteRow", function () {
         var currID = $(this).parent().siblings(":first").text(); // get current id
         $($(this).parents('tr')).remove(); // remove row
         var wordnumber = $('#word_table tr:last-child td:first-child').html();
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-addcategories-deleterow.php",
+            url: "/php/inc-addclasses-deleterow.php",
             data: {
                 data: currID
             },
@@ -96,11 +88,11 @@ $(document).ready(function () {
                         $('#info').fadeOut();
                     }, 8000);
 
-                    loadDB(); // refresh the newly updated the database  
+                    loadDB(); // refresh the newly updated the database 
                     setTimeout(
                         function () {
-                            updateSelected(); // waits 2 ms to make sure page is loaded before addeing selet values
-                        }, 200);
+                            updateSelected();
+                        }, 250); 
             }
         });
 
@@ -121,23 +113,22 @@ $(document).ready(function () {
             }
         });
     });
+
     // saving new stuff to database by clicking save button of editable table
     $("#save").on("click", function () {
-
-        $("#sure .modal-title").text("Are You Sure You Want To Save?");
-        $("#sure .modal-body").text("If you have changed a Category or Level, all Terms associtated " +
-            "with the old Category or Level will match the new altered Category and Level");
-        $("#sure").modal('show');
-        $("#modalsave").on("click", function () {
-               saveToDB();
-               $("#sure").modal('hide');
-         });
-         $("#modalclose").on("click", function () {
-            $("#sure").modal('hide');
-      });
-    });
-
-
+        
+                $("#sure .modal-title").text("Are You Sure You Want To Save?");
+                $("#sure .modal-body").text("If you have changed a Class, all teachers and students associtated " +
+                    "with the old Class will match the new altered Class");
+                $("#sure").modal('show');
+                $("#modalsave").on("click", function () {
+                       saveToDB();
+                       $("#sure").modal('hide');
+                 });
+                 $("#modalclose").on("click", function () {
+                    $("#sure").modal('hide');
+              });
+            });
 
     function saveToDB() {
         var save = true;
@@ -147,14 +138,16 @@ $(document).ready(function () {
         var count = 0
         $('#word_table tr').each(function (row, tr) {
             // if text fields are empty
-            if (count > 0 && ($.trim($(tr).find('td:eq(1)').text()) == "" || $(tr).find('td:eq(2)').find('select').val() == '0')) {
+            if (count > 0 && ($.trim($(tr).find('td:eq(1)').text()) == ""||($.trim($(tr).find('td:eq(2)').text()) == "" || $(tr).find('td:eq(3)').find('select').val() == "0" ))) {
                 save = false; //false because of blank field somewhere
 
             } else {
                 TableData[row] = {
                     "ID": $.trim($(tr).find('td:eq(0)').text()),
-                    "catName": $.trim($(tr).find('td:eq(1)').text()),// trim this data to eliminate trailing spaces
-                    "level": $(tr).find('td:eq(2)').find('select').val()   
+                    "className": $.trim($(tr).find('td:eq(1)').text()),// trim this data to eliminate trailing spaces
+                    "gradeLevel": $.trim($(tr).find('td:eq(2)').text()),
+                    "schoolName": $(tr).find('td:eq(3)').find('select').val() 
+                   
                 }
             }
            
@@ -166,7 +159,7 @@ $(document).ready(function () {
             TableData = JSON.stringify(TableData); // convert array to json
             $.ajax({
                 type: "POST",
-                url: "/php/inc-addcategories-update.php",
+                url: "/php/inc-addclasses-update.php",
                 data: {
                     data: TableData
                 },
@@ -183,8 +176,9 @@ $(document).ready(function () {
                         loadDB(); // refresh the newly updated the database
                         setTimeout(
                             function () {
-                                updateSelected(); // waits 2 ms to make sure page is loaded before addeing selet values
-                            }, 200);
+                                updateSelected();
+                            }, 250);
+
                             
                     } else {
 
@@ -200,7 +194,7 @@ $(document).ready(function () {
             });
         } else {
             $('#warning').show(); // show warning messagees
-            $('#warning strong').text("Empty field or Level not selected. \nPlease enter data into all fields and select level"); // add the message to html
+            $('#warning strong').text("You have an empty field. \n Please enter data into all fields"); // add the message to html
             setTimeout(
                 function () {
                     $('#warning').fadeOut(); //hide woarning mesage after 7 seconds

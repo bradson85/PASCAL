@@ -15,18 +15,25 @@ try {
     PDO::ERRMODE_EXCEPTION);
     for ($i=0; $i < count($TableData); $i++) {
         //query to select everything from database and see if current id exists in the table.
- $sql = $pdo->prepare("SELECT * FROM categories WHERE name =:catName And level = :level");
- $sql->bindParam(':catName', $catName);
- $sql->bindParam(':level', $level);
+ $sql = $pdo->prepare("SELECT * FROM categories WHERE ID =:ID");
+ $sql->bindParam(':ID', $ID);
     $ID = $TableData[$i]['ID']; // id from array
-    $catName = trim($TableData[$i]['catName']," ");            // Trim To get rid of whitespace at begining and end
-    $level = trim($TableData[$i]['level']," ");
      $sql->execute();
      $row = $sql->fetch(PDO::FETCH_ASSOC) ;
        if(!$row) { // if row doesnt exist in the database then insert below
                                       // level is second of split screen
       
-    
+    $sql = $pdo->prepare("SELECT * FROM categories WHERE name =:catName And level=:level");
+    $sql->bindParam(':catName', $catName);
+    $sql->bindParam(':level', $level); 
+    $catName = trim($TableData[$i]['catName']," ");            // Trim To get rid of whitespace at begining and end
+    $level = trim($TableData[$i]['level']," ");
+     $sql->execute();
+    $row = $sql->fetch(PDO::FETCH_ASSOC) ;
+
+    if($row) { //if there is a new entry and the name  and level exists already
+         // do nothing 
+    }else{
         $sql = $pdo->prepare("INSERT INTO categories (name, level)
          Values (:name , :level)");
         $sql->bindParam(':name', $catName);
@@ -36,13 +43,13 @@ try {
        $sql->execute();
          $success = 1;
             
-       }
+       }}
         else{// when there already exist and item in DB
             //update existing rows.
                  
             //category is selected
-           $sql = $pdo->prepare("UPDATE categories SET name =:catName, level =:level WHERE ID = :catName AND level= :level");
-          
+           $sql = $pdo->prepare("UPDATE categories SET name =:catName, level =:level WHERE ID = :ID");
+           $sql->bindParam(':ID', $ID2);
             $sql->bindParam(':catName', $catName);
            $sql->bindParam(':level', $level);
            $ID2 = trim($TableData[$i]['ID']," ");

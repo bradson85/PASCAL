@@ -23,13 +23,22 @@ try {
      $sql->execute();
      $row = $sql->fetch(PDO::FETCH_ASSOC) ;
        if(!$row) { // if row doesnt exist in the database then insert below
+        // first check to see if word doesnt already exists
+        $sql = $pdo->prepare("SELECT * From terms WHERE name = :word");
+        $sql->bindParam(':word', $word);
+        $word = trim($TableData[$i]['word']," "); 
+            $sql->execute();
+            $row = $sql->fetch(PDO::FETCH_ASSOC) ;
+            if($row){
+               //do nothing
+            } else{
         $splitString = explode(' ',$TableData[$i]['category']); // splits the category and level from tables
         $category =  $splitString[0];                          // category is first of the split string
         $level = $splitString[1];                              // level is second of split screen
       
         if($category == "0"){    // if category isnt selected
            $success= 0;
-        }
+             }
     else{  //cattegory is selected 
         //insert new rows into table
         $sql = $pdo->prepare("INSERT INTO terms (name, definition, catID)
@@ -44,7 +53,7 @@ try {
         $catID = trim(matchCatID($category, $level)," ");
        $sql->execute();
          
-            }
+            }}
        }
         else{// when there already exist and item in DB
             //update existing rows.

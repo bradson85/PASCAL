@@ -44,7 +44,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
            }
             else{ // if data exists then update
                
-               $sql = $pdo->prepare("UPDATE level SET name = :name , level = :level WHERE name = :name AND level =:level");
+               $sql = $pdo->prepare("UPDATE categories SET name = :name , level = :level WHERE name = :name AND level =:level");
 
                 $sql->bindParam(':name', $name);
                $sql->bindParam(':level', $level);
@@ -62,7 +62,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         {
             // use "fal" in get for fail 
         $error = "Error: " . $e->getMessage();
-        header("Location: ../add_editWords.php?fal=$error");
+        header("Location: ../add_editcategories.php?fal=$error");
         }
     $pdo = null;
 
@@ -70,13 +70,13 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
          // this redirects back to add words page with a message in the get
          // use "imp" in get for fail
         $success = "CSV import success" ;
-        header("Location: ../add_editWords.php?imp=$success");
+        header("Location: ../add_editcategories.php?imp=$success");
     }
     else {
          // this redirects back to add words page with a message in the get
          // use "fal" in get for fail 
         $error=  "Error: No csv found";
-        header("Location: ../add_editWords.php?fal=$error");
+        header("Location: ../add_editcategories.php?fal=$error");
     }
     }
     ?>
