@@ -92,6 +92,7 @@ $(document).ready(function() {
         else {
             // Go to results page
             showResults();
+            submitResults();
         }
         
     });
@@ -100,10 +101,8 @@ $(document).ready(function() {
         type: "POST",
         url: "php/inc.assessment.php",
         dataType: "json",
-        data: {
-            
-            id: assessmentID,
-            student: studentID
+        data: { 
+            id: assessmentID
         },
         success: function(response){
             console.log(response);
@@ -212,8 +211,8 @@ $(document).ready(function() {
             document.getElementById(defID).innerHTML = defs[currLevel][i]['name'];
         }
 
-        document.getElementById('def6').innerHTML = defs[currLevel][20 + n - 1]['name'];
-        document.getElementById('def7').innerHTML = defs[currLevel][20 + n]['name'];
+        document.getElementById('def6').innerHTML = defs[currLevel][20 + ((n*2) - 2)]['name'];
+        document.getElementById('def7').innerHTML = defs[currLevel][20 + (n*2) - 1]['name'];
     }
 
     function checkResults() {
@@ -242,7 +241,7 @@ $(document).ready(function() {
             
         }
         console.log(correct);
-        console.log("Got " + numCorrect + "correct");
+        console.log("Got " + numCorrect + " correct");
         return numCorrect;
     }
 
@@ -258,6 +257,22 @@ $(document).ready(function() {
         }   
 
         $('.container').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
+    }
+
+    function submitResults(){
+        console.log(correct);
+        $.ajax({
+            type: "POST",
+            url: "php/inc.assessment.php",
+            data: {
+                student: studentID,
+                id: assessmentID,
+                results: JSON.stringify(correct)
+            },
+            success: function(response) {
+                console.log(response);
+            }
+        });
     }
 
 });

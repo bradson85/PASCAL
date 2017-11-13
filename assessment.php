@@ -13,7 +13,7 @@
         <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
         <div class="container">
             <div class="row">
-                <div class="left col-sm-4">
+                <div class="left col-md-4">
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term1">Term 1</span>
@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <div class="right col-sm-8">
+                <div class="right col-md-8">
                     <div class="row">
                         <div class="card canDrop" id="drop1">
                             <div class="card-body">
@@ -140,3 +140,4 @@
         <script src="js/jquery.ui.touch-punch.min.js"></script>
         <script src="js/assessment.js"></script>
     </body>
+</html>
