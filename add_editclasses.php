@@ -88,7 +88,7 @@ include "sidebar-header.php"
 <!--  End of File Import/Export stuff-->
       <!--  Table Part-->
         <div class="table-responsive">
-          <H2> Categories</H2>
+          <H2>Classes</H2>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
