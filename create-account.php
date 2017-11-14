@@ -8,7 +8,12 @@
 ?>
 
     <body>
-        <div class="container">
+
+    <?php 
+        include('topbar-header.php');
+        include('sidebar-header.php'); 
+    ?>
+        <div class="container createAccount">
             <h1>Create Account</h1>
 
             <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
