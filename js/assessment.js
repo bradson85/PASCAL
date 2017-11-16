@@ -8,7 +8,8 @@ $(document).ready(function() {
     correct = [];
 
     // Dynamic system is not fully implemented, but it will be easy to implement soon.
-    // It will be finished by the end of the sprint.
+    // It will be finished by the end of the sprint. All that needs to be done is get the starting level,
+    // and calculate the min level and max level based on the starting level.
     currLevel = 1;
     minLevel = 1;
     maxLevel = 1;
