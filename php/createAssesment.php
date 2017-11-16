@@ -121,7 +121,23 @@
             </thead>
             <tbody id = "t_body"></tbody>
           </table>
-          <div class= "messages" id="instructions"></div>
+                   <div class= "messages" id="instructions"></div>
+          <div class="table-responsive">
+          <table id="assessment_table" class="table table-striped table-bordered">
+            <tr>
+            <th>Assessment ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Category and Level</th>
+            </tr>
+            <tr><td>Test</td></tr>
+          </table>
+          
+          <p class="Buttons">
+            <button class = " btn btn-primary" id='addRow'>Add Assessment</button>
+            <button class = " btn btn-primary" id="save">Save Assessment</button>
+          </p>
+          </div>
 <br>
 <H2> List of Current Assessments</H2>
         <div class="table-responsive">

@@ -40,7 +40,21 @@ $(document).ready(function(){
     
         }
     
-    
+        $('#addRow').click(function (event) {
+            event.preventDefault();
+            $.get('../php/inc-createassessment-getcategories.php', function (data) {
+                $categoriesSel = data;
+                var rows = $('<tr><td>0</td>' +
+                    $categoriesSel +
+                    '<td contenteditable= "true">Enter A New Word</td>' // term name
+                    +
+                    '<td contenteditable= "true">Enter New Definition</td>' /// for level
+                    +
+                    '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+                $('#assessment_table').append(rows);
+            });
+        });
+
         function loadAssessments(){
             $.ajax({
               type: "POST",
