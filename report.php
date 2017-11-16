@@ -10,8 +10,21 @@
         include('topbar-header.php');
         include('sidebar-header.php'); 
     ?>
-        <div class="container">
+        <div class="container report">
+            <div class="row">
+                <div class="col-sm-6">
+                    School:
+                    <select class="form-control" id="school"></select>
+                </div>
+                <div class="col-sm-6">
+                    Class: <select class="form-control" id="class"></select>
+                </div>
+            </div>
             
+            <table class="table table-striped">
+                <!-- Generate table based on class (administrators will have additional options -->
+
+            </table>
         </div>
 
 
