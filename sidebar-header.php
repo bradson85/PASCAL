@@ -39,7 +39,7 @@
 
         <ul class="nav nav-pills flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="#">Nav item again</a>
+            <a class="nav-link" href="deleteAccounts.php">Delete Accounts</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">One more nav</a>

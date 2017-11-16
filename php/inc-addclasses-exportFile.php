@@ -15,8 +15,7 @@ $output = fopen('php://output', 'w');
     $pdo->setAttribute(PDO::ATTR_ERRMODE,
     PDO::ERRMODE_EXCEPTION);
    
-    $sql = 'SELECT terms.name, terms.definition, categories.name AS "category",
-    categories.level FROM terms INNER JOIN categories ON terms.catID = categories.ID';
+    $sql = 'SELECT name, gradeLevel, schoolID FROM classes';
     
     $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
