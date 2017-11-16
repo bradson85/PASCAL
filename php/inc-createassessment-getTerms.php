@@ -2,11 +2,9 @@
    require_once("../db/dbconfig.php");
    
    
-   if ($_SERVER["REQUEST_METHOD"] == "POST") {
-       // collect value of input field
-       $data = $_POST['data'];
-   }
+   function getTerms($catID){
    
+    $echostring = "";
    // Sql query to selct all the terms from database where catid is same.
    try {
        $pdo = new PDO(DB_CONNECTION_STRING,
@@ -17,28 +15,26 @@
        // prepare sql and bind parameters
        // example query. updates if an update has happend INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
        $sql = $pdo->prepare("SELECT * FROM terms
-       WHERE catID = :catID");
-        $sql->bindParam(':catID', $catID);
-       $catID = $data;
+       WHERE ID = :ID");
+        $sql->bindParam(':ID', $value);
+       $value= $catID;
        $sql->execute();
        while(  $row = $sql->fetch(PDO::FETCH_ASSOC)){
         $word = $row['name'];
         $def = $row['definition'];    
-      $id = $row['ID'];       
-
-    echo ("<tr><td><div class='checkbox'>
-    <input type='checkbox' value='$id'>
-  </div></td>  
-   <td > $word </td>  
-    <td >$def</td>
-    </tr>");
-  }
+      $id = $row['ID'];   
+      $echostring.= ("<tr><td td contenteditable= 'true'>$word</td>  
+     <td contenteditable= 'true'> $def</td>  
+      </tr>");
+      
+       }
+    
   $pdo = null;  
        }
    catch(PDOException $e)
        {
        echo "Error: " . $e->getMessage();
        }
-
-   
+      echo $echostring;
+    }
    ?>

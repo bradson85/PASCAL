@@ -1,7 +1,7 @@
 <?php
 require_once("../db/dbconfig.php");
 
-   $selectString = "<select id=\"categorySelect\" class=\"styled-select slate\">";
+   $selectString = "<select id=\"categorySelect\" class=\"styled-select slate\"><<option value = \"0\"> --Select Category/Level--</option>";
 
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
