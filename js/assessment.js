@@ -6,6 +6,9 @@ $(document).ready(function() {
     defs = [];
     results = [];
     correct = [];
+
+    // Dynamic system is not fully implemented, but it will be easy to implement soon.
+    // It will be finished by the end of the sprint.
     currLevel = 1;
     minLevel = 1;
     maxLevel = 1;
@@ -13,8 +16,13 @@ $(document).ready(function() {
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
 
+    // initializes the results array
     setResults();
-
+    // set up droppable areas that save the term that is dropped when an item is dropped
+    // There are a couple known bugs with the drag and drop system.
+    // 1. Dragging an element to another area does not remove the previous set element
+    // 2. Multiple items are able to be dragged into a single drop location
+    // 3. Next can be clicked without placing all of the terms.
     $('#drop1').droppable({
         drop: function(event, ui) {
             results[1].dropID = 'drop1';
@@ -76,6 +84,9 @@ $(document).ready(function() {
         console.log('Next was clicked');
         page++;
         let correct = checkResults();
+
+        // If all correct or none correct, switch level
+        // if the current level is not at max level or min level.
         if(correct == 5){
             if(currLevel < maxLevel)
                 currLevel++;
@@ -84,6 +95,8 @@ $(document).ready(function() {
             if(currLevel > minLevel )
                 currLevel--;
         }
+        // If the page is less than 5, reset the draggable elements and the results array.
+        // otherwise, the assessment is over, the results are displayed
         if(page < 5){
             displayItems(page);
             $('.canDrag').css({'top':'', 'left':''});
@@ -152,7 +165,7 @@ $(document).ready(function() {
             results[i] = {dropID: '', termID: ''}
         }
     }
-
+    // set terms in the terms array for each level
     function getTerms(array) {
         let curr = 0;
         for(let i = minLevel; i <= maxLevel; i++){
@@ -169,7 +182,7 @@ $(document).ready(function() {
             }
         }
     }
-
+    // set definitions in the definitions array for each level
     function getDefs(array) {
         let curr = 0;
         for(let i = minLevel; i <= maxLevel; i++){
@@ -202,28 +215,40 @@ $(document).ready(function() {
     // specified in the project specifcation, though that could be changed.
     function displayItems(n) {
         console.log(terms[1]);
+        let randDefs = [];
         for(let i = 5*(n-1); i < 5*n; i++) {
             termID = 'term' + ((i+1) - (5 * (n - 1)));
             console.log(termID);
             document.getElementById(termID).innerHTML = terms[currLevel][i]['name'];
-            defID = 'def' + ((i+1) - (5 * (n - 1)));
-            console.log(defID);
-            document.getElementById(defID).innerHTML = defs[currLevel][i]['name'];
+
+            randDefs[(i) - (5 * (n - 1))] = defs[currLevel][i]['name'];
         }
 
-        document.getElementById('def6').innerHTML = defs[currLevel][20 + ((n*2) - 2)]['name'];
-        document.getElementById('def7').innerHTML = defs[currLevel][20 + (n*2) - 1]['name'];
-    }
+        randDefs[5] = defs[currLevel][20 + ((n*2) - 2)]['name'];
+        randDefs[6] = defs[currLevel][20 + (n*2) - 1]['name'];
+        randDefs = randomize(randDefs);
 
+        for(let i = 0; i < 7; i++) {
+            defID = 'def' + (i+1);
+            console.log(defID);
+            document.getElementById(defID).innerHTML = randDefs[i];
+        }
+
+        
+    }
+    // Checks the results array and adds each item to the correct array
     function checkResults() {
         let numCorrect = 0;
 
         for(let i = 1; i <= 7; i++) {
             if(results[i].termID !== ""){
+                // find the term in the array that matches the term placed in the drop area
                 let termName = document.getElementById(results[i].termID).innerHTML;
                 let filterTerm = terms[currLevel].filter(function (e) {
                     return (e.name === termName);
                 });
+                // find the definition in the array that matches the term next to drop area
+                // this is needed because the definitions are randomized.
                 let defName = document.getElementById('def' + i).innerHTML;
                 let filterDef = defs[currLevel].filter(function (e) {
                     return e.name === defName;
@@ -244,13 +269,14 @@ $(document).ready(function() {
         console.log("Got " + numCorrect + " correct");
         return numCorrect;
     }
-
+    
     function showResults(){
+        // hide the assessment elements
         $('.card').hide();
         $('.btn').hide();
 
         let numCorrect = 0;
-
+        // Calculate the number of correct terms
         for(let i = 0; i < correct.length; i++) {
             if(correct[i].correct === 1)
                 numCorrect++;

@@ -1,6 +1,7 @@
 <?php
     include ('inc.functions.php');
     $assessID = $studentID = $results = "";
+    // check for different post values to determine what is being sent.
     if(isset($_POST['student']))
     {
         $studentID = $_POST['student'];
@@ -27,7 +28,7 @@
         $pdo = null;
         echo json_encode($data->fetchAll());
     }
-
+    // submits the results of the assessment to the server
     function submitResults($results, $studentID, $assessID){
         $termID = $correct = "not changed";
         $pdo = pdo_construct();
