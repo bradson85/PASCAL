@@ -21,17 +21,17 @@
         $sql->bindParam(':catID', $catID);
        $catID = $data;
        $sql->execute();
+       $count = 1;
        while(  $row = $sql->fetch(PDO::FETCH_ASSOC)){
         $word = $row['name'];
         $def = $row['definition'];    
       $id = $row['ID'];       
 
-    echo ("<tr><td><div class='checkbox'>
-    <input type='checkbox' value='$id'>
-  </div></td>  
-   <td > $word </td>  
-    <td >$def</td>
+    echo ("<tr><td>$count</td>
+   <td>$word</td>  
+    <td>$def</td>
     </tr>");
+    $count++;
   }
   $pdo = null;  
        }
