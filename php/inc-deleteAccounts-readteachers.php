@@ -19,7 +19,7 @@
         $name= $row['name'];
         $email = $row['email'];
         $ID = $row['ID'];
-        echo "<tr><td> $ID</td>
+        echo "<tr><td style='display:none;'> $ID</td>
        <td> $name </td>  
         <td>$email</td>
          <td><button class='btn btn-sm deleteRowTeacher'>Delete</button></td></tr>" ; // html stuff

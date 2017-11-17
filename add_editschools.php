@@ -91,7 +91,6 @@ include "sidebar-header.php"
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-              <th>ID</th>
                 <th>School Name</th>
                 <th> &nbsp;</th>
               </tr>

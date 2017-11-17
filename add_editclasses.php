@@ -92,7 +92,6 @@ include "sidebar-header.php"
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Class ID</th>
                 <th>Class Name</th>
                 <th>Grade Level</th>
                 <th>School</th>

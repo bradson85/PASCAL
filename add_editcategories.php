@@ -92,7 +92,6 @@ include "sidebar-header.php"
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Category ID</th>
                 <th>Category Name</th>
                 <th>Level</th>
                 <th> &nbsp;</th>

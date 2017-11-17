@@ -20,7 +20,7 @@ require_once("../dbconfig.php");
            $catName = $row['name']; 
 // more of the html placing the variables inside
 //   . here for concatination you concat with . not + in php;
-           $selectString.= "<tr><td>$catID</td><td contenteditable= 'true'>$catName</td>
+           $selectString.= "<tr><td style='display:none;'>$catID</td><td contenteditable= 'true'>$catName</td>
            <td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>
            <option value = \"1\"> 1 </option>
            <option value = \"2\"> 2 </option>
