@@ -26,7 +26,7 @@ try {
       $name= $row['name'];
       $gradeLevel = $row['gradeLevel'];
       $ID = $row['ID'];
-      echo "<tr><td>$ID</td> 
+      echo "<tr><td style='display:none;'>$ID</td> 
      <td contenteditable= 'true'> $name </td>  
       <td contenteditable= 'true'>$gradeLevel</td>
       <td>

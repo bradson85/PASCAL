@@ -1,22 +1,70 @@
 $(document).ready(function () {
-
-
-
+     loadSearch();
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
     $(document).ready(function () {
-        loadDB();
+        
         setTimeout(
             function () {
-                updateSelected();
-            }, 250);
+                loadDB();
+            }, 50);
+        
     });
+
+    $(document).on("change", "#sort",function(){
+        loadDB();
+    });
+
+
+    $(document).on("change", "#t_body td",function(){
+        $('#info').show();
+        $('#info strong').text("Click \"Save\" to Store Changes");
+        setTimeout(
+            function () {
+                $('#info').fadeOut();
+            }, 6000);
+    });
+
+    $(document).on("blur", '[contenteditable="true"]', function () {
+                $('#info').show();
+                $('#info strong').text("Click \"Save\" to Store Changes");
+                setTimeout(
+                    function () {
+                        $('#info').fadeOut();
+                    }, 6000);
+                return false;
+    });
+
 
     // load the db function asynchronously 
     function loadDB() {
-        $.get('/php/inc-addwords-read.php', function (data) {
+        var choice = $("#sort_body").find('td:eq(1)').find('select').val();
+        console.log(choice);
+       $.ajax({ // delete from database
+        type: "POST",
+        url: "/php/inc-addwords-read.php",
+        data: {
+            data: choice
+        },
+        success: function (data) {
             $("#t_body").html(data);
-        });
+            setTimeout(
+                function () {
+                    updateSelected();
+                }, 250);
+           
+        }
+    });
     }
+
+    function loadSearch(){
+        $.get('php/inc-addwords-getsorting.php', function (data) {
+            $categoriesSel = data;
+            var rows = "<td> View Words By Category:</td>" + $categoriesSel;
+            $("#sort_body").html(rows);
+        });
+       
+    }
+
 
     // update what select category is chosen when loading the db 
     // options based up on id:
@@ -42,7 +90,6 @@ $(document).ready(function () {
             cache: false,
             success: function (data) {
                 $('#word_table tr').not(":first").each(function (row, tr) {
-
                     $(tr).find('td:eq(1)').find('select').val(data[row]);
                 });
             }
@@ -56,7 +103,7 @@ $(document).ready(function () {
         event.preventDefault();
         $.get('php/inc-addwords-getcategories.php', function (data) {
             $categoriesSel = data;
-            var rows = $('<tr><td>0</td>' +
+            var rows = $('<tr><td style="display:none;">0</td>' +
                 $categoriesSel +
                 '<td contenteditable= "true">Enter A New Word</td>' // term name
                 +
@@ -97,6 +144,12 @@ $(document).ready(function () {
         $(this).on('keydown', function (e) {
             if (e.which == 13 && e.shiftKey == false) {
                 $(this).blur();
+                $('#info').show();
+                $('#info strong').text("Click \"Save\" to Store Changes");
+                setTimeout(
+                    function () {
+                        $('#info').fadeOut();
+                    }, 6000);
                 return false;
             } else if (e.which == 27) { // to exit editing without saving then reload db
                 $("#t_body").empty();
@@ -156,10 +209,6 @@ $(document).ready(function () {
 
 
                             loadDB(); // refresh the newly updated the database
-                            setTimeout(
-                                function () {
-                                    updateSelected(); // waits 2 ms to make sure page is loaded before addeing selet values
-                                }, 200);
                         }
                     }
                 }

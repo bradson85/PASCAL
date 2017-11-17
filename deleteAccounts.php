@@ -84,7 +84,6 @@ include "sidebar-header.php"
           <table id="teacher_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th> &nbsp;</th>
@@ -98,7 +97,6 @@ include "sidebar-header.php"
           <table id="admin_table" class="table table-striped table-bordered">
             <thead>
             <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
             <th> &nbsp;</th>

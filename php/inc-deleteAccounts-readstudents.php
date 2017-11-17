@@ -17,7 +17,7 @@
        while($row = $result->fetch(PDO::FETCH_ASSOC) ){
         $class = $row['className'];
         $ID = $row['ID'];
-        echo "<tr><td> $ID</td>  
+        echo "<tr><td style='display:none;'> $ID</td>  
         <td>$class</td>
          <td><button class='btn btn-sm deleteRowStudent'>Delete</button></td></tr>" ; // html stuff
 

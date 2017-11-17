@@ -4,7 +4,7 @@
 require_once("../dbconfig.php");
 
 // start html selelct class
-   $selectString = "";
+   $selectString = "<td><select class=\"form-control\" id=\"sort\"><<option value=\"All\">All Words</option>";
 
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -12,16 +12,16 @@ require_once("../dbconfig.php");
         $pdo->setAttribute(PDO::ATTR_ERRMODE,
         PDO::ERRMODE_EXCEPTION);
     // query all the categories
-     $sql = ("SELECT * FROM schools");
+     $sql = ("SELECT * FROM categories");
     
      $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-           $ID = $row['ID'];
-           $schools = $row['name']; 
+           $catID = $row['ID'];
+           $catName = $row['name'];
+           $level = $row['level']; 
 // more of the html placing the variables inside
 //   . here for concatination you concat with . not + in php;
-           $selectString.= "<tr><tdstyle='display:none;'>$ID</td><td contenteditable= 'true'>$schools</td>
-           <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr> ";
+           $selectString.= "<option value = \"$catName $level\"> $catName - Level $level</option>";
 
      }
     }
@@ -31,6 +31,7 @@ require_once("../dbconfig.php");
         }
     $pdo = null;
  // close the html brackets
+    $selectString.= "</select></td>";
     echo $selectString; // return string.
 
 ?>

@@ -65,13 +65,19 @@
   
 </div>
 <!--  End of File Import/Export stuff-->
+
+     <!--Sorting Stuff-->
+     <div class="table-responsive">
+     <H2> Words and Defintions</H2>
+          <table id="sort_table" class="table table-bordered">
+            <tbody id = "sort_body"></tbody>
+          </table>
+        </div>
       <!--  Table Part-->
         <div class="table-responsive">
-          <H2> Words and Defintions</H2>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Term ID</th>
                 <th>Category And Level</th>
                 <th>Word</th>
                 <th>Definition</th>

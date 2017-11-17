@@ -43,6 +43,7 @@ $(document).ready(function () {
             cache: false,
             success: function (data) {
                 $('#word_table tr').not(":first").each(function (row, tr) {
+                    console.log(data[row]);
                     $(tr).find('td:eq(2)').find('select').val(data[row]);
                 });
             }
