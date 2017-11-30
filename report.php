@@ -23,7 +23,8 @@
             
             <table class="table table-striped">
                 <!-- Generate table based on class (administrators will have additional options -->
-
+                <tbody id="results">
+                </tbody>
             </table>
         </div>
 

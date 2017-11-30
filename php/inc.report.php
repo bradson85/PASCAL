@@ -37,7 +37,7 @@
     function getResults($class)
     {
         $pdo = pdo_construct();
-        $sql = "SELECT s.ID, count(r.correct), a.ID, a.start_date FROM students AS s, classes AS c, results AS r, assessments AS a WHERE c.ID = s.classID AND c.ID = $class AND r.assessmentID = a.ID AND r.correct = 1 AND s.ID = r.studentID GROUP BY s.ID, a.ID";
+        $sql = "SELECT s.ID, count(r.correct) AS correct, a.ID AS assessID, a.start_date FROM students AS s, classes AS c, results AS r, assessments AS a WHERE c.ID = s.classID AND c.name = '$class' AND r.assessmentID = a.ID AND r.correct = 1 AND s.ID = r.studentID GROUP BY s.ID, a.ID ORDER BY s.ID";
         $data = pdo_query($pdo, $sql);
         $data = $data->fetchAll();
         $pdo = null;
