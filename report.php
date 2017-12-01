@@ -23,6 +23,8 @@
             
             <table class="table table-striped">
                 <!-- Generate table based on class (administrators will have additional options -->
+                <thead id="results-head">
+                </thead>
                 <tbody id="results">
                 </tbody>
             </table>

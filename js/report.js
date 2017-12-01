@@ -41,14 +41,29 @@ $(document).ready(function () {
                 school: document.getElementById('school').value
             },
             success: function(response){
-                console.log(response[0])
-                buildTable(response)
+                console.log(response[0]);
+                buildTable(response);
             }
         });
-    })
+
+        $.ajax({
+            url: "php/inc.report.php",
+            type: "GET",
+            dataType: "json",
+            data: {
+                class: document.getElementById('class').value,
+                header: "true"
+            },
+            success: function(response){
+                console.log(response[0]);
+                addTableHead(response);
+            }
+        });
+    });
     
 
     function showClasses(result) {
+        $("#class").empty();
         console.log(result);
         var obj = result;
         $('#class').removeAttr('disabled');
@@ -66,8 +81,21 @@ $(document).ready(function () {
         }, this);
     }
 
-    function buildTable(result) {
+    function addTableHead(arr) {
+        $("results-head").empty();
+        console.log(arr);
+        let tempStr = "<td>Student ID</td>";
+        for(let i = 0; i < arr.length; i++) {
+            tempStr += "<td>" + arr[i].start_date + "</td>";
+        }
+
         
+        console.log(tempStr);
+        $("#results-head").html(tempStr);
+    }
+
+    function buildTable(result) {
+        $("#results").empty();
         console.log(result);
         let tempID = -1;
         let tempStr = "";
@@ -80,7 +108,7 @@ $(document).ready(function () {
             }
 
             if(result[i].ID === tempID){ 
-                tempStr += "<td>" + result[i].correct + "</td>";
+                tempStr += "<td>" + ((result[i].correct / 20) * 100) + "%</td>";
                 
             }
             console.log(i === result.length - 1);
