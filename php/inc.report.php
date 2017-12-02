@@ -52,7 +52,7 @@
     function getHeaders($class)
     {
         $pdo = pdo_construct();
-        $sql = "SELECT a.ID, a.start_date FROM assessments AS a, classes AS c WHERE c.name = '$class' AND a.classID = c.ID";
+        $sql = "SELECT a.ID, a.start_date AS start FROM assessments AS a, classes AS c WHERE c.name = '$class' AND a.classID = c.ID";
         $data = pdo_query($pdo, $sql);
         $data = $data->fetchAll();
         $pdo = null;

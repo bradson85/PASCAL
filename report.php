@@ -20,8 +20,9 @@
                     Class: <select class="form-control" id="class"></select>
                 </div>
             </div>
-            
-            <table class="table table-striped">
+            <button class="btn btn-primary" id="back"><</button>
+            <button class="btn btn-primary" id="forward">></button>
+            <table class="table table-striped table-responsive">
                 <!-- Generate table based on class (administrators will have additional options -->
                 <thead id="results-head">
                 </thead>

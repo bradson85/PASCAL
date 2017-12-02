@@ -3,8 +3,14 @@ $(document).ready(function () {
 
     //populate the table based on the class, show hidden options if admin
 
-    classID = 1;
-
+    var classID = 1;
+    var pages = 1;
+    var currPage = pages;
+    var headers = [];
+    var retData = [];
+    // Special thanks to arminrosu for this code from StackOverflow.
+    // https://stackoverflow.com/questions/3514784/what-is-the-best-way-to-detect-a-mobile-device-in-jquery
+    var mobile = /Mobi/i.test(navigator.userAgent);
     $.ajax({
         url: "php/inc.report.php",
         type: "GET",
@@ -15,6 +21,23 @@ $(document).ready(function () {
         }
     });
 
+    $('#back').click(function() {
+        if(currPage > 1){
+            currPage--;
+            addTableHead(headers);
+            buildTable(retData);
+        }
+    });
+
+    $('#forward').click(function() {
+        if(currPage < pages){
+            currPage++;
+            addTableHead(headers);
+            buildTable(retData);
+        }
+            
+
+    });
 
     $('#school').change(function () {
         console.log(document.getElementById('school').value);
@@ -38,11 +61,18 @@ $(document).ready(function () {
             dataType: "json",
             data: {
                 class: document.getElementById('class').value,
-                school: document.getElementById('school').value
+                header: "true"
             },
             success: function(response){
+                // set the number of pages for breaking up the table content.
+                // Shows 4 assessment results per page for mobile, 6 for everything else.
+                if(mobile)
+                    pages = Math.ceil(response.length / 4);
+                else
+                    pages = Math.ceil(response.length / 6);
                 console.log(response[0]);
-                buildTable(response);
+                headers = response;
+                addTableHead(response);
             }
         });
 
@@ -52,11 +82,12 @@ $(document).ready(function () {
             dataType: "json",
             data: {
                 class: document.getElementById('class').value,
-                header: "true"
+                school: document.getElementById('school').value
             },
             success: function(response){
                 console.log(response[0]);
-                addTableHead(response);
+                retData = response;
+                buildTable(response);
             }
         });
     });
@@ -85,8 +116,17 @@ $(document).ready(function () {
         $("results-head").empty();
         console.log(arr);
         let tempStr = "<td>Student ID</td>";
-        for(let i = 0; i < arr.length; i++) {
-            tempStr += "<td>" + arr[i].start_date + "</td>";
+        let num = 0;
+        if(mobile)
+            num = 4;
+        else
+            num = 6;
+        let end = arr.length;
+        if(num * currPage < arr.length)
+            end = (num * currPage);
+        console.log("end: " + end);
+        for(let i = num * (currPage-1); i < end; i++) {
+            tempStr += "<td>" + arr[i].start + "</td>";
         }
 
         
@@ -99,8 +139,18 @@ $(document).ready(function () {
         console.log(result);
         let tempID = -1;
         let tempStr = "";
+
+        let num = 0;
+        if(mobile)
+            num = 4;
+        else
+            num = 6;
+        let end = result.length - 1;
+        if(num * currPage < result.length - 1)
+            end = (num * currPage);
+
         result.push({ID: -1});
-        for(let i = 0; i < result.length - 1; i++) {
+        for(let i = num * (currPage - 1); i < end; i++) {
             console.log(i);
             if(i === 0){
                 tempID = result[i].ID;
