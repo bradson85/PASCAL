@@ -15,7 +15,6 @@
       $result = $pdo->query($sql);
       
        while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-        
         $name= $row['name'];
         $email = $row['email'];
         $ID = $row['ID'];
