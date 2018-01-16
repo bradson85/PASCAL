@@ -1,0 +1,21 @@
+<?php
+    include ('inc.functions.php');
+    $assessID = $studentID = "";
+    if($_SERVER['REQUEST_METHOD'] == 'POST')
+    {
+        echo "Before IDs";
+        $assessID = $_POST['id'];
+        $studentID = $_POST['student'];
+        $studentID = clean_data($studentID);
+        $assessID = clean_data($assessID);
+
+        $pdo = pdo_construct();
+        $sql = "SELECT t.ID, t.name, t.definition FROM assessmentquestions AS a, terms AS t WHERE a.assessmentID = $assessID AND t.ID = a.termID";
+        echo $sql;
+        // Execute the query, and return the tuples.
+        $data = pdo_query($pdo, $sql);
+        $data = $pdo->query($sql);
+        echo $data;
+        echo json_encode($data->fetchAll());
+    }
+?>
