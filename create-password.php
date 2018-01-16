@@ -7,14 +7,14 @@
     // Get the ID from the URL and pass it to the getUser function to be processed and find the userID
     $id = $_GET['id'];
     $user = getUser($id);
-
-    echo $user;
 ?>
 
     <body>
 
     
+    
         <div class="container">
+        
             <h1>Create/Change Password</h1>
 
             <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">

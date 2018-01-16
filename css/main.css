@@ -4,6 +4,10 @@
     /* Need to decide on universal design elements and put them here */
 }
 
+.createAccount {
+    margin-top: 7%;
+}
+
 #CreateAccount {
     text-align: left;
     max-width: 70%;
@@ -38,4 +42,11 @@
 #next {
     margin-left: 80%;
     margin-top: 2.5%;
+}
+#createPassword {
+    max-width: 60%;
+}
+
+.report {
+    margin-top: 5%;
 }
