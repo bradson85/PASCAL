@@ -6,28 +6,45 @@ $(document).ready(function() {
     defs = [];
     results = [];
     correct = [];
+    placement = [];
 
     // Dynamic system is not fully implemented, but it will be easy to implement soon.
     // It will be finished by the end of the sprint. All that needs to be done is get the starting level,
     // and calculate the min level and max level based on the starting level.
-    currLevel = 1;
-    minLevel = 1;
-    maxLevel = 1;
+    
     page = 1;
+    termCount = 0;
+    requiredTerms = 0;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
 
+    currLevel = getLevel();
+    minLevel = 0;
+    maxLevel = 0;
+
     // initializes the results array
     setResults();
+    
     // set up droppable areas that save the term that is dropped when an item is dropped
     // There are a couple known bugs with the drag and drop system.
-    // 1. Dragging an element to another area does not remove the previous set element
+    // 1. Dragging an element to another area does not remove the previous set element - fixed
     // 2. Multiple items are able to be dragged into a single drop location
     // 3. Next can be clicked without placing all of the terms.
     $('#drop1').droppable({
         drop: function(event, ui) {
             results[1].dropID = 'drop1';
             results[1].termID = ui.draggable.find('span').attr('id');
+            console.log("substr " + results[1].termID.substring(4,5));
+            if(placement[results[1].termID.substring(4,5)] !== "" && placement[results[1].termID.substring(4,5)] !== results[1].dropID){
+                console.log(results[1].termID.substring(4,5));
+                results[placement[results[1].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[1].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[1].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
             console.log(results);
         }
     });
@@ -37,6 +54,16 @@ $(document).ready(function() {
             results[2].dropID = 'drop2';
             results[2].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[2].termID.substring(4,5)] !== "" && placement[results[2].termID.substring(4,5)] !== results[2].dropID){
+                console.log(results[2].termID.substring(4,5));
+                results[placement[results[2].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[2].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[2].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
@@ -45,6 +72,16 @@ $(document).ready(function() {
             results[3].dropID = 'drop3';
             results[3].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[3].termID.substring(4,5)] !== "" && placement[results[3].termID.substring(4,5)] !== results[3].dropID){
+                console.log(results[3].termID.substring(4,5));
+                results[placement[results[3].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[3].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[3].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
@@ -53,6 +90,16 @@ $(document).ready(function() {
             results[4].dropID = 'drop4';
             results[4].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[4].termID.substring(4,5)] !== "" && placement[results[4].termID.substring(4,5)] !== results[4].dropID){
+                console.log(results[4].termID.substring(4,5));
+                results[placement[results[4].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[4].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[4].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
@@ -61,6 +108,16 @@ $(document).ready(function() {
             results[5].dropID = 'drop5';
             results[5].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[5].termID.substring(4,5)] !== "" && placement[results[5].termID.substring(4,5)] !== results[5].dropID){
+                console.log(results[5].termID.substring(4,5));
+                results[placement[results[5].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[5].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[5].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
@@ -69,6 +126,16 @@ $(document).ready(function() {
             results[6].dropID = 'drop6';
             results[6].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[6].termID.substring(4,5)] !== "" && placement[results[6].termID.substring(4,5)] !== results[6].dropID){
+                console.log(results[6].termID.substring(4,5));
+                results[placement[results[6].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[6].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[6].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
@@ -77,17 +144,33 @@ $(document).ready(function() {
             results[7].dropID = 'drop7';
             results[7].termID = ui.draggable.find('span').attr('id');
             console.log(results);
+            if(placement[results[7].termID.substring(4,5)] !== "" && placement[results[7].termID.substring(4,5)] !== results[7].dropID){
+                console.log(results[7].termID.substring(4,5));
+                results[placement[results[7].termID.substring(4,5)].substring(4,5)].dropID = "";
+                results[placement[results[7].termID.substring(4,5)].substring(4,5)].termID = "";
+                placement[results[7].termID.substring(4,5)] = results[1].dropID;
+                termCount--;
+            }
+            else {
+                termCount++;
+            }
         }
     });
 
 
     $('#next').click(function() {
         console.log('Next was clicked');
+        if(termCount < requiredTerms) {
+            //error message 
+            return;
+        }
+        termCount = 0;
         page++;
         let correct = checkResults();
 
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
+        // Note: May change this to be configurable based on feedback.
         if(correct == 5){
             if(currLevel < maxLevel)
                 currLevel++;
@@ -121,12 +204,14 @@ $(document).ready(function() {
         success: function(response){
             console.log(response);
             console.log(response[0]['name']);
+            console.log("curr level: " + currLevel); 
             getTerms(response);
             console.log(terms);
             //randomize(terms);
             getDefs(response);
             //randomize(defs);
             displayItems(page);
+             
         },
         error: function(){
             console.log("Error!");
@@ -164,11 +249,19 @@ $(document).ready(function() {
     function setResults() {
         for(let i = 1; i <= 7; i++){
             results[i] = {dropID: '', termID: ''}
+            placement[i] = "";
         }
     }
     // set terms in the terms array for each level
     function getTerms(array) {
+        console.log("in getTerms\n");
+        // min level not being calculated properly, need to investigate.
+        console.log("min level in getTerms: " + minLevel);
+        console.log("But currLevel - 1 is: " + (currLevel - 1));
         let curr = 0;
+        for(let i = 0; i < minLevel; i++) {
+            terms[i] = [];
+        }
         for(let i = minLevel; i <= maxLevel; i++){
             terms[i] = [];
             curr = 0;
@@ -178,10 +271,32 @@ $(document).ready(function() {
                     terms[i][curr]['name'] = array[j]['name'];
                     terms[i][curr]['id'] = array[j]['ID'];
                     curr++;
-                }
-                    
+                }           
             }
         }
+        console.log(terms);
+    }
+
+    function getLevel() {
+        let retVal = 0;
+        $.ajax({
+            type: "POST",
+            url: "php/inc.assessment.php",
+            dataType: "json",
+            data: {
+                student: studentID 
+            },
+            success: function(response) {
+                console.log(response);
+                currLevel = (parseInt(response[0].gradeLevel));
+                minLevel = currLevel - 1;
+                maxLevel = currLevel + 1;
+            },
+            error: function(response) {
+                console.log("ERROR!: " + response);
+            }
+        });
+        
     }
     // set definitions in the definitions array for each level
     function getDefs(array) {
@@ -215,7 +330,7 @@ $(document).ready(function() {
     // Currently it will only accept the exact number of terms and definitions
     // specified in the project specifcation, though that could be changed.
     function displayItems(n) {
-        console.log(terms[1]);
+        console.log(terms);
         let randDefs = [];
         for(let i = 5*(n-1); i < 5*n; i++) {
             termID = 'term' + ((i+1) - (5 * (n - 1)));
@@ -228,7 +343,7 @@ $(document).ready(function() {
         randDefs[5] = defs[currLevel][20 + ((n*2) - 2)]['name'];
         randDefs[6] = defs[currLevel][20 + (n*2) - 1]['name'];
         randDefs = randomize(randDefs);
-
+        console.log("rand defs: " + randDefs);
         for(let i = 0; i < 7; i++) {
             defID = 'def' + (i+1);
             console.log(defID);

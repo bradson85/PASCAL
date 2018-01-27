@@ -2,7 +2,7 @@
     include ('inc.functions.php');
     $assessID = $studentID = $results = "";
     // check for different post values to determine what is being sent.
-    if(isset($_POST['student']))
+    if(isset($_POST['student']) && isset($_POST['id']))
     {
         $studentID = $_POST['student'];
         $assessID = $_POST['id'];
@@ -27,6 +27,18 @@
         $data = pdo_query($pdo, $sql);
         $pdo = null;
         echo json_encode($data->fetchAll());
+    }
+    else if(isset($_POST['student']))
+    {
+        $studentID = $_POST['student'];
+
+        $pdo = pdo_construct();
+
+        $sql = "SELECT c.gradeLevel FROM classes as c, students as s WHERE s.classID = c.ID AND s.ID = $studentID";
+        $data = pdo_query($pdo, $sql);
+        $pdo = null;
+        echo json_encode($data->fetchAll());
+
     }
     // submits the results of the assessment to the server
     function submitResults($results, $studentID, $assessID){
