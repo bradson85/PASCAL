@@ -65,27 +65,6 @@ include "sidebar-header.php"
   ?>
 
 <!-- END of Alert box stufff-->
-<!-- File Import/Export stuff-->
-
-      <div class="row">
-  <div class="col-sm-6">
-  <form method="POST" action="php/inc-addcategories-importFile.php" enctype="multipart/form-data" id="fileForm">
-  <div class="form-group">
-  <label for="InputFile">Import CSV</label>
-  <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Category, Level.</small>
-  <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
-  </div>
-  </form>
-</div>
-  <div class="col-sm-6"><label >Export CSV</label><br><br>
-  <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
-  <a href="/php/inc-addcategories-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
-  
-  </div>
-  
-</div>
-<!--  End of File Import/Export stuff-->
       <!--  Table Part-->
         <div class="table-responsive">
           <H2> Categories</H2>
