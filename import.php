@@ -29,7 +29,7 @@ include "sidebar-header.php"
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Category, Level.</small>
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Term, Definition, (Origin), Grade Level, Category.</small>
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
   </form>

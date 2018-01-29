@@ -4,7 +4,7 @@
 session_start();
 ?>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#">Formative Assessment</a>
+    <a class="navbar-brand" href="#">PASCAL</a>
     <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
       aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -26,7 +26,7 @@ session_start();
       </ul>
       <ul class="nav navbar-nav navbar-right">
       <li class="nav-item customlink">
-      <a class="nav-link" href="#">&#128274 &nbsp Logout</a>
+      <a class="nav-link" href="index.php">&#128274 &nbsp Logout</a>
       <li class="nav-item">
           <a class="nav-link" href="#">&#128100  &nbsp <?php print_r($_SESSION['user']); ?></a>
     </ul>

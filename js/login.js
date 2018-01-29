@@ -30,8 +30,7 @@ function getLogin(){
 
 
 function validateLogin(){
-console.log($("#email").val());
-console.log( $("#pwd").val());
+
   $.ajax({ 
         type: "POST",
         url: "/php/inc-login.php",
@@ -41,12 +40,18 @@ console.log( $("#pwd").val());
             submit: "true"
         },
         success: function (data) {
-        if(data == "1"){
+            console.log(data);
+      /*  if(data == 1){
         window.location = "dashboard.php";
-        }else {
+        }else  if(data == 2){
+            window.location = "assessment.php?id=1&student=1";
+            }else if(data == 3){
+                window.location = "#";
+                }else{
            $('#mainarea').html(data);
            }
-           
+            
+           */
         }
     });
     }
