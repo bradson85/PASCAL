@@ -1,6 +1,12 @@
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
+    $('.countdown').hide();
+
+    //var msg = new SpeechSynthesisUtterance('Test message :)');
+    //speechSynthesis.speak(msg);
+
+    $('#directions').modal('show');
 
     terms = [];
     defs = [];
@@ -157,6 +163,10 @@ $(document).ready(function() {
         }
     });
 
+    $('#closeDirections').click(function() {
+        timer();
+    });
+
 
     $('#next').click(function() {
         console.log('Next was clicked');
@@ -217,27 +227,30 @@ $(document).ready(function() {
             console.log("Error!");
         }
     });
-
-    // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
-    // Original author: AJ
-    var timer2 = "10:01";
-    var interval = setInterval(function() {
-        var timer = timer2.split(':');
-        //by parsing integer, I avoid all extra string processing
-        var minutes = parseInt(timer[0], 10);
-        var seconds = parseInt(timer[1], 10);
-        --seconds;
-        minutes = (seconds < 0) ? --minutes : minutes;
-        if (minutes < 1 && seconds == 0) {
-            clearInterval(interval);
-            
-        }
-        seconds = (seconds < 0) ? 59 : seconds;
-        seconds = (seconds < 10) ? '0' + seconds : seconds;
-        //minutes = (minutes < 10) ?  minutes : minutes;
-        $('.countdown').html(minutes + ':' + seconds);
-        timer2 = minutes + ':' + seconds;
-    }, 1000);
+    function timer() {
+        $('.countdown').show();
+        // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
+        // Original author: AJ
+        var timer2 = "10:01";
+        var interval = setInterval(function() {
+            var timer = timer2.split(':');
+            //by parsing integer, I avoid all extra string processing
+            var minutes = parseInt(timer[0], 10);
+            var seconds = parseInt(timer[1], 10);
+            --seconds;
+            minutes = (seconds < 0) ? --minutes : minutes;
+            if (minutes < 1 && seconds == 0) {
+                clearInterval(interval);
+                // end the assessment if time limit is reached
+            }
+            seconds = (seconds < 0) ? 59 : seconds;
+            seconds = (seconds < 10) ? '0' + seconds : seconds;
+            //minutes = (minutes < 10) ?  minutes : minutes;
+            $('.countdown').html(minutes + ':' + seconds);
+            timer2 = minutes + ':' + seconds;
+        }, 1000);
+    }
+    
     // This should be used when creating the assessment to randomize which words are tested.
     // This function randomizes the set of terms, then chooses the first n terms for matching,
     // with remaining terms used for the extra definitions.

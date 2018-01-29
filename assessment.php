@@ -11,8 +11,30 @@
 
     <body>
         <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
+        
+        <div class="modal" tabindex="-1" role="dialog" id="directions">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Directions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Now you will match some terms and definitions about science. When the next screen appears, please match the words on the left-hand side of the screen with their definitions. Click on the word and drag it to the space next to the correct definition. Please match as many words and definitions as you can. If you want a word read to you – you can click on the speaker next to it.</p>
+                    <p>There will always be 5 words and 7 definitions on the screen. So two definitions will not be used. When you match all the words on the screen to their correct definition please click the “next” button at the bottom of the screen.</p>
+                    <p>You will match terms and definitions for ten minutes. The computer will let you know when to stop. Just do your best! Ready?</p>
+                    <!-- <span class="oi oi-volume-high"></span> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="closeDirections">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
-        <div class="countdown"></div>
+        <div class="countdown text-right"></div>
             <div class="row">
                 <div class="left col-md-4">
                     <div class="card canDrag">
