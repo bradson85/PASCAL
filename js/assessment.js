@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.canDrag').draggable({revert: "invalid"});
+    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
 
     terms = [];
@@ -29,7 +29,7 @@ $(document).ready(function() {
     // There are a couple known bugs with the drag and drop system.
     // 1. Dragging an element to another area does not remove the previous set element - fixed
     // 2. Multiple items are able to be dragged into a single drop location
-    // 3. Next can be clicked without placing all of the terms.
+    // 3. Next can be clicked without placing all of the terms. - fixed
     $('#drop1').droppable({
         drop: function(event, ui) {
             results[1].dropID = 'drop1';
@@ -217,6 +217,27 @@ $(document).ready(function() {
             console.log("Error!");
         }
     });
+
+    // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
+    // Original author: AJ
+    var timer2 = "10:01";
+    var interval = setInterval(function() {
+        var timer = timer2.split(':');
+        //by parsing integer, I avoid all extra string processing
+        var minutes = parseInt(timer[0], 10);
+        var seconds = parseInt(timer[1], 10);
+        --seconds;
+        minutes = (seconds < 0) ? --minutes : minutes;
+        if (minutes < 1 && seconds == 0) {
+            clearInterval(interval);
+            
+        }
+        seconds = (seconds < 0) ? 59 : seconds;
+        seconds = (seconds < 10) ? '0' + seconds : seconds;
+        //minutes = (minutes < 10) ?  minutes : minutes;
+        $('.countdown').html(minutes + ':' + seconds);
+        timer2 = minutes + ':' + seconds;
+    }, 1000);
     // This should be used when creating the assessment to randomize which words are tested.
     // This function randomizes the set of terms, then chooses the first n terms for matching,
     // with remaining terms used for the extra definitions.

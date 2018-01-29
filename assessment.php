@@ -12,6 +12,7 @@
     <body>
         <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
         <div class="container">
+        <div class="countdown"></div>
             <div class="row">
                 <div class="left col-md-4">
                     <div class="card canDrag">
