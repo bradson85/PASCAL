@@ -26,7 +26,7 @@ include "sidebar-header.php"
   
   <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
-  <a href="/php/inc-addwords-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
+  <a href="/php/inc-export.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
   
   </div>
   

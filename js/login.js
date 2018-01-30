@@ -41,7 +41,7 @@ function validateLogin(){
         },
         success: function (data) {
             console.log(data);
-      /*  if(data == 1){
+        if(data == 1){
         window.location = "dashboard.php";
         }else  if(data == 2){
             window.location = "assessment.php?id=1&student=1";
@@ -51,7 +51,7 @@ function validateLogin(){
            $('#mainarea').html(data);
            }
             
-           */
+           s
         }
     });
     }
