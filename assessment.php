@@ -150,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" id="next">Next Page</button>
+                    <button class="btn btn-primary" id="next" disabled>Next Page</button>
                 </div> <!-- end col-->
             </div>
         </div>

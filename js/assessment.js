@@ -6,6 +6,10 @@ $(document).ready(function() {
     //var msg = new SpeechSynthesisUtterance('Test message :)');
     //speechSynthesis.speak(msg);
 
+    // Hide timer (not visible)
+    // San serif font ( Arial 16pt)
+    // Button color and clickability should change when all terms have been matched
+
     $('#directions').modal('show');
 
     terms = [];
@@ -20,7 +24,7 @@ $(document).ready(function() {
     
     page = 1;
     termCount = 0;
-    requiredTerms = 0;
+    requiredTerms = 5;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
 
@@ -33,133 +37,47 @@ $(document).ready(function() {
     
     // set up droppable areas that save the term that is dropped when an item is dropped
     // There are a couple known bugs with the drag and drop system.
-    // 1. Dragging an element to another area does not remove the previous set element - fixed
-    // 2. Multiple items are able to be dragged into a single drop location
-    // 3. Next can be clicked without placing all of the terms. - fixed
+    // 1. Multiple items are able to be dragged into a single drop location
     $('#drop1').droppable({
         drop: function(event, ui) {
-            results[1].dropID = 'drop1';
-            results[1].termID = ui.draggable.find('span').attr('id');
-            console.log("substr " + results[1].termID.substring(4,5));
-            if(placement[results[1].termID.substring(4,5)] !== "" && placement[results[1].termID.substring(4,5)] !== results[1].dropID){
-                console.log(results[1].termID.substring(4,5));
-                results[placement[results[1].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[1].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[1].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(1, ui.draggable.find('span').attr('id'));
             console.log(results);
         }
     });
 
     $('#drop2').droppable({
         drop: function(event, ui) {
-            results[2].dropID = 'drop2';
-            results[2].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[2].termID.substring(4,5)] !== "" && placement[results[2].termID.substring(4,5)] !== results[2].dropID){
-                console.log(results[2].termID.substring(4,5));
-                results[placement[results[2].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[2].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[2].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(2, ui.draggable.find('span').attr('id'));
         }
     });
 
     $('#drop3').droppable({
         drop: function(event, ui) {
-            results[3].dropID = 'drop3';
-            results[3].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[3].termID.substring(4,5)] !== "" && placement[results[3].termID.substring(4,5)] !== results[3].dropID){
-                console.log(results[3].termID.substring(4,5));
-                results[placement[results[3].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[3].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[3].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(3, ui.draggable.find('span').attr('id'));
         }
     });
 
     $('#drop4').droppable({
         drop: function(event, ui) {
-            results[4].dropID = 'drop4';
-            results[4].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[4].termID.substring(4,5)] !== "" && placement[results[4].termID.substring(4,5)] !== results[4].dropID){
-                console.log(results[4].termID.substring(4,5));
-                results[placement[results[4].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[4].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[4].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(4, ui.draggable.find('span').attr('id'));
         }
     });
 
     $('#drop5').droppable({
         drop: function(event, ui) {
-            results[5].dropID = 'drop5';
-            results[5].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[5].termID.substring(4,5)] !== "" && placement[results[5].termID.substring(4,5)] !== results[5].dropID){
-                console.log(results[5].termID.substring(4,5));
-                results[placement[results[5].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[5].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[5].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(5, ui.draggable.find('span').attr('id'));
         }
     });
 
     $('#drop6').droppable({
         drop: function(event, ui) {
-            results[6].dropID = 'drop6';
-            results[6].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[6].termID.substring(4,5)] !== "" && placement[results[6].termID.substring(4,5)] !== results[6].dropID){
-                console.log(results[6].termID.substring(4,5));
-                results[placement[results[6].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[6].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[6].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(6, ui.draggable.find('span').attr('id'));
         }
     });
 
     $('#drop7').droppable({
         drop: function(event, ui) {
-            results[7].dropID = 'drop7';
-            results[7].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-            if(placement[results[7].termID.substring(4,5)] !== "" && placement[results[7].termID.substring(4,5)] !== results[7].dropID){
-                console.log(results[7].termID.substring(4,5));
-                results[placement[results[7].termID.substring(4,5)].substring(4,5)].dropID = "";
-                results[placement[results[7].termID.substring(4,5)].substring(4,5)].termID = "";
-                placement[results[7].termID.substring(4,5)] = results[1].dropID;
-                termCount--;
-            }
-            else {
-                termCount++;
-            }
+            checkDrop(7, ui.draggable.find('span').attr('id'));
         }
     });
 
@@ -169,24 +87,24 @@ $(document).ready(function() {
 
 
     $('#next').click(function() {
-        console.log('Next was clicked');
+        console.log("Number of terms: " + termCount);
         if(termCount < requiredTerms) {
             //error message 
-            return;
+            //return;
         }
         termCount = 0;
         page++;
         let correct = checkResults();
-
+        console.log(terms[currLevel - 1]);
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
         // Note: May change this to be configurable based on feedback.
-        if(correct == 5){
-            if(currLevel < maxLevel)
+        if(correct === 5){
+            if(currLevel < maxLevel && terms[currLevel + 1].length > 0)
                 currLevel++;
         }
-        else if(correct == 0){
-            if(currLevel > minLevel )
+        else if(correct === 0){
+            if(currLevel > minLevel && terms[currLevel - 1].length > 0)
                 currLevel--;
         }
         // If the page is less than 5, reset the draggable elements and the results array.
@@ -195,6 +113,7 @@ $(document).ready(function() {
             displayItems(page);
             $('.canDrag').css({'top':'', 'left':''});
             setResults();
+            $('#next').attr('disabled', true);
         }
         else {
             // Go to results page
@@ -227,7 +146,19 @@ $(document).ready(function() {
             console.log("Error!");
         }
     });
+
+    function count(num) {
+        termCount += num;
+        if(termCount === requiredTerms) {
+            // update button color and clickability
+            console.log("I should update button now.");
+            $('#next').attr('disabled', false);
+        }
+
+    }
+
     function timer() {
+        // Timer should be hidden in final release.
         $('.countdown').show();
         // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
         // Original author: AJ
@@ -249,6 +180,26 @@ $(document).ready(function() {
             $('.countdown').html(minutes + ':' + seconds);
             timer2 = minutes + ':' + seconds;
         }, 1000);
+    }
+
+    function checkDrop(i, tID) {
+        let drop = "drop" + i;
+        results[i].dropID = drop;
+        results[i].termID = tID;
+        console.log("substr " + results[i].termID.substring(4,5));
+        console.log(placement);
+        console.log(results);
+        if(placement[results[i].termID.substring(4,5)] !== "" && placement[results[i].termID.substring(4,5)] !== results[i].dropID){
+            console.log(results[i].termID.substring(4,5));
+            results[placement[results[i].termID.substring(4,5)].substring(4,5)].dropID = "";
+            results[placement[results[i].termID.substring(4,5)].substring(4,5)].termID = "";
+            placement[results[i].termID.substring(4,5)] = results[i].dropID;
+            //count(-1);
+        }
+        else {
+            placement[results[i].termID.substring(4,5)] = results[i].dropID;
+            count(1);
+        }
     }
     
     // This should be used when creating the assessment to randomize which words are tested.
