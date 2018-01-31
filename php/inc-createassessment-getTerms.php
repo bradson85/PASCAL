@@ -15,9 +15,9 @@
        // prepare sql and bind parameters
        // example query. updates if an update has happend INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
        $sql = $pdo->prepare("SELECT * FROM terms
-       WHERE ID = :ID");
-        $sql->bindParam(':ID', $value);
+       WHERE catID = :ID");
        $value= $catID;
+       $sql->bindParam(':ID', $value);
        $sql->execute();
        while(  $row = $sql->fetch(PDO::FETCH_ASSOC)){
         $word = $row['name'];

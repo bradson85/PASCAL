@@ -11,10 +11,9 @@ $(document).ready(function(){
                 data: {
                     data: catID       
                 },
-                        success: function (data) {
+                success: function (data) {
                     $('#t_body').html(data);
-                    $('.messages').show();
-                 
+                    $('.messages').show(); 
                 }
             });
         });
