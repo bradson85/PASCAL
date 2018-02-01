@@ -118,7 +118,7 @@ $(document).ready(function(){
             count++;
         }
         for(let i = 0; i < array[1].length; i++) {
-            assessArray[count] = {termID: array[0][i].ID, assesssmentID: formResponse, isMatch: 0};
+            assessArray[count] = {termID: array[0][i].ID, assessmentID: formResponse, isMatch: 0};
             count++;
         }
         console.log(assessArray);

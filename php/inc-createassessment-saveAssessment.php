@@ -34,7 +34,7 @@
     {
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $array = json_decode($_POST['assessData']);
+        $array = json_decode($_POST['assessData'], true);
         echo ($array[0]['termID']);
         $sql = "INSERT INTO assessmentquestions (termID, assessmentID, isMatch) VALUES";
         $termID = $isMatch = $assessmentID = "";
