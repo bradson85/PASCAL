@@ -109,7 +109,7 @@
           Choose the category of words to be choosen for a assessment.  
         </div>
         <div class="col">
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" id="submit">Submit</button>
         </div>
       </div>
       <!--  Table Part-->

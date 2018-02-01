@@ -1,0 +1,53 @@
+<?php
+    include('inc-createassessment-getTerms.php');
+
+    if(isset($_POST['catID']) && isset($_POST['classID']) && isset($_POST['startDate']))
+    {
+        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $catID = $_POST['catID'];
+        $startDate = $_POST['startDate'];
+        $classID = $_POST['classID'];
+
+        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ($startDate, $catID, $classID)";
+        $pdo->exec($sql);
+        $last_id = $pdo->lastInsertId();
+
+        echo $last_id;
+    }
+    else if(isset($_POST['catID']))
+    {
+        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $catID = $_POST['catID'];
+
+        $sql = "SELECT * FROM terms WHERE catID = $catID";
+
+        $result = $pdo->query($sql);
+
+        echo json_encode($result->fetchAll());
+
+    }
+    else if(isset($_POST['assessData']))
+    {
+        $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $array = json_decode($_POST['assessData']);
+        echo ($array[0]['termID']);
+        $sql = "INSERT INTO assessmentquestions (termID, assessmentID, isMatch) VALUES";
+    
+        for($i = 0; $i < sizeof($array); $i++)
+        {
+            //$sql .=  ", (" . $array[$i] . ", ". $array[$i] . ", " . $array[$i] . ")";
+        }
+        $sql .= ";";
+
+        echo $sql;
+        // $pdo->exec($sql);
+
+        
+    }
+
+?>
