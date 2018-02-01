@@ -104,14 +104,18 @@
 <!-- Start main html-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
       <H2> Create New Assessment</H2>
-      <div class="col-sm-8 col-centered" id="categorychoice">
-      Choose the category of words to be choosen for a assessment.
-           
-     </div>
+      <div class="row">
+        <div class="col" id="categorychoice">
+          Choose the category of words to be choosen for a assessment.  
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
       <!--  Table Part-->
-        <div class="table-responsive">
+        <!-- <div class="table-responsive">
           
-          <table id="word_table" class="table table-striped table-bordered">
+           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
                 <th></th>
@@ -137,8 +141,9 @@
             <button class = " btn btn-primary" id='addRow'>Add Assessment</button>
             <button class = " btn btn-primary" id="save">Save Assessment</button>
           </p>
-          </div>
-<br>
+          </div> -->
+<br />
+<br />
 <H2> List of Current Assessments</H2>
         <div class="table-responsive">
           
