@@ -1,9 +1,7 @@
 <?php
 session_start();
  require_once("../dbconfig.php");
- $admin = false;
- $student = false;
- $teacher = false;
+ 
 
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($_POST['submit'] == 'true'){
@@ -17,16 +15,13 @@ session_start();
  function login(){
    global $admin,$teacher,$student;
 	if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	
-		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && (checkLogin($_POST["email"],$_POST["psw"]))){
-        $_SESSION["user"] = $_POST["email"];
-        if($student == true){
-           echo "2";
-        }else if($admin == true){
-           echo "1";
-        }else if($teacher== true){
-          echo "3";
-        }
+      $checkLogin = checkLogin($_POST["email"],$_POST["psw"]);
+      $success = $checkLogin[0];
+      $accounttype = $checkLogin[1];
+		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && ($success)){
+       
+        $_SESSION["type"] = $accounttype;
+        echo $accounttype;
     }
 		else {
 				
@@ -83,54 +78,34 @@ function showLogin(){
  		
  function checkLogin($username, $password){
  $accept = false;
- global $admin, $teacher, $student;
+$type = 3;
   try {
         $pdo = new PDO(DB_CONNECTION_STRING,
         DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE,
         PDO::ERRMODE_EXCEPTION);
     // query to get all categries for drop down menu
-        $sql = "SELECT * FROM admins";
+        $sql = "SELECT * FROM accounts";
         $result = $pdo->query($sql);
         while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-             if( ($username == $row['email'] || $username= $row['name']) & $password == $row['password']){
-                   $accept = true;
-                  $admin = true; 
-                 $student = false;
-                 $teacher = false;
+             if( ($username == $row['email'] || $username == $row['name']) & $password == $row['password']){
+              $_SESSION["user"] = $row["name"]; 
+                  $accept = true;
+                   $type = $row['type'];
+                   
 		break;
              }    
-              }
-             $sql = "SELECT * FROM students";
-             $result = $pdo->query($sql);
-             while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-                  if( ($username == $ $username= $row['ID']) & $password == $row['password']){
-                        $accept = true;
-                         $admin = false; 
-                         $student = true;
-                         $teacher = false;
-         break;
-                  }  
-                  
-        }
-        $sql = "SELECT * FROM teachers";
-        $result = $pdo->query($sql);
-        while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-             if( ($username == $row['email'] || $username= $row['name']) & $password == $row['password']){
-                   $accept = true;
-                   $admin = false; 
-                    $student = false;
-                    $teacher = true;
-		break;
-             }  
-            }
-      
+            }    
       $pdo = null;
       } catch (PDOException $e) {
       die( $e->getMessage() );
       } 
      
-        return $accept;
+      $arr = array( 0 =>$accept,
+      1 => $type
+      );
+
+      return $arr;
       }  
  		
  	

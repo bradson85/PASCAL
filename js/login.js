@@ -17,16 +17,10 @@ function getLogin(){
             data: ""
         },
         success: function (data) {
-           $('#mainarea').html(data);
-           
-           
+           $('#mainarea').html(data);  
         }
     });
-
-
 }
-
-
 
 
 function validateLogin(){
@@ -40,18 +34,18 @@ function validateLogin(){
             submit: "true"
         },
         success: function (data) {
-            console.log(data);
-        if(data == 1){
+           
+        if(data == 0){
         window.location = "dashboard.php";
         }else  if(data == 2){
             window.location = "assessment.php?id=1&student=1";
-            }else if(data == 3){
-                window.location = "#";
+            }else if(data == 1){
+                window.location = "teacher-dashboard.php";
                 }else{
            $('#mainarea').html(data);
            }
             
-           s
+           
         }
     });
     }

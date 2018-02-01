@@ -25,7 +25,7 @@ include "sidebar-header.php"
 
 <div class="row">
   <div class="col-sm-6">
-  <form method="POST" action="php/inc-addwords-importFile.php" enctype="multipart/form-data" id="fileForm">
+  <form method="POST" action="php/inc-import.php" enctype="multipart/form-data" id="fileForm">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">

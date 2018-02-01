@@ -16,7 +16,8 @@
 <body>
 
 <!-- Add Nav Bar part-->
-<?php include "topbar-header.php"; 
+<?php 
+include "topbar-header.php"; 
   include "sidebar-header.php"
 ?>
 

@@ -1,6 +1,8 @@
 <?php
 // This file imports CSV file into database
 require_once("../dbconfig.php");
+include "inc-addwords-functions.php";
+
 if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploaded
 {
    
@@ -20,30 +22,41 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         while (($data = fgetcsv($file, 10000, ",")) !== FALSE) // retrive data from csv
         {
            // query to see if data exists
-     $sql = $pdo->prepare("SELECT name From schools WHERE name = :name");
+     $sql = $pdo->prepare("SELECT categories.name From categories WHERE name = :name AND :gradeLevel AND :schoolID");
      $sql->bindParam(':name', $name);
-     
-        $name = trim($data[0]," ");;
+     $sql->bindParam(':gradeLevel', $gradeLevel);
+     $sql->bindParam(':schoolID', $schoolID);
+     $name = trim($data[0]," ");
+     $gradeLevel = trim($data[1]," ");
+     $schoolID = trim($data[2]," ");
          $sql->execute();
          $row = $sql->fetch(PDO::FETCH_ASSOC) ;
            if(!$row) { // no data exists then insert
     
            
-            $sql = $pdo->prepare("INSERT INTO schools (name)
-             Values (:name)");
+            $sql = $pdo->prepare("INSERT INTO classes (name, gradeLevel, schoolID)
+             Values (:name, gradeLevel, :schoolID)");
             $sql->bindParam(':name', $name);
+            $sql->bindParam(':gradeLevel', $gradeLevel);
+            $sql->bindParam(':schoolID', $schoolID);
             $name = trim($data[0]," ");
+            $gradeLevel = trim($data[1]," ");
+            $schoolID = trim($data[2]," ");
            $sql->execute();
           
                 
            }
             else{ // if data exists then update
                
-               $sql = $pdo->prepare("UPDATE schools SET name = :name WHERE name = :name");
-
+               $sql = $pdo->prepare("UPDATE schools SET name = :name, gradeLevel = :gradeLevel, schoolID = :schoolID
+                 WHERE name = :name AND gradeLevel = :gradeLevel AND schoolID = :schoolID");
                 $sql->bindParam(':name', $name);
+                $sql->bindParam(':gradeLevel', $gradeLevel);
+                $sql->bindParam(':schoolID', $schoolID);
               
-               $name = trim($data[0]," ");
+                $name = trim($data[0]," ");
+                $gradeLevel = trim($data[1]," ");
+                $schoolID = trim($data[2]," ");
                $sql->execute();
     
                
@@ -55,7 +68,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         {
             // use "fal" in get for fail 
         $error = "Error: " . $e->getMessage();
-        header("Location: ../add_editschools.php?fal=$error");
+        header("Location: ../add_editclasses.php?fal=$error");
         }
     $pdo = null;
 
@@ -63,13 +76,13 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
          // this redirects back to add words page with a message in the get
          // use "imp" in get for fail
         $success = "CSV import success" ;
-        header("Location: ../add_editschools.php?imp=$success");
+        header("Location: ../add_editclasses.php?imp=$success");
     }
     else {
          // this redirects back to add words page with a message in the get
          // use "fal" in get for fail 
         $error=  "Error: No csv found";
-        header("Location: ../add_editschools.php?fal=$error");
+        header("Location: ../add_editclasses.php?fal=$error");
     }
     }
     ?>
