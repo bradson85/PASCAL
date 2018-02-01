@@ -37,15 +37,17 @@
         $array = json_decode($_POST['assessData']);
         echo ($array[0]['termID']);
         $sql = "INSERT INTO assessmentquestions (termID, assessmentID, isMatch) VALUES";
-    
-        for($i = 0; $i < sizeof($array); $i++)
-        {
-            //$sql .=  ", (" . $array[$i] . ", ". $array[$i] . ", " . $array[$i] . ")";
+        $termID = $isMatch = $assessmentID = "";
+        foreach($array as $value){
+            $termID = $value['termID'];
+            $isMatch = $value['isMatch'];
+            $assessmentID = $value['assessmentID'];
+            $sql .= "($termID, $assessmentID, $isMatch), ";
         }
+        $sql = substr($sql, 0, -2);
         $sql .= ";";
-
         echo $sql;
-        // $pdo->exec($sql);
+        $pdo->exec($sql);
 
         
     }
