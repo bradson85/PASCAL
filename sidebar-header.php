@@ -44,14 +44,15 @@
       </ul>
 
       <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <a class="nav-link" href="deleteAccounts.php">Delete Accounts</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Another nav item</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link" href="#">Another nav item</a>
-        </li>
+      <li class="nav-item">
+      <a class="nav-link" href="create-account.php">Create Accounts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="deleteAccounts.php">Delete Accounts</a>
+    </li>
+    
+      <li class="nav-item">
+      <a class="nav-link" href="#">Another nav item</a>
+    </li>
       </ul>
       </nav>

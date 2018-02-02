@@ -14,6 +14,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
     {
       $file = fopen($_FILES["InputFile"]["tmp_name"], "r"); // get it from temp folder
      $flag = true;
+     
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
         DB_USER, DB_PWD);
@@ -24,30 +25,30 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
             if($flag){
                 $flag = false;
             }else {
+                
+                
+
            // query to see if  category data exists
-     $sql = $pdo->prepare("SELECT name, level
-                           FROM categories 
+   $sql = $pdo->prepare("SELECT name, level FROM categories 
                             WHERE name = :category AND level = :gradeLevel");
      $sql->bindParam(':gradeLevel', $gradeLevel);
-     $sql->bindParam(':category', $category);
+     $sql->bindParam  (':category', $category);
      $gradeLevel = trim($data[3]," ");
-     $category = trim($data[4]," ");
-         $sql->execute();
+    $category = trim($data[4]," ");
+     $sql->execute();
          $row = $sql->fetch(PDO::FETCH_ASSOC) ;
            if(!$row) { // no data exists then insert
-    
            
-            $sql = $pdo->prepare("INSERT INTO categories (name, gradeLevel)
+            $sql = $pdo->prepare("INSERT IGNORE INTO categories (name, level)
              Values (:name, :gradeLevel)");
-            $sql->bindParam(':name', $name);
+            $sql->bindParam(':name', $category);
             $sql->bindParam(':gradeLevel', $gradeLevel);
-            $name = trim($data[4]," ");
             $gradeLevel = trim($data[3]," ");
-           $sql->execute();
+            $category = trim($data[4]," ");
+            $sql->execute();
           
                 
-           }
-            else{ // if data exists then do nothing
+           } else{ // if data exists then do nothing
                    
             }
 
@@ -56,25 +57,25 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
      $sql = $pdo->prepare("SELECT definition FROM terms 
       WHERE definition = :def");
     $sql->bindParam(':def', $def);
-$def= trim($data[1]," ");
+    $def= trim($data[1]," ");
 $sql->execute();
 $row = $sql->fetch(PDO::FETCH_ASSOC) ;
 if(!$row) { // no data exists then insert
 
-$sql = $pdo->prepare("INSERT INTO terms (name, definition, catID)
+$sql = $pdo->prepare("INSERT IGNORE INTO terms (name, definition, catID)
 Values (:name, :def, :catID)");
-$sql->bindParam(':name', $name);
+$sql->bindParam(':name', $term);
 $sql->bindParam(':def', $def);
 $sql->bindParam(':catID', $catID);
-$name = trim($data[0]," ");
-$def = trim($data[1]," ");
-$def = trim(matchCatID(trim($data[4]," "),trim($data[3]," ")),"");
+$catID = trim(matchCatID(trim($data[4]," "),trim($data[3]," ")),"");
+                $term =  trim($data[0]," ");
+                
 $sql->execute();
 
 
 }
 else{ // if data exists then do nothing
-    echo "here";
+   
 }
      }
     }
@@ -89,7 +90,7 @@ else{ // if data exists then do nothing
 
         fclose($file); // close file
          // this redirects back to add words page with a message in the get
-         // use "imp" in get for fail
+         // use "imp" in get for succes
         $success = "CSV import success" ;
         header("Location: ../import.php?imp=$success");
     }

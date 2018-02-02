@@ -30,7 +30,7 @@ try {
      <td contenteditable= 'true'> $name </td>  
       <td contenteditable= 'true'>$gradeLevel</td>
       <td>
-      <select class='form-control' id='selschool'><<option value = \"0\"> --Select Category/Level--</option> $schools
+      <select class='form-control' id='selschool'><<option value = \"0\"> --Select School--</option> $schools
      </select></td> 
        <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>" ; // html stuff
 
