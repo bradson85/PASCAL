@@ -112,36 +112,6 @@
           <button type="submit" class="btn btn-primary" id="submit">Submit</button>
         </div>
       </div>
-      <!--  Table Part-->
-        <!-- <div class="table-responsive">
-          
-           <table id="word_table" class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Word</th>
-                <th>Definition</th>
-              </tr>
-            </thead>
-            <tbody id = "t_body"></tbody>
-          </table>
-                   <div class= "messages" id="instructions"></div>
-          <div class="table-responsive">
-          <table id="assessment_table" class="table table-striped table-bordered">
-            <tr>
-            <th>Assessment ID</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Category and Level</th>
-            </tr>
-            <tr><td>Test</td></tr>
-          </table>
-          
-          <p class="Buttons">
-            <button class = " btn btn-primary" id='addRow'>Add Assessment</button>
-            <button class = " btn btn-primary" id="save">Save Assessment</button>
-          </p>
-          </div> -->
 <br />
 <br />
 <H2> List of Current Assessments</H2>
