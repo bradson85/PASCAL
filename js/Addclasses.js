@@ -56,7 +56,7 @@ $(document).ready(function () {
         event.preventDefault();
         $.get('php/inc-addclasses-getclassselected.php', function (data) {
             $schoolsel = data;
-            var rows = $('<tr><td>0</td>' +
+            var rows = $('<tr><td style=\'display:none;\'>0</td>' +
                 '<td contenteditable= "true">Enter A Class Name</td>' // class name
                 +
                 '<td contenteditable= "true">Enter Grade Level</td>' /// for level

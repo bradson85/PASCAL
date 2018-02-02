@@ -56,7 +56,7 @@ $(document).ready(function () {
     $('#addRow').click(function (event) {
         event.preventDefault();
 
-        var rows = $('<tr><td>0</td>' +
+        var rows = $('<tr><td style="display:none;">0</td>' +
             '<td contenteditable= "true">Enter A New Category</td>' // term name
             +
             '<td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>' /// for level

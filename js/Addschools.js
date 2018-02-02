@@ -21,7 +21,7 @@ $(document).ready(function () {
     // generates a new row with 0 as id database generates new id.
     $('#addRow').click(function (event) {
         event.preventDefault();
-        var rows = $('<tr><td>0</td><td contenteditable= "true">Enter A New School Name</td>' // term name
+        var rows = $('<tr><td style="display:none;">0</td>><td contenteditable= "true">Enter A New School Name</td>' // term name
         +
         '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
     $('#word_table').append(rows);
