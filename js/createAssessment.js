@@ -1,12 +1,6 @@
 $(document).ready(function(){
     
     $('.messages').hide();
-    
-
-    
-
-
-
     $(document).on("change", "select",function(){
         var catID = $(this).val();
         console.log(catID);
