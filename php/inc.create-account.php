@@ -12,6 +12,8 @@
         $accountType = $_POST['accountType'];
         //echo "$accountType";
         //echo "$school";
+
+        // clean any user inputted data
         clean_data($name);
         clean_data($email);
         $returnMsg = "true";
@@ -27,17 +29,18 @@
         echo $returnMsg;
     }
 
-    //inserts items to database
+    // inserts items to database
     function insert_to_db($name, $email, $accountType, $school, $class)
     {
         // do db processing
         if($name == "" || $name == null || ($email == "" && !strcmp($accountType, "Student")) || ($email == null && !strcmp($accountType, "Student")) || $accountType == "")
            return false;
+        // for anything other than student accounts, validate email using php validation
         if(!strcmp($accountType, "Student"))
             if(!filter_var($email, FILTER_VALIDATE_EMAIL))
                 return false;
+        // gets the class ID
         $pdo = pdo_construct();
-
         $sql = "SELECT classes.ID FROM classes, schools WHERE classes.name = '$class' AND schools.ID = classes.schoolID AND schools.name = '$school'";
         $result = $pdo->query($sql);
 
@@ -53,23 +56,21 @@
             $sql = "INSERT INTO admins (name, email) VALUES ('$name', '$email')";
             //echo 'Ready to insert into admins';
         }
-           
-
         elseif(strcmp($accountType, "Teacher") == 0)
         {
             $sql = "INSERT INTO teachers (name, email, classID) VALUES ('$name', '$email', $classID)";
-        }
-            
+        }   
         elseif(strcmp($accountType, "Student") == 0) 
         {
             $sql = "INSERT INTO students (classID) VALUES ($classID)";
         }
-
-        
             
         $pdo->exec($sql);
         $pdo = null;
 
+        // set up the email and database insertion to create a password.
+        // once an account is created, a unique random ID is generated
+        // and stored in database. when user clicks link in email, they can set up password
         if($email != "" && $email != null)
         {
             $guid = uniqid();
@@ -83,9 +84,10 @@
 
             $result = pdo_exec($pdo, $sql);
 
+            // sends email to user
             if($result)
             {
-                $to = "bpshelton01@gmail.com";
+                $to = $email;
                 $subject = "Create Your Password";
                 $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: localhost/form-assess/create-password.php?id=$guid";
                 $headers = "FROM: Formative Assessment <formassess-no-reply@siue.edu>";
@@ -106,10 +108,7 @@
             $name = $row['name'];
             echo "<option>$name</option>";
         }
-
-        //echo "<option>Test</option>";
     }
-
     return;
 
 ?>

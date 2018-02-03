@@ -12,22 +12,17 @@ $(document).ready(function() {
 
     $('#directions').modal('show');
 
+    // Set up global variables
     terms = [];
     defs = [];
     results = [];
     correct = [];
     placement = [];
-
-    // Dynamic system is not fully implemented, but it will be easy to implement soon.
-    // It will be finished by the end of the sprint. All that needs to be done is get the starting level,
-    // and calculate the min level and max level based on the starting level.
-    
     page = 1;
     termCount = 0;
     requiredTerms = 5;
     assessmentID = document.getElementById('assessmentID').innerText;
     studentID = document.getElementById('student').innerText;
-
     currLevel = getLevel();
     minLevel = 0;
     maxLevel = 0;
@@ -35,46 +30,39 @@ $(document).ready(function() {
     // initializes the results array
     setResults();
     
-    // set up droppable areas that save the term that is dropped when an item is dropped
-    // There are a couple known bugs with the drag and drop system.
-    // 1. Multiple items are able to be dragged into a single drop location
+    // Set up droppable areas that save the term that is dropped when an item is dropped
+    // TODO: Make only one card able to be dropped in a drop location at a time
     $('#drop1').droppable({
         drop: function(event, ui) {
             checkDrop(1, ui.draggable.find('span').attr('id'));
             console.log(results);
         }
     });
-
     $('#drop2').droppable({
         drop: function(event, ui) {
             checkDrop(2, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop3').droppable({
         drop: function(event, ui) {
             checkDrop(3, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop4').droppable({
         drop: function(event, ui) {
             checkDrop(4, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop5').droppable({
         drop: function(event, ui) {
             checkDrop(5, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop6').droppable({
         drop: function(event, ui) {
             checkDrop(6, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop7').droppable({
         drop: function(event, ui) {
             checkDrop(7, ui.draggable.find('span').attr('id'));
