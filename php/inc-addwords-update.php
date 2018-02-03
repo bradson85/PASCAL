@@ -32,9 +32,9 @@ try {
             if($row){
                //do nothing
             } else{
-        $splitString = explode(' ',$TableData[$i]['category']); // splits the category and level from tables
-        $category =  $splitString[0];                          // category is first of the split string
-        $level = $splitString[1];                              // level is second of split screen
+        $data = $TableData[$i]['category'];
+        $level =  substr($data, -1);                        // category is first of the split string
+        $category = substr($data, 0, -2);                              // level is second of split screen
       
         if($category == "0"){    // if category isnt selected
            $success= 0;
@@ -48,8 +48,8 @@ try {
        $sql->bindParam(':catID', $catID); 
         $word = trim($TableData[$i]['word']," ");            // Trim To get rid of whitespace at begining and end
         $def = trim($TableData[$i]['definition']," ");      // caused by html.
-        $category =  trim($splitString[0]," ");
-        $level = trim($splitString[1]," ");
+        $category =  trim($category," ");
+        $level = trim($level," ");
         $catID = trim(matchCatID($category, $level)," ");
        $sql->execute();
          
@@ -57,9 +57,9 @@ try {
        }
         else{// when there already exist and item in DB
             //update existing rows.
-            $splitString = explode(' ',$TableData[$i]['category']);
-            $category =  $splitString[0];
-            $level = $splitString[1];
+            $data = $TableData[$i]['category'];
+            $level =  substr($data, -1);                        // category is first of the split string
+            $category = substr($data, 0, -2);   
 
             if($category == "0"){  //category not selected
                 $success = 0;
@@ -73,8 +73,8 @@ try {
            $ID2 = trim($TableData[$i]['ID']," ");
             $word = trim($TableData[$i]['word']," ");        //Trim to clean up leading and trailing whitespace.
             $def = trim($TableData[$i]['definition']," ");
-            $category = trim( $splitString[0]," ");
-            $level = trim($splitString[1]," ");
+            $category = trim( $category," ");
+            $level = trim($level," ");
             $catID = trim(matchCatID($category, $level)," ");
            $sql->execute();           
             }

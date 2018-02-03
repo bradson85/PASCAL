@@ -21,9 +21,6 @@ include "topbar-header.php";
   include "sidebar-header.php"
 ?>
 
-
-
-
 <!-- Start main html-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
 <!-- Alert boxes stuff-->
@@ -46,7 +43,6 @@ include "topbar-header.php";
 
 <!-- END of Alert box stufff-->
 
-
      <!--Sorting Stuff-->
      <div class="table-responsive">
      <H2> Words and Defintions</H2>
@@ -68,8 +64,8 @@ include "topbar-header.php";
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Words</button>
-            <button class = " btn btn-primary" id="save">Save Changes</button>
+            <button class = "btn btn-primary" id="addRow">Add Words</button>
+            <button class = "btn btn-primary" id="save">Save Changes</button>
           </p>
         </div>
       </main>

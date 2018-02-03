@@ -10,9 +10,8 @@
         $categories = getCategories();
        getallwords( $categories);
       }else{
-      $data = explode(' ',$data);
-      $level = $data[1];
-      $category =$data[0];
+      $level = substr($data, -1);
+      $category =substr($data, 0, -2);
       $categories = getCategories();
       getsomewords($category,$level,$categories);
   }
