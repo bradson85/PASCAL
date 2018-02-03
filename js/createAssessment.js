@@ -103,6 +103,9 @@ $(document).ready(function(){
                 array = pickTerms(response, 20, 8);
                 console.log(array);
                 submit(array, formResponse);
+            },
+            error: function(response) {
+                console.log(response);
             }
         });
 
@@ -153,9 +156,11 @@ $(document).ready(function(){
         for(let i = 0; i < numTerms; i++) {
             terms[i] = array[i];
         }
+        let count = 0;
         // Add the leftover terms to a new "extra" array for remaining definitions
-        for(let i = 0; i < numDefs; i++) {
-            extra[i] = array[i];
+        for(let i = numTerms; i < (numDefs + numTerms); i++) {
+            extra[count] = array[i];
+            count++;
         }
         // Store these arrays in an array for returning
         result[0] = terms;
