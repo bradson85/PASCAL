@@ -38,7 +38,7 @@ function validateLogin(){
         if(data == 0){
         window.location = "dashboard.php";
         }else  if(data == 2){
-            window.location = "assessment.php?id=1&student=1";
+            window.location = "assessment.php?id=37&student=1";
             }else if(data == 1){
                 window.location = "teacher-dashboard.php";
                 }else{
