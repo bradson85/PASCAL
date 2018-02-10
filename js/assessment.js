@@ -19,7 +19,7 @@ $(document).ready(function() {
     termCount = 0;
     requiredTerms = 5;
     assessmentID = document.getElementById('assessmentID').innerText;
-    studentID = document.getElementById('student').innerText;
+    // studentID = document.getElementById('student').innerText;
     currLevel = getLevel();
     minLevel = 0;
     maxLevel = 0;
@@ -256,12 +256,9 @@ $(document).ready(function() {
     function getLevel() {
         let retVal = 0;
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "php/inc.assessment.php",
             dataType: "json",
-            data: {
-                student: studentID 
-            },
             success: function(response) {
                 console.log(response);
                 currLevel = (parseInt(response[0].gradeLevel));
@@ -374,7 +371,7 @@ $(document).ready(function() {
                 numCorrect++;
         }   
 
-        $('.container').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
+        $('.container-fluid').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
     }
 
     function submitResults(){
@@ -383,7 +380,6 @@ $(document).ready(function() {
             type: "POST",
             url: "php/inc.assessment.php",
             data: {
-                student: studentID,
                 id: assessmentID,
                 results: JSON.stringify(correct)
             },

@@ -1,4 +1,9 @@
 <?php
+    if(!isset($_SESSION['email']))
+        session_start();
+    $_SESSION['email'] = "student@test.com";
+    $_SESSION['type'] = 2;
+
     $page_title = "Assessment";
     $css_path = "css/main.css";
 
@@ -6,11 +11,10 @@
     include ('php/inc.assessment.php');
 
     $id = $_GET['id'];
-    $student = $_GET['student'];
 ?>
 
     <body id="assessment">
-        <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p><p hidden name="student" id="student" value= "<?php echo $student; ?>"><?php echo "$student";?></p></span>
+        <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p></span>
         
         <div class="modal" tabindex="-1" role="dialog" id="directions">
             <div class="modal-dialog modal-lg" role="document">
