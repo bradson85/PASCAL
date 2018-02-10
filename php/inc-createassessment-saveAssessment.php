@@ -1,5 +1,6 @@
 <?php
     include('inc-createassessment-getTerms.php');
+    require_once('../dbconfig.php');
 
     if(isset($_POST['catID']) && isset($_POST['classID']) && isset($_POST['startDate']))
     {
@@ -49,7 +50,7 @@
         echo $sql;
         $pdo->exec($sql);
 
-        
+
     }
 
 ?>

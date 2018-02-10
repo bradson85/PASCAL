@@ -1,4 +1,3 @@
-
 <?php 
 session_start(); 
 if(isset($_SESSION['type']) ){
@@ -7,6 +6,5 @@ if(isset($_SESSION['type']) ){
   echo "Unauthorized access";
   header("location:index.php"); //to redirect back to "index.php" after logging out
   exit();
-}
-
+} 
 ?>

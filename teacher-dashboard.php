@@ -1,4 +1,3 @@
-
 <?php 
 session_start(); 
 if(isset($_SESSION['type']) ){
@@ -8,5 +7,4 @@ if(isset($_SESSION['type']) ){
   header("location:index.php"); //to redirect back to "index.php" after logging out
   exit();
 }
-
 ?>

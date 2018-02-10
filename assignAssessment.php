@@ -1,4 +1,6 @@
-<?php session_start();?>
+<?php session_start(); ?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -16,8 +18,7 @@
 <body>
 
 <!-- Add Nav Bar part-->
-<?php 
-include "topbar-header.php"; 
+<?php include "topbar-header.php"; 
   include "sidebar-header.php"
 ?>
 
@@ -46,35 +47,54 @@ include "topbar-header.php";
 
 <!-- END of Alert box stufff-->
 
-
      <!--Sorting Stuff-->
-     <div class="table-responsive">
-     <H2> Words and Defintions</H2>
-          <table id="sort_table" class="table table-bordered">
-            <tbody id = "sort_body"></tbody>
-          </table>
-        </div>
-      <!--  Table Part-->
-        <div class="table-responsive">
-          <table id="word_table" class="table table-striped table-bordered">
-            <thead>
+       <div class="table-responsive">
+        <H2> Assign An Assessment To A Student</H2>
+          <table id="selection_table" class="table table-bordered">
+          <thead>
               <tr>
-                <th>Category And Level</th>
-                <th>Word</th>
-                <th>Definition</th>
-                <th> &nbsp;</th>
+                <th>Assessment Choice</th>
+                <th>Student Assigned To</th>
+                <th>Email Address To Send To</th>
+                <th>Expiration Date</th>
               </tr>
             </thead>
-            <tbody id = "t_body"></tbody>
+            <tbody id = "sort_body">
+            <tr>  <?php  include "php/inc-assignAssessment-functions.php";  
+                         dbGetAssessments(); 
+                         dbGetStudents();               
+            ?> 
+           </tr>
+            </tbody>
           </table>
-          <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Words</button>
-            <button class = " btn btn-primary" id="save">Save Changes</button>
+       </div>
+       <p class="Buttons">
+            <button class = " btn btn-primary" id="assign">Assign Assessment</button>
           </p>
-        </div>
+
+       <div class="table-responsive">
+        <H2> Assessments Assigned To Students</H2>
+          <table id="assess_table" class="table table-bordered">
+          <thead>
+              <tr>
+                <th>Assessment Number</th>
+                 <th>Student Assigned To</th>
+                <th>Expiration Date</th>
+               
+              </tr>
+            </thead>
+            <tbody id = "t_body">
+              <?php  
+                      dbViewRecentAssessments();                 
+            ?>  
+           
+            </tbody>
+          </table>
+       </div>
+      <!--  Table Part-->
       </main>
-    </div>
-  </div>
+    
+  
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS Code from bootstrap site -->
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -83,7 +103,7 @@ include "topbar-header.php";
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
-   
+    <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
       document.write('<script src="/js/bootstrap.min.js"><\/script>')
@@ -100,7 +120,7 @@ include "topbar-header.php";
       }
     });
   </script>
-  <script src="/js/Addwords.js"></script>
+  <script src="/js/assignAssessment.js"></script>
 </body>
 
 </html>

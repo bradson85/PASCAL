@@ -1,14 +1,14 @@
 $(document).ready(function () {
-     loadSearch();
+    // loadSearch();
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
-   
-        
+    $(document).ready(function () {
+          loadSearch();
         setTimeout(
             function () {
                 loadDB();
-            }, 150);
+            }, 550);
         
-
+    });
 
     $(document).on("change", "#sort",function(){
         loadDB();
@@ -39,7 +39,7 @@ $(document).ready(function () {
     function loadDB() {
         var choice = $("#sort_body").find('td:eq(1)').find('select').val();
         console.log(choice);
-       $.ajax({ // readfrom database
+       $.ajax({ // delete from database
         type: "POST",
         url: "/php/inc-addwords-read.php",
         data: {
@@ -50,7 +50,7 @@ $(document).ready(function () {
             setTimeout(
                 function () {
                     updateSelected();
-                }, 450);
+                }, 250);
            
         }
     });
@@ -159,12 +159,12 @@ $(document).ready(function () {
         });
     });
     // saving new stuff to database by clicking save button of editable table
-    $("#save").on("click", function () {
-        
+    $(document).on("click", "#save", function () {
         var save = true;
+         
         // this iterates throught every value in the table and stores it in an array
         var TableData = new Array();
-        //first time throght retrns header so seting up count
+        //first time throght retrns header so set ing up count
         var count = 0
         $('#word_table tr').each(function (row, tr) {
             // if text fields are empty
@@ -177,9 +177,10 @@ $(document).ready(function () {
                     "category": $(tr).find('td:eq(1)').find('select').val(),
                     "word": $(tr).find('td:eq(2)').text(),
                     "definition": $(tr).find('td:eq(3)').text()
+                    
+                  
                 }
             }
-           
             count ++;
         });
         ///  if blank fields havent occurred

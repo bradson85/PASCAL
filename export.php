@@ -4,7 +4,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Export Data</title>
+  <title>Export CSV</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
     crossorigin="anonymous">
@@ -22,11 +22,11 @@ include "sidebar-header.php"
 <!-- Start main html-->
 <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
 <!-- File Export stuff-->
-
+<H1>Export CSV</H1>
 <div class="row">
-  
-  <div class="col-sm-6"><label >Export CSV</label><br><br>
-  <small id="downloadHelp" class="form-text text-muted">Click Download To Export Table to CSV</small>
+   
+  <div class="col-sm-6"><label >Export Word Data to CSV File </label><br><br>
+  <small id="downloadHelp" class="form-text text-muted">Click Download To Export to CSV</small>
   <a href="/php/inc-export.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
   
   </div>

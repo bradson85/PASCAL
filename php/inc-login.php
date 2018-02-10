@@ -89,8 +89,7 @@ $type = 3;
         $result = $pdo->query($sql);
         while($row = $result->fetch(PDO::FETCH_ASSOC) ){
              if( ($username == $row['email'] || $username == $row['name']) & $password == $row['password']){
-              $_SESSION["user"] = $row["name"];
-              $_SESSION["email"] =$row["email"]; 
+              $_SESSION["user"] = $row["name"]; 
                   $accept = true;
                    $type = $row['type'];
                    
