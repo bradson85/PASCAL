@@ -147,7 +147,7 @@ $(document).ready(function() {
 
     function timer() {
         // Timer should be hidden in final release.
-        $('.countdown').show();
+        // $('.countdown').show();
         // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
         // Original author: AJ
         var timer2 = "10:01";
