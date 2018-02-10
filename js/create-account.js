@@ -11,7 +11,7 @@ $(document).ready(function() {
             $('.invalid-feedback').hide();
             e.preventDefault();
             e.stopPropagation();
-
+            // Submits the account information to be processed
             $.ajax({
                 type: "POST",
                 url: "php/inc.create-account.php",
@@ -45,14 +45,11 @@ $(document).ready(function() {
         if(this.options[e.target.selectedIndex].text === "Teacher"){
             $('#school').removeAttr('disabled');
             $('#email').removeAttr('disabled');
-            
         }
-        
         else if(this.options[e.target.selectedIndex].text === "Student"){
             $('#school').removeAttr('disabled');
             $('#email').attr('disabled', 'disabled');
         }
-
         else if(this.options[e.target.selectedIndex].text === "Administrator"){
             $('#school').attr('disabled', 'disabled');
             $('#email').removeAttr('disabled');
@@ -61,14 +58,14 @@ $(document).ready(function() {
     
     
     $('#school').change(function() {
-        //if there are values previously added, remove the values
+        // if there are values previously added, remove the values
         if($('#class').val !== "")
             $('#class').empty();
-        //debug
-        console.log('index changed');
-        console.log(document.getElementById('school').value);
+        // debug
+        //console.log('index changed');
+        //console.log(document.getElementById('school').value);
 
-        //send ajax request to get the classes in a school
+        // send ajax request to get the classes in a school
         $.ajax({
             type: "POST",
             url: "php/inc.get-classes.php",
@@ -79,7 +76,7 @@ $(document).ready(function() {
             }
         });
     });
-    //add options to the 'class' select
+    // add options to the 'class' select
     function addOptions(result){
             var obj = JSON.parse(result);
             $('#class').removeAttr('disabled');
@@ -89,6 +86,6 @@ $(document).ready(function() {
             }, this);
             
             //debug
-            console.log("success");
+            //console.log("success");
     }
 });

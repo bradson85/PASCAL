@@ -1,17 +1,19 @@
 <?php
+    if(!isset($_SESSION['email']))
+        session_start();
     include ('inc.functions.php');
-    $assessID = $studentID = $results = "";
+    $assessID = $email = $results = "";
     // check for different post values to determine what is being sent.
-    if(isset($_POST['student']))
+    if(isset($_POST['id']) && isset($_POST['results']))
     {
-        $studentID = $_POST['student'];
+        $email = $_SESSION['email'];
         $assessID = $_POST['id'];
         $results = $_POST['results']; 
         echo $results;
         $results = json_decode($results, true);
         //echo $results[0]['id'];
         print_r($results);
-        submitResults($results, $studentID, $assessID);
+        submitResults($results, $email, $assessID);
     }
     else if(isset($_POST['id']))
     {
@@ -28,24 +30,39 @@
         $pdo = null;
         echo json_encode($data->fetchAll());
     }
-    // submits the results of the assessment to the server
-    function submitResults($results, $studentID, $assessID){
-        $termID = $correct = "not changed";
+    else if(isset($_SESSION['email']))
+    {
+        $email = $_SESSION['email'];
+
         $pdo = pdo_construct();
 
-        $sql = "INSERT INTO results (studentID, assessmentID, termID, correct) VALUES ";
+        $sql = "SELECT c.gradeLevel FROM classes as c, accounts as s, classlist as cl WHERE cl.classID = c.ID AND s.ID = cl.accountID AND s.email = '$email'";
+        $data = pdo_query($pdo, $sql);
+        $pdo = null;
+        echo json_encode($data->fetchAll());
+
+    }
+    // submits the results of the assessment to the server
+    function submitResults($results, $email, $assessID){
+        $termID = $matchID =  $correct = "";
+        $pdo = pdo_construct();
+        $sql = "SELECT ID from accounts WHERE email = '$email' AND type = 2";
+        $result = pdo_query($pdo, $sql);
+        $studentID = $result->fetch();
+
+        $pdo = null;
+        $pdo = pdo_construct();
+        $sql = $pdo->prepare("INSERT INTO results (studentID, assessmentID, termID, matchID, correct) VALUES ?, ?, ?, ?, ?");
+        $sql->bindParam(1, $email);
+        $sql->bindParam(2, $assessID);
+        $sql->bindParam(3, $termID);
+        $sql->bindParam(4, $matchID);
+        $sql->bindParam(5, $correct);
         foreach($results as $value){
             $termID = $value['id'];
             $correct = $value['correct'];
-            $sql .= "($studentID, $assessID, $termID, $correct), ";
+            $sql->execute();
         }
-        
-        $sql = substr($sql, 0, -2);
-        $sql .= ";";
-        echo $sql;
-        pdo_exec($pdo, $sql);
-        echo $sql;
-        echo "got em?";
         $pdo = null;
     }
 ?>

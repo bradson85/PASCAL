@@ -1,99 +1,101 @@
 $(document).ready(function() {
-    $('.canDrag').draggable({revert: "invalid"});
+    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
+    $('.countdown').hide();    
 
+    // Hide timer (not visible)
+    // San serif font ( Arial 16pt)
+    // Button color and clickability should change when all terms have been matched
+
+    $('#directions').modal('show');
+
+    // Set up global variables
     terms = [];
     defs = [];
     results = [];
     correct = [];
-
-    // Dynamic system is not fully implemented, but it will be easy to implement soon.
-    // It will be finished by the end of the sprint. All that needs to be done is get the starting level,
-    // and calculate the min level and max level based on the starting level.
-    currLevel = 1;
-    minLevel = 1;
-    maxLevel = 1;
+    placement = [];
     page = 1;
+    termCount = 0;
+    requiredTerms = 5;
     assessmentID = document.getElementById('assessmentID').innerText;
-    studentID = document.getElementById('student').innerText;
+    // studentID = document.getElementById('student').innerText;
+    currLevel = getLevel();
+    minLevel = 0;
+    maxLevel = 0;
 
     // initializes the results array
     setResults();
-    // set up droppable areas that save the term that is dropped when an item is dropped
-    // There are a couple known bugs with the drag and drop system.
-    // 1. Dragging an element to another area does not remove the previous set element
-    // 2. Multiple items are able to be dragged into a single drop location
-    // 3. Next can be clicked without placing all of the terms.
+    
+    // Set up droppable areas that save the term that is dropped when an item is dropped
+    // TODO: Make only one card able to be dropped in a drop location at a time
     $('#drop1').droppable({
         drop: function(event, ui) {
-            results[1].dropID = 'drop1';
-            results[1].termID = ui.draggable.find('span').attr('id');
+            checkDrop(1, ui.draggable.find('span').attr('id'));
             console.log(results);
         }
     });
-
     $('#drop2').droppable({
         drop: function(event, ui) {
-            results[2].dropID = 'drop2';
-            results[2].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
+            checkDrop(2, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop3').droppable({
         drop: function(event, ui) {
-            results[3].dropID = 'drop3';
-            results[3].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
+            checkDrop(3, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop4').droppable({
         drop: function(event, ui) {
-            results[4].dropID = 'drop4';
-            results[4].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
+            checkDrop(4, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop5').droppable({
         drop: function(event, ui) {
-            results[5].dropID = 'drop5';
-            results[5].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
+            checkDrop(5, ui.draggable.find('span').attr('id'));
         }
     });
-
     $('#drop6').droppable({
         drop: function(event, ui) {
-            results[6].dropID = 'drop6';
-            results[6].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
+            checkDrop(6, ui.draggable.find('span').attr('id'));
+        }
+    });
+    $('#drop7').droppable({
+        drop: function(event, ui) {
+            checkDrop(7, ui.draggable.find('span').attr('id'));
         }
     });
 
-    $('#drop7').droppable({
-        drop: function(event, ui) {
-            results[7].dropID = 'drop7';
-            results[7].termID = ui.draggable.find('span').attr('id');
-            console.log(results);
-        }
+    $('#closeDirections').click(function() {
+        timer();
+    });
+
+    $('.speak').click(function() {
+        console.log($(this).closest('div').find("span").text());
+        let msg = new SpeechSynthesisUtterance($(this).closest('div').find('span').text());
+        speechSynthesis.speak(msg);
     });
 
 
     $('#next').click(function() {
-        console.log('Next was clicked');
+        console.log("Number of terms: " + termCount);
+        if(termCount < requiredTerms) {
+            //error message 
+            //return;
+        }
+        termCount = 0;
         page++;
         let correct = checkResults();
-
+        console.log(terms[currLevel - 1]);
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
-        if(correct == 5){
-            if(currLevel < maxLevel)
+        // Note: May change this to be configurable based on feedback.
+        if(correct === 5){
+            if(currLevel < maxLevel && terms[currLevel + 1].length > 0)
                 currLevel++;
         }
-        else if(correct == 0){
-            if(currLevel > minLevel )
+        else if(correct === 0){
+            if(currLevel > minLevel && terms[currLevel - 1].length > 0)
                 currLevel--;
         }
         // If the page is less than 5, reset the draggable elements and the results array.
@@ -102,6 +104,7 @@ $(document).ready(function() {
             displayItems(page);
             $('.canDrag').css({'top':'', 'left':''});
             setResults();
+            $('#next').attr('disabled', true);
         }
         else {
             // Go to results page
@@ -121,17 +124,75 @@ $(document).ready(function() {
         success: function(response){
             console.log(response);
             console.log(response[0]['name']);
+            console.log("curr level: " + currLevel); 
             getTerms(response);
             console.log(terms);
             //randomize(terms);
             getDefs(response);
             //randomize(defs);
             displayItems(page);
+             
         },
         error: function(){
             console.log("Error!");
         }
     });
+
+    function count(num) {
+        termCount += num;
+        if(termCount === requiredTerms) {
+            // update button color and clickability
+            console.log("I should update button now.");
+            $('#next').attr('disabled', false);
+        }
+
+    }
+
+    function timer() {
+        // Timer should be hidden in final release.
+        // $('.countdown').show();
+        // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
+        // Original author: AJ
+        var timer2 = "10:01";
+        var interval = setInterval(function() {
+            var timer = timer2.split(':');
+            //by parsing integer, I avoid all extra string processing
+            var minutes = parseInt(timer[0], 10);
+            var seconds = parseInt(timer[1], 10);
+            --seconds;
+            minutes = (seconds < 0) ? --minutes : minutes;
+            if (minutes < 1 && seconds == 0) {
+                clearInterval(interval);
+                // end the assessment if time limit is reached
+            }
+            seconds = (seconds < 0) ? 59 : seconds;
+            seconds = (seconds < 10) ? '0' + seconds : seconds;
+            //minutes = (minutes < 10) ?  minutes : minutes;
+            $('.countdown').html(minutes + ':' + seconds);
+            timer2 = minutes + ':' + seconds;
+        }, 1000);
+    }
+
+    function checkDrop(i, tID) {
+        let drop = "drop" + i;
+        results[i].dropID = drop;
+        results[i].termID = tID;
+        console.log("substr " + results[i].termID.substring(4,5));
+        console.log(placement);
+        console.log(results);
+        if(placement[results[i].termID.substring(4,5)] !== "" && placement[results[i].termID.substring(4,5)] !== results[i].dropID){
+            console.log(results[i].termID.substring(4,5));
+            results[placement[results[i].termID.substring(4,5)].substring(4,5)].dropID = "";
+            results[placement[results[i].termID.substring(4,5)].substring(4,5)].termID = "";
+            placement[results[i].termID.substring(4,5)] = results[i].dropID;
+            //count(-1);
+        }
+        else {
+            placement[results[i].termID.substring(4,5)] = results[i].dropID;
+            count(1);
+        }
+    }
+    
     // This should be used when creating the assessment to randomize which words are tested.
     // This function randomizes the set of terms, then chooses the first n terms for matching,
     // with remaining terms used for the extra definitions.
@@ -164,11 +225,19 @@ $(document).ready(function() {
     function setResults() {
         for(let i = 1; i <= 7; i++){
             results[i] = {dropID: '', termID: ''}
+            placement[i] = "";
         }
     }
     // set terms in the terms array for each level
     function getTerms(array) {
+        console.log("in getTerms\n");
+        // min level not being calculated properly, need to investigate.
+        console.log("min level in getTerms: " + minLevel);
+        console.log("But currLevel - 1 is: " + (currLevel - 1));
         let curr = 0;
+        for(let i = 0; i < minLevel; i++) {
+            terms[i] = [];
+        }
         for(let i = minLevel; i <= maxLevel; i++){
             terms[i] = [];
             curr = 0;
@@ -178,10 +247,29 @@ $(document).ready(function() {
                     terms[i][curr]['name'] = array[j]['name'];
                     terms[i][curr]['id'] = array[j]['ID'];
                     curr++;
-                }
-                    
+                }           
             }
         }
+        console.log(terms);
+    }
+
+    function getLevel() {
+        let retVal = 0;
+        $.ajax({
+            type: "GET",
+            url: "php/inc.assessment.php",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+                currLevel = (parseInt(response[0].gradeLevel));
+                minLevel = currLevel - 1;
+                maxLevel = currLevel + 1;
+            },
+            error: function(response) {
+                console.log("ERROR!: " + response);
+            }
+        });
+        
     }
     // set definitions in the definitions array for each level
     function getDefs(array) {
@@ -215,7 +303,7 @@ $(document).ready(function() {
     // Currently it will only accept the exact number of terms and definitions
     // specified in the project specifcation, though that could be changed.
     function displayItems(n) {
-        console.log(terms[1]);
+        console.log(terms);
         let randDefs = [];
         for(let i = 5*(n-1); i < 5*n; i++) {
             termID = 'term' + ((i+1) - (5 * (n - 1)));
@@ -228,7 +316,7 @@ $(document).ready(function() {
         randDefs[5] = defs[currLevel][20 + ((n*2) - 2)]['name'];
         randDefs[6] = defs[currLevel][20 + (n*2) - 1]['name'];
         randDefs = randomize(randDefs);
-
+        console.log("rand defs: " + randDefs);
         for(let i = 0; i < 7; i++) {
             defID = 'def' + (i+1);
             console.log(defID);
@@ -283,7 +371,7 @@ $(document).ready(function() {
                 numCorrect++;
         }   
 
-        $('.container').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
+        $('.container-fluid').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
     }
 
     function submitResults(){
@@ -292,7 +380,6 @@ $(document).ready(function() {
             type: "POST",
             url: "php/inc.assessment.php",
             data: {
-                student: studentID,
                 id: assessmentID,
                 results: JSON.stringify(correct)
             },
