@@ -1,0 +1,157 @@
+/* Bradley Peradotto
+css doc for addwords.html 
+ could be added to a larger css doc.
+*/
+
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 3.5rem tall */
+body {
+  padding-top: 3.5rem;
+}
+
+/* Navbar*/
+
+.navbar-dark .navbar-nav .nav-link  {
+  
+      color: rgb(255, 254, 254);
+      
+      
+  }
+
+.customlink  {
+    border-right: 1px solid rgb(255, 255, 255);
+
+  }
+
+  .navbar-dark .navbar-nav a.nav-link{
+      
+          color: #eee;
+      }
+
+  .navbar-dark .navbar-nav a:hover  {
+          background: rgb(39, 39, 39);
+        
+      }
+
+/*
+ * Typography
+ */
+
+h1 {
+  margin-bottom: 20px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  position: fixed;
+  top: 51px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  border-right: 1px solid #eee;
+}
+
+.sidebar-brand a{
+
+  color: rgb(255, 255, 255);
+  border-bottom: 1px solid #eee;
+  font-size: 1.5em;
+}
+
+.sidebar .nav-pills .nav-link.active, .show>.nav-pills .nav-link{
+ background: #000000;
+ color: rgb(255, 255, 255);
+
+}
+.sidebar a.nav-link{
+
+  color: #eee;
+}
+
+.sidebar a:hover{
+
+  background:  rgb(39, 39, 39);
+}
+
+/* Sidebar navigation */
+.sidebar{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar .nav{
+  margin-bottom: 20px;
+}
+
+.sidebar .nav-item{
+  width: 100%;
+}
+
+.sidebar .nav-item + .nav-item{
+  margin-left: 0;
+}
+
+.sidebar .nav-link{
+  border-radius: 0;
+}
+
+
+
+/* For Alert items  */
+  
+     #success{
+      position: fixed;
+      height:5em;
+      margin: auto;
+      width: 70%;
+      top: 15em;
+      z-index: 2;
+      display:none;
+      overflow-y: auto;
+     }
+  
+     #info{
+      position: fixed;
+      margin: auto;
+      height:5em;;
+      width: 70%;
+      top: 15em;
+      z-index: 3;
+      display:none;
+      overflow-y: auto;
+     }
+  
+     #warning{
+      position: fixed;
+      margin: auto;
+      height:5em;;
+      width: 70%;
+      top: 15em;
+      z-index: 4;
+      display:none;
+      overflow-y: auto;
+     }
+
+     #special{
+      position: fixed;
+      margin: auto;
+      height:5em;;
+      width: 70%;
+      top: 15em;
+      z-index: 5;
+      overflow-y: auto;
+     }
+
+ 
+ 
