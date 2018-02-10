@@ -328,7 +328,8 @@ $(document).ready(function() {
     // Checks the results array and adds each item to the correct array
     function checkResults() {
         let numCorrect = 0;
-
+        console.log('check results:::');
+        console.log(defs);
         for(let i = 1; i <= 7; i++) {
             if(results[i].termID !== ""){
                 // find the term in the array that matches the term placed in the drop area
@@ -345,10 +346,10 @@ $(document).ready(function() {
                 if(filterTerm[0].id === filterDef[0].id) {
                     console.log("Correct!");
                     numCorrect++;
-                    correct.push({id: filterTerm[0].id, correct: 1});
+                    correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 1});
                 }
                 else {
-                    correct.push({id: filterTerm[0].id, correct: 0});
+                    correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 0});
                 }
                     
             }

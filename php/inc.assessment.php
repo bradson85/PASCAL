@@ -46,20 +46,21 @@
     function submitResults($results, $email, $assessID){
         $termID = $matchID =  $correct = "";
         $pdo = pdo_construct();
-        $sql = "SELECT ID from accounts WHERE email = '$email' AND type = 2";
+        $sql = "SELECT ID from accounts AS a WHERE email = '$email' AND type = 2";
         $result = pdo_query($pdo, $sql);
         $studentID = $result->fetch();
-
+        echo $studentID['ID'];
         $pdo = null;
         $pdo = pdo_construct();
-        $sql = $pdo->prepare("INSERT INTO results (studentID, assessmentID, termID, matchID, correct) VALUES ?, ?, ?, ?, ?");
-        $sql->bindParam(1, $email);
+        $sql = $pdo->prepare("INSERT INTO results (studentID, assessmentID, termID, matchID, correct) VALUES (?, ?, ?, ?, ?)");
+        $sql->bindParam(1, $studentID['ID']);
         $sql->bindParam(2, $assessID);
         $sql->bindParam(3, $termID);
         $sql->bindParam(4, $matchID);
         $sql->bindParam(5, $correct);
         foreach($results as $value){
             $termID = $value['id'];
+            $matchID = $value['mID'];
             $correct = $value['correct'];
             $sql->execute();
         }
