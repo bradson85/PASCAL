@@ -27,6 +27,7 @@
 .canDrag {
     width: 105%;
     background-color: #92D050;
+    cursor: pointer;
 }
 
 .canDrop {
@@ -42,11 +43,19 @@
     margin-top: 2.5%;
 }
 
+.speak {
+    background: none;
+    border: none;
+    float: right;
+    cursor: pointer;
+}
+
 @media(min-width: 768px) {
     .canDrag {
         width: 58.3%;
         margin-left: 20%;
         background-color: #92D050;
+        cursor: pointer;
     }
 
     .canDrop {

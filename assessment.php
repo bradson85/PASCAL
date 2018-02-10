@@ -22,9 +22,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Now you will match some terms and definitions about science. When the next screen appears, please match the words on the left-hand side of the screen with their definitions. Click on the word and drag it to the space next to the correct definition. Please match as many words and definitions as you can. If you want a word read to you – you can click on the speaker next to it.</p>
-                    <p>There will always be 5 words and 7 definitions on the screen. So two definitions will not be used. When you match all the words on the screen to their correct definition please click the “next” button at the bottom of the screen.</p>
-                    <p>You will match terms and definitions for ten minutes. The computer will let you know when to stop. Just do your best! Ready?</p>
+                    <span>
+                        <p>Now you will match some terms and definitions about science. When the next screen appears, please match the words on the left-hand side of the screen with their definitions. Click on the word and drag it to the space next to the correct definition. Please match as many words and definitions as you can. If you want a word read to you – you can click on the speaker next to it.</p>
+                        <p>There will always be 5 words and 7 definitions on the screen. So two definitions will not be used. When you match all the words on the screen to their correct definition please click the “next” button at the bottom of the screen.</p>
+                        <p>You will match terms and definitions for ten minutes. The computer will let you know when to stop. Just do your best! Ready?</p>
+                    </span>
+                    <button class="speak"><i class="fas fa-volume-up"></i></button>
                     <!-- <span class="oi oi-volume-high"></span> -->
                 </div>
                 <div class="modal-footer">
@@ -40,26 +43,31 @@
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term1">Term 1</span>
+                            <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term2">Term 2</span>
+                            <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term3">Term 3</span>
+                            <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term4">Term 4</span>
+                            <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag">
                         <div class="card-body">
                             <span id="term5">Term 5</span>
+                            <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                 </div>
@@ -74,6 +82,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def1">Definition 1</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -86,6 +95,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def2">Definition 2</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -99,6 +109,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def3">Definition 3</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -111,6 +122,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def4">Definition 4</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -123,6 +135,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def5">Definition 5</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -135,6 +148,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def6">Definition 6</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -147,6 +161,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def7">Definition 7</span>
+                                <button class="speak"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -162,5 +177,10 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <script src="js/jquery.ui.touch-punch.min.js"></script>
         <script src="js/assessment.js"></script>
+        <script>
+            $(window).on('beforeunload', function(){
+                return("Are you sure?");
+            });
+        </script>
     </body>
 </html>

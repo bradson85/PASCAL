@@ -1,10 +1,7 @@
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
-    $('.countdown').hide();
-
-    //var msg = new SpeechSynthesisUtterance('Test message :)');
-    //speechSynthesis.speak(msg);
+    $('.countdown').hide();    
 
     // Hide timer (not visible)
     // San serif font ( Arial 16pt)
@@ -71,6 +68,12 @@ $(document).ready(function() {
 
     $('#closeDirections').click(function() {
         timer();
+    });
+
+    $('.speak').click(function() {
+        console.log($(this).closest('div').find("span").text());
+        let msg = new SpeechSynthesisUtterance($(this).closest('div').find('span').text());
+        speechSynthesis.speak(msg);
     });
 
 
