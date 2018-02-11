@@ -4,7 +4,7 @@ if(isset($_SESSION['type']) ){
   include ("php/inc-dashboard.php"); // directed to right page
 } else{
   echo "Unauthorized access";
-  header("location:index.php"); //to redirect back to "index.php" after logging out
+  header("Location:index.php"); //to redirect back to "index.php" after logging out
   exit();
 } 
 ?>

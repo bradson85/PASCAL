@@ -6,7 +6,7 @@ session_start();
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($_POST['submit'] == 'true'){
    
-   checklogin();
+   login();
    
    }
  }
@@ -22,18 +22,18 @@ session_start();
 		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && ($success)){
        
         $_SESSION["type"] = $accounttype;
+        
         switch($accounttype){
-          case 1: 
-          header("location:../teacher-dashboard.php"); //to redirect back to "teacher-dashboard.php" 
+          case "1": 
+          header("Location:../teacher-dashboard.php"); //to redirect back to "teacher-dashboard.php"
+            break;
+          case "0":
+          header("Location:../dashboard.php"); //to redirect back to "dashboard.php"
             break;
    
-          case 0:
-          header("location:../dashboard.php"); //to redirect back to "dashboard.php"
-            break;
-   
-          case 2:
-          header("location:../student-landing.php"); //to redirect back to "studentlanding.php"
-   
+          case "2":
+          $_SESSION["ID"] = $id;
+          header("Location:../student-landing.php"); //to redirect back to "studentlanding.php"
             break;
    
           default: 

@@ -1,29 +1,17 @@
-<?php  
-require_once("dbconfig.php");
-$username = "admin@test.com";
-try {
-        $pdo = new PDO(DB_CONNECTION_STRING,
-        DB_USER, DB_PWD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE,
-        PDO::ERRMODE_EXCEPTION);
-    // query to get all categries for drop down menu
-        $sql = "SELECT * FROM accounts";
-        $result = $pdo->query($sql);
-        while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-            $hash = $row['password'];
-            echo strlen($hash);
-            if (password_verify('test', $hash)){ echo "true";}else echo "false";
-             if(($username == $row['email'] || $username == $row['name']) && password_verify("test" , $row['password'])){
-              echo '<p> worked </p>';
-                   
-		break;
-             }    
-            }    
-      $pdo = null;
-      } catch (PDOException $e) {
-      die( $e->getMessage() );
-      } 
-     
-
-      
-      ?>
+<form method ='POST' action='php/test1.php'>
+      <div class='form-group'>
+      <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" id="uname" name="uname">
+        <p class='text-danger'>Please enter the correct Login.</p>
+      </div>
+      <div class='form-group'>
+        <label for='pwd'>Password:</label>
+        <input type='password' class='form-control' name='pwd' id='pwd'>
+        <p class='text-danger'>Please enter the correct Password.</p>
+      </div>
+      <div class='checkbox'>
+        <label><input type='checkbox'> Remember me</label>
+      </div>
+      <button type='submit' id='loginbutton' class='btn btn-default'>Submit</button>
+    </form>
+    <br>
