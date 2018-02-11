@@ -1,6 +1,5 @@
 <?php
-    if(!isset($_SESSION['email']))
-        session_start();
+    session_start();
     $_SESSION['email'] = "student@test.com";
     $_SESSION['type'] = 2;
 
@@ -86,7 +85,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def1">Definition 1</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -99,7 +98,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def2">Definition 2</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -113,7 +112,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def3">Definition 3</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -126,7 +125,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def4">Definition 4</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -139,7 +138,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def5">Definition 5</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -152,7 +151,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def6">Definition 6</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
@@ -165,7 +164,7 @@
                         <div class="card definition">
                             <div class="card-body">
                                 <span id="def7">Definition 7</span>
-                                <button class="speak"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>

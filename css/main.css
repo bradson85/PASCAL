@@ -2,6 +2,7 @@
 
 * {
     /* Need to decide on universal design elements and put them here */
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .createAccount {
@@ -21,18 +22,18 @@
 .card {
     margin-top: 2%;
     z-index: 1; 
-    background-color: #92D050;
+    border: solid 2px #385D8A !important;
 }
 
 .canDrag {
     width: 105%;
-    background-color: #92D050;
+    background-color: #92D050 !important;
     cursor: pointer;
+    font-size: 16pt;
 }
 
 .canDrop {
     z-index: 0;
-    margin-right: 1%; 
     margin-top: 1%;
     width: 29%;
     padding: 0%;
@@ -48,35 +49,40 @@
     border: none;
     float: right;
     cursor: pointer;
+    font-size: 12pt;
+}
+
+.white {
+    color: white;
 }
 
 @media(min-width: 768px) {
     .canDrag {
         width: 58.3%;
         margin-left: 20%;
-        background-color: #92D050;
         cursor: pointer;
     }
 
     .canDrop {
         z-index: 0;
-        margin-right: 1%; 
         margin-top: 1%;
         width: 18%;
         padding: 0%;
     }
 
     #next {
-        margin-left: 79.9%;
+        margin-left: 79%;
         margin-top: 2.5%;
     }
 }
 
 .definition {
-    background-color: #4F81BD;
+    background-color: #4F81BD !important;
+    color: white;
     margin-top: 1%;
     width: 68%;
     z-index: 0;
+    font-size: 16pt;
 }
 
 
