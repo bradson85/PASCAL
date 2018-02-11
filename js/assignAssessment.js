@@ -2,6 +2,40 @@ $(document).ready(function () {
      
 
 
+$(document).on("change", "body", function () {
+
+    $('#schoolChoice option').each(function() {
+        if ($(this).is(':selected')){
+            $('#selStudents').prop("disabled", false);
+            $('#selClass').prop("disabled", false);
+        }
+           
+    });
+        if($('#selStudents').is(':checked')) { 
+            
+
+         }
+
+         if($('#selClass').is(':checked')) { 
+            
+            
+        }
+     });
+
+
+
+function updateClassList(){
+
+
+}
+
+function updateStudentList(){
+
+
+}
+
+
+
     // this is for deleteing words and definition 
     $(document).on("click", "#assign", function () {
        
@@ -32,7 +66,6 @@ $(document).ready(function () {
                    
                 }
                
-              
            
             ///  if blank fields havent occurred
             if (save) {

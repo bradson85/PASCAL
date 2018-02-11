@@ -54,8 +54,8 @@ function getAssessmentData($id){
         $sql = "SELECT * FROM assessments where ID = '$id'";
         $result = $pdo->query($sql);
         $row = $result->fetch(PDO::FETCH_ASSOC);
-            $start = $row["assessmentID"];   
-            $end = $row["assessmentID"];
+            $start = $row["start_date"];   
+            $end = $row["end_date"];
             $class = getClassName($row['classID']);
             $category = getCategoryName($row['catID']);
       $pdo = null;

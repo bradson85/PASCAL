@@ -1,6 +1,5 @@
 <?php session_start(); ?>
 
-
 <!DOCTYPE html>
 <html>
 
@@ -8,8 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Assign An Assessment</title>
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
   <link rel="stylesheet" href="/css/cssAddWords.css" />
@@ -19,14 +17,15 @@
 
 <!-- Add Nav Bar part-->
 <?php include "topbar-header.php"; 
-  include "sidebar-header.php"
+  include "sidebar-header.php";
+  include "php/inc-assignAssessment-functions.php"; 
 ?>
 
 
 
 
 <!-- Start main html-->
-      <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+      <main class="col-sm-9 ml-md-auto col-md-10 pt-3" role="main">
 <!-- Alert boxes stuff-->
       <?php
       include("alertmessages-header.php");
@@ -48,49 +47,21 @@
 <!-- END of Alert box stufff-->
 
      <!--Sorting Stuff-->
-       <div class="table-responsive">
+       
         <H2> Assign An Assessment To A Student</H2>
-          <table id="selection_table" class="table table-bordered">
-          <thead>
-              <tr>
-                <th>Assessment Choice</th>
-                <th>Student Assigned To</th>
-                <th>Email Address To Send To</th>
-                <th>Expiration Date</th>
-              </tr>
-            </thead>
-            <tbody id = "sort_body">
-            <tr>  <?php  include "php/inc-assignAssessment-functions.php";  
-                         dbGetAssessments(); 
-                         dbGetStudents();               
-            ?> 
-           </tr>
-            </tbody>
-          </table>
-       </div>
+       <br>
+        <?php 
+              
+              dbSelectSchool();
+              selectType();
+              dbSelectClasses(0);
+              dbGetStudents(0);
+              dbGetAssessments();
+        ?>
+        <br>
        <p class="Buttons">
-            <button class = " btn btn-primary" id="assign">Assign Assessment</button>
+            <button class = " btn btn-primary" id="assign" disabled>Assign Assessment</button>
           </p>
-
-       <div class="table-responsive">
-        <H2> Assessments Assigned To Students</H2>
-          <table id="assess_table" class="table table-bordered">
-          <thead>
-              <tr>
-                <th>Assessment Number</th>
-                 <th>Student Assigned To</th>
-                <th>Expiration Date</th>
-               
-              </tr>
-            </thead>
-            <tbody id = "t_body">
-              <?php  
-                      dbViewRecentAssessments();                 
-            ?>  
-           
-            </tbody>
-          </table>
-       </div>
       <!--  Table Part-->
       </main>
     
