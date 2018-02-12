@@ -17,8 +17,7 @@
 
 <!-- Add Nav Bar part-->
 <?php include "topbar-header.php"; 
-  include "sidebar-header.php";
-  include "php/inc-assignAssessment-functions.php"; 
+  include "sidebar-header.php"; 
 ?>
 
 
@@ -50,17 +49,14 @@
        
         <H2> Assign An Assessment To A Student</H2>
        <br>
-        <?php 
-              
-              dbSelectSchool();
-              selectType();
-              dbSelectClasses(0);
-              dbGetStudents(0);
-              dbGetAssessments();
-        ?>
+        <div id= "school"></div>
+        <div id= "classes"></div>
+        <div id= "options"></div>
+        <div id= "students"></div>
+        <div id= "assessments"></div>
         <br>
        <p class="Buttons">
-            <button class = " btn btn-primary" id="assign" disabled>Assign Assessment</button>
+            <button class = " btn btn-primary" id="assign" disabled >Assign Assessment</button>
           </p>
       <!--  Table Part-->
       </main>
@@ -68,8 +64,10 @@
   
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS Code from bootstrap site -->
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
+  <script
+  src="http://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"

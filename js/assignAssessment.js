@@ -1,36 +1,111 @@
 $(document).ready(function () {
-     
 
+    initData();
+     
+    function initData() {
+       $.ajax({ // delete from database
+        type: "POST",
+        url: "/php/inc-assignAssessment-functions.php",
+        data: {
+            init: "init"
+        },
+        dataType:"json",
+        success: function (data) {
+            $("#school").html(data["school"]);
+            $("#classes").html(data["class"]);
+            $("#options").html(data["type"]);
+            $("#students").html(data["students"]);
+            $("#assessments").html(data["assessments"]);
+        }
+    });
+    }
 
 $(document).on("change", "body", function () {
 
     $('#schoolChoice option').each(function() {
+        if ($(this).is(':selected')){
+            updateClassList();
+          
+        }
+           
+    });
+
+    $('#classNames option').each(function() {
         if ($(this).is(':selected')){
             $('#selStudents').prop("disabled", false);
             $('#selClass').prop("disabled", false);
         }
            
     });
-        if($('#selStudents').is(':checked')) { 
-            
 
-         }
+    $('#studentChoice option').each(function() {
+        if ($(this).is(':selected')){
+            $('#sel4').prop("disabled", false);
+          
+        }
+    });
 
-         if($('#selClass').is(':checked')) { 
-            
-            
+        
+     });
+
+     $(document).on("change", "#selClass",function() {
+        if($(this).is(':checked')) { 
+            updateToWholeClass();
         }
      });
 
+     $(document).on("change", "#selStudents",function() {
+        if($(this).is(':checked')) { 
+           updateStudentList();
+        }
+     });
 
+     $(document).on("change", "#sel4",function() {
+         
+            $('#assign').prop("disabled", false);
+        
+     });
+
+
+function updateToWholeClass(){
+
+    $("#students").html("<form><div class='form-group'>"
+    + "<label for='sel3'>Select Student:</label>"
+    + "<select multiple class='form-control' id='sel3'>"
+    + "<option disabled value = \"0\"> Student Name- Class</option>"
+    + "<option value = '"+ -1 +"'>Entire Class</option>"
+    + "</select></form><br>");
+     
+}
 
 function updateClassList(){
+    var schoolChoice = $('#schoolChoice :selected').val();
+    $.ajax({ 
+        type: "POST",
+        url: "php/inc-assignAssessment-functions.php",
+        data: {
+             school: schoolChoice
+        },
+        success: function (data) {    
+            $("#classes").replaceWith(data);
+        }
+    });
 
 
 }
 
-function updateStudentList(){
-
+function updateStudentList(selected){
+    var classChoice = $('#classNames :selected').val();
+    $.ajax({ 
+        type: "POST",
+        url: "php/inc-assignAssessment-functions.php",
+        data: {
+             class: classChoice
+        },
+        success: function (data) {    
+            $("#students").html(data);
+        }
+    });
 
 }
 
@@ -39,48 +114,28 @@ function updateStudentList(){
     // this is for deleteing words and definition 
     $(document).on("click", "#assign", function () {
        
-           saveToDB();
+           saveStudent();
         });
 
 
-        function saveToDB() {
-            var save = true;
-            // this iterates throught every value in the table and stores it in an array
-            var TableData = new Array();
-             var date = new Date( $("#exdate").val());
-             var datestring = date.toISOString().substring(0, 10);
-               
-           
-           
-                // if text fields are empty
-                if ((($('#sort_body td:eq(0)').find('select').val() == "0" || $('#sort_body td:eq(1)').find('select').val() == "0" ))) {
-                    save = false; //false because of blank field somewhere
-    
-                } else {
-                    TableData = {
-                        "category":$('#sort_body td:eq(0)').find('select').val(),
-                        "student":$('#sort_body td:eq(1)').find('select').val(),
-                        "date": datestring,
-                        "email":$('#mailAd').val()
-                    }
-                   
-                }
-               
-           
-            ///  if blank fields havent occurred
-            if (save) {
-               
-                TableData = JSON.stringify(TableData); // convert array to json
+        function saveStudent() {
+            var studentChoice = $('#studentChoice :selected').val();
+            var assessmentChoice = $('#sel4 :selected').val();
+            var classChoice = $('#classNames :selected').val();
+                if (studentChoice == -1){
+                     saveEntireClass(classChoice,assessmentChoice);
+                }else {
+
                 $.ajax({
                     type: "POST",
-                    url: "/php/inc-assignAssessment-sendLink.php",
+                    url: "/php/inc-assignAssessment-functions.php",
                     data: {
-                        data: TableData
+                        studentChoice: studentChoice, assessmentChoice: assessmentChoice 
                     },
                     success: function (data) {
                         if (data == 1) { // this is for if successful query.
                             $('#success').show(); //show success message
-                            $('#success strong').html("<h5>Link Sent To Student<h5><h6><\h6>");
+                            $('#success strong').html("<h5>Assessment Assigned<h5><h6><\h6>");
                             setTimeout(
                                 function () {
                                     $('#success').fadeOut(); // hide success messsage after 8 seconds
@@ -103,15 +158,14 @@ function updateStudentList(){
     
                     }
                 });
-            } else {
-                $('#warning').show(); // show warning messagees
-                $('#warning strong').text("You have an empty field or unselected options. \n Please enter all data"); // add the message to html
-                setTimeout(
-                    function () {
-                        $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                    }, 5000);
-            }
+            
         }
+    }
+
+    function saveEntireClass(classChoice,assessmentChoice){
+
+
+    }
         function validateEmail($email) {
             var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
             return emailReg.test( $email );
