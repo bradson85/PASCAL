@@ -11,21 +11,30 @@ $(document).ready(function () {
 
     // load the db function asynchronously 
     function loadAdmin() {
-        $.get('/php/inc-deleteAccounts-readstudents.php', function (data) {
-            $("#t_body1").html(data);
+        $.post("/php/inc-deleteAccounts.php",
+        {
+            type: "0"
+        }, function (data) {
+            $("#t_body3").html(data);
         });
     }
 
      // load the db function asynchronously 
      function loadTeacher() {
-        $.get('/php/inc-deleteAccounts-readteachers.php', function (data) {
+        $.post("/php/inc-deleteAccounts.php",
+        {
+            type: "1"
+        }, function (data) {
             $("#t_body2").html(data);
         });
     }
      // load the db function asynchronously 
      function loadStudent() {
-        $.get('/php/inc-deleteAccounts-readadmins.php', function (data) {
-            $("#t_body3").html(data);
+        $.post("/php/inc-deleteAccounts.php",
+        {
+            type: "2"
+        }, function (data) {
+            $("#t_body1").html(data);
         });
     }
    
@@ -33,13 +42,27 @@ $(document).ready(function () {
     // this is for deleteing words and definition 
     $(document).on("click", ".deleteRowStudent", function () {
         var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#admin_table tr:last-child td:first-child').html();
+        var name = $(this).parent().siblings("td:eq(1)").text(); // get current name
+
+        $("#sure .modal-title").text("Are You Sure You Want To Delete " + name + " From Accounts");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteStudent(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+    });
+   function deleteStudent(currID) {
+        
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-deleteAccounts-deleteStudent.php",
+            url: "/php/inc-deleteAccounts.php",
             data: {
-                data: currID
+                ID: currID
             },
             success: function (data) {
                 $('#info').show();
@@ -49,22 +72,39 @@ $(document).ready(function () {
                         $('#info').fadeOut();
                     }, 8000);
 
-                    loadDB(); // refresh the newly updated the database 
+                    loadAdmin();
+        loadTeacher();
+        loadStudent(); // refresh the newly updated the database 
                     
             }
         });
 
-    });
+     }
       // this is for deleteing words and definition 
       $(document).on("click", ".deleteRowTeacher", function () {
+
         var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#student_table tr:last-child td:first-child').html();
+        var name = $(this).parent().siblings("td:eq(1)").text(); // get current name
+        $("#sure .modal-title").text("Are You Sure You Want To Delete " + name + " From Accounts");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteTeacher(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+      });
+
+      function deleteTeacher(currID) {
+       
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-deleteAccounts-deleteteacher.php",
+            url: "/php/inc-deleteAccounts.php",
             data: {
-                data: currID
+                ID: currID
             },
             success: function (data) {
                 $('#info').show();
@@ -74,23 +114,42 @@ $(document).ready(function () {
                         $('#info').fadeOut();
                     }, 8000);
 
-                    loadDB(); // refresh the newly updated the database 
+                    loadAdmin();
+                    loadTeacher();
+                    loadStudent(); // refresh the newly updated the database 
                     
             }
         });
 
-    });
+    }
 
       // this is for deleteing words and definition 
-      $(document).on("click", ".deleteRowAdmin", function () {
+      $(document).on("click", ".deleteRowAdmin", function () { 
         var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#teacher_table tr:last-child td:first-child').html();
+        var name = $(this).parent().siblings("td:eq(1)").text(); // get current name
+        $("#sure .modal-title").text("Are You Sure You Want To Delete " + name + " From Accounts");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteAdmin(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+
+      });
+
+
+      function deleteAdmin(currID){
+        
+       
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-deleteAccounts-deleteadmin.php",
+            url: "/php/inc-deleteAccounts.php",
             data: {
-                data: currID
+                ID: currID
             },
             success: function (data) {
                 $('#info').show();
@@ -100,15 +159,16 @@ $(document).ready(function () {
                         $('#info').fadeOut();
                     }, 8000);
 
-                    loadDB(); // refresh the newly updated the database 
+                    loadAdmin();
+        loadTeacher();
+        loadStudent(); // refresh the newly updated the database 
                     
             }
         });
 
-    });
-
+    }
    
-
+    
     
 
     // this is for the close button on alerts

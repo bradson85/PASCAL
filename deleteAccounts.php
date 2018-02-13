@@ -23,28 +23,6 @@ include "sidebar-header.php"
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
 
 
-
-<!-- Modal to alert that updating categories affects children-->
-<div id ="sure" class="modal fade">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Are You Sure?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="modalsave" class="btn btn-warning">Overwrite</button>
-        <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Alert boxes stuff-->
       <?php
       include("alertmessages-header.php");
@@ -63,6 +41,27 @@ include "sidebar-header.php"
     }  
   ?>
 
+  <!-- Modal to ask are you sure if you want to delete-->
+<div id ="sure" class="modal fade">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are You Sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modalsave" class="btn btn-danger">Delete</button>
+        <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- END of Alert box stufff-->
 <H1>Delete Accounts</H1>
       <!--  Table Part-->
@@ -71,8 +70,8 @@ include "sidebar-header.php"
           <table id="student_table" class="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Class Name</th>
+                <th>Name</th>
+                <th>Email</th>
                 <th> &nbsp;</th>
               </tr>
             </thead>
