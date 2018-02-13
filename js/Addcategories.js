@@ -43,7 +43,7 @@ $(document).ready(function () {
             cache: false,
             success: function (data) {
                 $('#word_table tr').not(":first").each(function (row, tr) {
-                    console.log(data[row]);
+                    //console.log(data[row]);
                     $(tr).find('td:eq(2)').find('select').val(data[row]);
                 });
             }
@@ -71,9 +71,9 @@ $(document).ready(function () {
             +
             '<option value = \"5\"> 5 </option>'
             +
-            '<option value = \"5\"> 6 </option>'
+            '<option value = \"6\"> 6 </option>'
             +
-            '<option value = \"6\"> 7 </option></select></td>'
+            '<option value = \"7\"> 7 </option></select></td>'
             +
             '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
         $('#word_table').append(rows);

@@ -34,8 +34,21 @@ function validateLogin(){
             submit: "true"
         },
         success: function (data) {
+            try
+            {
+                    var json = $.parseJSON(data);
+                    if(json[0]==2 ){
+                        window.location.href = json[1];
+                       } else  $('#mainarea').html(data);
+                    
+            }
+            catch(err)
+            {
+                    $('#mainarea').html(data);
+            }                
            
-           $('#mainarea').html(data);
+          
+           
            }
             
     });

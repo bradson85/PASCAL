@@ -100,9 +100,9 @@ $(document).ready(function () {
             +
             '<option value = \"5\"> 5 </option>'
             + 
-            '<option value = \"5\"> 6 </option>'
+            '<option value = \"6\"> 6 </option>'
             +
-            '<option value = \"6\"> 7 </option></select></td>'
+            '<option value = \"7\"> 7 </option></select></td>'
                 +
                 $schoolsel
                 +
@@ -116,7 +116,7 @@ $(document).ready(function () {
     $(document).on("click", ".deleteRow", function () {
         var currID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
         var name = $(this).parent().siblings("td:eq(1)").text().trim(); // get current name
-        var level = $(this).parent().siblings("td:eq(2)").text(); // get current level
+        var level = $(this).parent().siblings("td:eq(2)").find("select").val(); // get current level
         $("#sure .modal-title").text("Are You Sure You Want To Delete \""+name+" Grade "+ level +"\" From Classes");
         $("#sure .modal-body").text("You will not be able to undo this action.");
         $("#modalsave").text("Delete");
@@ -149,7 +149,8 @@ $(document).ready(function () {
                     loadDB(); // refresh the newly updated the database 
                     setTimeout(
                         function () {
-                            updateSelected();
+                            updateSelectedSchools();
+                            updateSelectedLevels();
                         }, 250); 
             }
         });
@@ -210,7 +211,7 @@ $(document).ready(function () {
                 TableData[row] = {
                     "ID": $.trim($(tr).find('td:eq(0)').text()),
                     "className": $.trim($(tr).find('td:eq(1)').text()),// trim this data to eliminate trailing spaces
-                    "gradeLevel": $.trim($(tr).find('td:eq(2)').text()),
+                    "gradeLevel": $.trim($(tr).find('td:eq(2)').find('select').val()) ,
                     "schoolName": $(tr).find('td:eq(3)').find('select').val() 
                    
                 }
@@ -241,7 +242,8 @@ $(document).ready(function () {
                         loadDB(); // refresh the newly updated the database
                         setTimeout(
                             function () {
-                                updateSelected();
+                                updateSelectedSchools();
+                updateSelectedLevels();
                             }, 250);
 
                             

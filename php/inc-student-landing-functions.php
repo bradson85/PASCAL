@@ -1,7 +1,6 @@
 
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
-echo"here";
 if(isset($_SESSION['ID'])){
 $id = $_SESSION['ID'];
 $assignmentID = assignedAssessments($id);

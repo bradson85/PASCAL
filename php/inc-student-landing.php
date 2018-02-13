@@ -21,7 +21,7 @@
  include $_SERVER['DOCUMENT_ROOT']."/student-topbar-header.php"; 
   
 ?>
-
+<main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
      <!--Asssingned Assessment Table-->
        <div class="table-responsive">
         <H2> Assessment Assigned</H2>
@@ -42,7 +42,7 @@
        </div>
        <?php getButton(); ?>
       <!--  Table Part-->
-  
+  </main>
     
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS Code from bootstrap site -->

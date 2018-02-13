@@ -24,7 +24,7 @@
 
 
 <!-- Start main html-->
-      <main class="col-sm-9 ml-md-auto col-md-10 pt-3" role="main">
+      <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
 <!-- Alert boxes stuff-->
       <?php
       include("alertmessages-header.php");
@@ -46,19 +46,19 @@
 <!-- END of Alert box stufff-->
 
      <!--Sorting Stuff-->
-       
-        <H2> Assign An Assessment To A Student</H2>
-       <br>
-        <div id= "school"></div>
-        <div id= "classes"></div>
-        <div id= "options"></div>
-        <div id= "students"></div>
-        <div id= "assessments"></div>
-        <br>
-       <p class="Buttons">
+     
+         <H2> Assign An Assessment To A Student</H2>
+          <br>
+          <div id= "school"></div>
+          <div id= "classes"></div>
+          <div id= "options"></div>
+          <div id= "students"></div>
+          <div id= "assessments"></div>
+          <br>
+            <p class="Buttons">
             <button class = " btn btn-primary" id="assign" disabled >Assign Assessment</button>
           </p>
-      <!--  Table Part-->
+      
       </main>
     
   

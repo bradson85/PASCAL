@@ -34,8 +34,8 @@ try {
      <option value = \"3\"> 3 </option>
      <option value = \"4\"> 4 </option>
      <option value = \"5\"> 5 </option>
-     <option value = \"5\"> 6 </option>
-     <option value = \"6\"> 7 </option></select></td>
+     <option value = \"6\"> 6 </option>
+     <option value = \"7\"> 7 </option></select></td>
       <td>
       <select class='form-control' id='selschool'><<option value = \"0\"> --Select School--</option> $schools
      </select></td> 

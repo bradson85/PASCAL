@@ -22,24 +22,27 @@ session_start();
 		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && ($success)){
        
         $_SESSION["type"] = $accounttype;
-        
+        $stringLink ="";
         switch($accounttype){
           case "1": 
-          header("Location:../teacher-dashboard.php"); //to redirect back to "teacher-dashboard.php"
+          $stringLink = "../teacher-dashboard.php"; //to redirect back to "teacher-dashboard.php"
             break;
           case "0":
-          header("Location:../dashboard.php"); //to redirect back to "dashboard.php"
+          $stringLink ="../dashboard.php"; //to redirect back to "dashboard.php"
             break;
    
           case "2":
           $_SESSION["ID"] = $id;
-          header("Location:../student-landing.php"); //to redirect back to "studentlanding.php"
+          $stringLink ="../student-landing.php"; //to redirect back to "studentlanding.php"
             break;
    
           default: 
                    
        }
-        
+       $sel= array(0 => 2,
+       1 => $stringLink
+      );
+      echo json_encode($sel);
     }
 		else {
 				

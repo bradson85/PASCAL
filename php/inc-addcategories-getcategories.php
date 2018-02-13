@@ -27,8 +27,8 @@ require_once("../dbconfig.php");
            <option value = \"3\"> 3 </option>
            <option value = \"4\"> 4 </option>
            <option value = \"5\"> 5 </option>
-           <option value = \"5\"> 6 </option>
-           <option value = \"6\"> 7 </option></select></td>
+           <option value = \"6\"> 6 </option>
+           <option value = \"7\"> 7 </option></select></td>
            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr> ";
 
      }

@@ -30,7 +30,7 @@ $(document).ready(function () {
 
     // this is for deleteing words and definition 
     $(document).on("click", ".deleteRow", function () {
-        var currID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
+        var currID = $(this).parent().siblings("td:eq(0)").text(); // get current id
         var name = $(this).parent().siblings("td:eq(1)").text().trim(); // get current name
         $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + name + "\" From Schools");
         $("#sure .modal-body").text("You will not be able to undo this action.");
