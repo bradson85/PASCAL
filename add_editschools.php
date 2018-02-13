@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Edit Schools</title>
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
   <link rel="stylesheet" href="/css/cssAddWords.css" />
@@ -25,7 +26,7 @@ include "sidebar-header.php"
 
 
 
-<!-- Modal to alert that updating categories affects children-->
+<!-- Modal to alert about deleteing schools-->
 <div id ="sure" class="modal fade">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -39,7 +40,7 @@ include "sidebar-header.php"
         <p>Modal body text goes here.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" id="modalsave" class="btn btn-warning">Overwrite</button>
+        <button type="button" id="modalsave" class="btn btn-danger">OverWrite</button>
         <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

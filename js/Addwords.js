@@ -116,9 +116,23 @@ $(document).ready(function () {
 
     // this is for deleteing words and definition 
     $(document).on("click", ".deleteRow", function () {
-        var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#word_table tr:last-child td:first-child').html();
+        var currID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
+        var name = $(this).parent().siblings("td:eq(2)").text().trim(); // get current name
+        $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + name + "\" From Words");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#modalsave").text("Delete");
+        $('#modalsave').removeClass('btn-warning').addClass('btn-danger');
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteWords(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+    });
+    function deleteWords(currID){
         $.ajax({ // delete from database
             type: "POST",
             url: "/php/inc-addwords-deleterow.php",
@@ -134,8 +148,7 @@ $(document).ready(function () {
                     }, 8000);
             }
         });
-
-    });
+    }
 
     //This fucntion causes a blur when the Enter Key is hit 
     // it blurs the table so it appears that the editing is done

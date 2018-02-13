@@ -7,7 +7,8 @@ $(document).ready(function () {
         loadDB();
         setTimeout(
             function () {
-                updateSelected();
+                updateSelectedSchools();
+                updateSelectedLevels();
             }, 250);
     });
 
@@ -22,7 +23,7 @@ $(document).ready(function () {
     // options based up on id:
     // This is what calls the php file to get which
     // option is the selected option.
-    function updateSelected() {
+    function updateSelectedSchools() {
         var ID = new Array();
         $('#word_table tr').each(function (row, tr) {
             ID[row] = {
@@ -48,18 +49,60 @@ $(document).ready(function () {
         });
 
     }
+
+    function updateSelectedLevels() {
+        var ID = new Array();
+        $('#word_table tr').each(function (row, tr) {
+            ID[row] = {
+                "ID": $(tr).find('td:eq(0)').text()
+            }
+        });
+        ID.shift(); // moves past first row with headings
+        ID = JSON.stringify(ID);
+        $.ajax({
+            type: "POST",
+            url: "/php/inc-addclasses-getclassselected.php",
+            data: {
+                getLevel: ID,
+            },
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                $('#word_table tr').not(":first").each(function (row, tr) {
+                    $(tr).find('td:eq(2)').find('select').val(data[row]);
+                });
+            }
+        });
+
+    }
     
 
     // this adds a new row for adding more words
     // generates a new row with 0 as id database generates new id.
     $('#addRow').click(function (event) {
         event.preventDefault();
-        $.get('php/inc-addclasses-getclassselected.php', function (data) {
+        $.post('php/inc-addclasses-getclassselected.php',{
+            update: "data"
+        }, function (data) {
             $schoolsel = data;
             var rows = $('<tr><td style=\'display:none;\'>0</td>' +
                 '<td contenteditable= "true">Enter A Class Name</td>' // class name
                 +
-                '<td contenteditable= "true">Enter Grade Level</td>' /// for level
+            '<td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>' /// for level
+            + 
+            '<option value = \"1\"> 1 </option>'
+            +
+            '<option value = \"2\"> 2 </option>'
+            +
+            '<option value = \"3\"> 3 </option>'
+            +
+            '<option value = \"4\"> 4 </option>'
+            +
+            '<option value = \"5\"> 5 </option>'
+            + 
+            '<option value = \"5\"> 6 </option>'
+            +
+            '<option value = \"6\"> 7 </option></select></td>'
                 +
                 $schoolsel
                 +
@@ -71,9 +114,24 @@ $(document).ready(function () {
 
     // this is for deleteing words and definition 
     $(document).on("click", ".deleteRow", function () {
-        var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#word_table tr:last-child td:first-child').html();
+        var currID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
+        var name = $(this).parent().siblings("td:eq(1)").text().trim(); // get current name
+        var level = $(this).parent().siblings("td:eq(2)").text(); // get current level
+        $("#sure .modal-title").text("Are You Sure You Want To Delete \""+name+" Grade "+ level +"\" From Classes");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#modalsave").text("Delete");
+        $('#modalsave').removeClass('btn-warning').addClass('btn-danger');
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteClasses(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+    });
+    function deleteClasses(currID){
         $.ajax({ // delete from database
             type: "POST",
             url: "/php/inc-addclasses-deleterow.php",
@@ -95,8 +153,7 @@ $(document).ready(function () {
                         }, 250); 
             }
         });
-
-    });
+    }
 
     //This fucntion causes a blur when the Enter Key is hit 
     // it blurs the table so it appears that the editing is done
@@ -105,6 +162,12 @@ $(document).ready(function () {
         $(this).on('keydown', function (e) {
             if (e.which == 13 && e.shiftKey == false) {
                 $(this).blur();
+                $('#info').show();
+                $('#info strong').text("Click \"Save\" to Store Changes");
+                setTimeout(
+                    function () {
+                        $('#info').fadeOut();
+                    }, 6000);
                 return false;
             } else if (e.which == 27) { // to exit editing without saving then reload db
                 $("#t_body").empty();
@@ -120,6 +183,8 @@ $(document).ready(function () {
                 $("#sure .modal-title").text("Are You Sure You Want To Save?");
                 $("#sure .modal-body").text("If you have changed a Class, all teachers and students associtated " +
                     "with the old Class will match the new altered Class");
+                    $("#modalsave").text("OverWrite");
+                    $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
                 $("#sure").modal('show');
                 $("#modalsave").on("click", function () {
                        saveToDB();

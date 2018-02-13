@@ -83,7 +83,13 @@ try {
 }
 catch(PDOException $e)
     {
-    echo "Error: " . $e->getMessage();
+        $error =  $e->getCode();
+        if($error == 23000){
+          echo "Cannot Update Term. Assessments Exist in the database 
+          that depend on this Term. Delete all the Assessments associated with
+          this school first. ";
+      
+        }else echo "Error". $e->getMessage();
     }
 $pdo = null;
        

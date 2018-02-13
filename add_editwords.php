@@ -43,6 +43,27 @@ include "topbar-header.php";
     }  
   ?>
 
+  <!-- Modal to alert deleting words-->
+<div id ="sure" class="modal fade">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are You Sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modalsave" class="btn btn-warning">Overwrite</button>
+        <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- END of Alert box stufff-->
 
 

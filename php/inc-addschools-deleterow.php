@@ -2,11 +2,13 @@
 require_once("../dbconfig.php");
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST['currID'])) {
     // collect value of input field
-    $data = $_POST['data'];
+   echo deleteSchools($_POST['currID']);
+
 }
 
+function deleteSchools($id){
 // Sql query to delete the terms from database.
 try {
     $pdo = new PDO(DB_CONNECTION_STRING,
@@ -19,7 +21,6 @@ try {
     $sql = $pdo->prepare("DELETE FROM schools
     WHERE ID = :id");
      $sql->bindParam(':id', $id);
-    $id = $data;
     $sql->execute();
      
     echo "Deleted Item Successfully";
@@ -35,5 +36,5 @@ catch(PDOException $e)
   }else echo "Error". $e->getMessage();
     }
 $pdo = null;
-
+}
 ?>

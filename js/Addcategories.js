@@ -71,7 +71,9 @@ $(document).ready(function () {
             +
             '<option value = \"5\"> 5 </option>'
             +
-            '<option value = \"6\"> 6 </option></select></td>'
+            '<option value = \"5\"> 6 </option>'
+            +
+            '<option value = \"6\"> 7 </option></select></td>'
             +
             '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
         $('#word_table').append(rows);
@@ -80,9 +82,25 @@ $(document).ready(function () {
 
     // this is for deleteing categories and levels 
     $(document).on("click", ".deleteRow", function () {
-        var currID = $(this).parent().siblings(":first").text(); // get current id
-        $($(this).parents('tr')).remove(); // remove row
-        var wordnumber = $('#word_table tr:last-child td:first-child').html();
+        var currID = $(this).parent().siblings("td:eq(0)").text(); // get current id
+        var name = $(this).parent().siblings("td:eq(1)").text().trim(); // get current name
+        var level = $(this).parent().siblings("td:eq(2)").find('select').val(); // get current level
+        $("#sure .modal-title").text("Are You Sure You Want To Delete \""+name+" Grade "+ level +"\" From Categories");
+        $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#modalsave").text("Delete");
+        $('#modalsave').removeClass('btn-warning').addClass('btn-danger');
+        $("#sure").modal('show');
+        $("#modalsave").on("click", function () {
+               deleteCategories(currID);
+               $($(this).parents('tr')).remove(); // remove row
+               $("#sure").modal('hide');
+         });
+         $("#modalclose").on("click", function () {
+            $("#sure").modal('hide');
+      });
+    });
+
+   function deleteCategories(currID){
         $.ajax({ // delete from database
             type: "POST",
             url: "/php/inc-addcategories-deleterow.php",
@@ -104,8 +122,7 @@ $(document).ready(function () {
                         }, 200);
             }
         });
-
-    });
+    }
 
     //This fucntion causes a blur when the Enter Key is hit 
     // it blurs the table so it appears that the editing is done
@@ -114,6 +131,12 @@ $(document).ready(function () {
         $(this).on('keydown', function (e) {
             if (e.which == 13 && e.shiftKey == false) {
                 $(this).blur();
+                $('#info').show();
+                $('#info strong').text("Click \"Save\" to Store Changes");
+                setTimeout(
+                    function () {
+                        $('#info').fadeOut();
+                    }, 6000);
                 return false;
             } else if (e.which == 27) { // to exit editing without saving then reload db
                 $("#t_body").empty();
@@ -128,6 +151,8 @@ $(document).ready(function () {
         $("#sure .modal-title").text("Are You Sure You Want To Save?");
         $("#sure .modal-body").text("If you have changed a Category or Level, all Terms associtated " +
             "with the old Category or Level will match the new altered Category and Level");
+            $("#modalsave").text("OverWrite");
+            $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
         $("#sure").modal('show');
         $("#modalsave").on("click", function () {
                saveToDB();
