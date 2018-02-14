@@ -1,5 +1,5 @@
 <?php 
-session_start();
+    session_start();
     $_SESSION['user'] = "Name";
     $_SESSION['email'] = "student@test.com";
     $page_title = "Create Account";
@@ -9,7 +9,6 @@ session_start();
     include('php/inc.create-account.php'); 
     
 ?>
-
     <body>
 
     <?php 
@@ -20,16 +19,13 @@ session_start();
         <div class="container createAccount">
             <h1>Create Account</h1>
 
-            <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
+            <div class="alert alert-success" role="alert" id="alertSuccess">
                 <span>Successfully created account</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
 
-            <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
+            <div class="alert alert-danger alert-dismissable" role="alert" id="alertFail">
                 <span>Problem creating account! E-mail may be a duplicate.</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>
@@ -48,6 +44,9 @@ session_start();
                 </div>
 
                 <div class="form-group"><label for="email">Email:</label> <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                </div>
+
+                <div class="form-group"><label for="password">Password:</label> <input type="text" class="form-control" id="password" name="password" placeholder="Password" disabled>
                 </div>
 
                 <div class="form-group"><label for="school">School:</label> 

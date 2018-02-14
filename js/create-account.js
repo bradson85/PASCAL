@@ -2,7 +2,7 @@ $(document).ready(function() {
     
     var form = document.getElementById('createAccount');
     $('.alert').hide();
-    form.addEventListener('submit', function(e) {
+    $('#submit').click(function(e) {
         if(form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
@@ -20,17 +20,22 @@ $(document).ready(function() {
                     email: document.getElementById('email').value,
                     school: document.getElementById('school').value,
                     class: document.getElementById('class').value,
-                    accountType: document.getElementById('accountType').value
+                    accountType: document.getElementById('accountType').value,
+                    password: document.getElementById('password').value
                 },
                 success: function(response) {
+                    console.log(response);
                     if(response === "true"){
                         //$('#alertSuccess span').remove();
-                        $('#alertSuccess').show();
+                        $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
+                            $("#alertSuccess").slideUp(500);
+                        });
                         $('#createAccount')[0].reset();
                     }
                     else {
                         //$('#alertFail span').remove();
                         $('#alertFail').show();
+                        
                     }
                     
                 }
@@ -39,20 +44,27 @@ $(document).ready(function() {
 
     });
 
+    $('.alert').click(function() {
+        $(this).slideUp(500);
+    });
+
 
     $('#accountType').change(function (e) {
         // check account type to disable/enable different fields relevant to account type
         if(this.options[e.target.selectedIndex].text === "Teacher"){
             $('#school').removeAttr('disabled');
             $('#email').removeAttr('disabled');
+            $('#password').attr('disabled', 'disabled');
         }
         else if(this.options[e.target.selectedIndex].text === "Student"){
             $('#school').removeAttr('disabled');
-            $('#email').attr('disabled', 'disabled');
+            $('#password').removeAttr('disabled');
         }
         else if(this.options[e.target.selectedIndex].text === "Administrator"){
             $('#school').attr('disabled', 'disabled');
+            $('#class').attr('disabled', 'disabled');
             $('#email').removeAttr('disabled');
+            $('#password').attr('disabled', 'disabled');
         }
     });
     
