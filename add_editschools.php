@@ -47,30 +47,50 @@ include "sidebar-header.php"
   </div>
 </div>
 
-<!-- Alert boxes stuff-->
-      <?php
-      include("alertmessages-header.php");
-      // check get variable for import success
-    if(isset($_GET["imp"])) {
-      echo specialMessages($_GET["imp"],"success");
-           
-    } else{
-// check get for import fail
-    if(isset($_GET["fal"])) {
-      
-       echo specialMessages($_GET["fal"],"error");
-     }else{
-      echo simpleMessages();
-     }
-    }  
-  ?>
+<div id ="confirm" class="modal fade">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id ="modalclosesmall"class="btn btn-secondary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id ="changes" style = 'position:fixed; bottom: 0; right:0;'  class="alert alert-warning alert-dismissible fade show" role="alert" >
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>Changes Made?</strong> Dont Forget To Save.
+</div>
 
 <!-- END of Alert box stufff-->
 <!-- File Import/Export stuff-->
+  
 
-<div class="row">
-  <div class="col-sm-6">
-  <form method="POST" action="php/inc-addschools-importFile.php" enctype="multipart/form-data" id="fileForm">
+<!--  End of File Import/Export stuff-->
+
+
+<div class="modal fade" id="importModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal import content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:15px 40px;">
+          <H5>Import School List</H5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px 50px;">
+        <form method="POST" action="php/inc-addschools-importFile.php" enctype="multipart/form-data" id="fileForm">
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
@@ -78,30 +98,63 @@ include "sidebar-header.php"
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
   </form>
-</div>
-  <div class="col-sm-6"><label >Export CSV</label><br><br>
+    </div>   
+      </div> 
+    </div>  
+ </div>
+
+
+<div class="modal fade" id="exportModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal import content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:15px 40px;">
+          <H5>Export School List</H5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px 50px;">
+        <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export School List to CSV</small>
   <a href="/php/inc-addschools-exportFile.php" class="btn btn-primary" role="button" download="exportedterms">Download</a>
   
   </div>
-  
-</div>
-<!--  End of File Import/Export stuff-->
+    </div>   
+      </div> 
+    </div>  
+ </div>
+ 
+
+
+
       <!--  Table Part-->
         <div class="table-responsive">
           <H2> School Name</H2>
+          <p class="Buttons">
+            <button class = " btn btn-primary" id="addRow1">Add School</button>
+            <button class = " btn btn-primary" id="save1">Save Changes</button>
+          </p>
+          <small  class="form-text text-muted">Click Table Cells To Edit</small>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>School Name</th>
-                <th> &nbsp;</th>
+                <th class="col-sm-auto"> <div class="dropdown">
+  <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  &#9776;
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" id="importSelect" href="#">Import School List</a>
+    <a class="dropdown-item"  id="exportSelect" href="#">Export School List</a>
+  </div>
+</div></th>
               </tr>
             </thead>
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add School</button>
-            <button class = " btn btn-primary" id="save">Save Changes</button>
+            <button class = " btn btn-primary" id="addRow2">Add School</button>
+            <button class = " btn btn-primary" id="save2">Save Changes</button>
           </p>
         </div>
       </main>

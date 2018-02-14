@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    var count = 0 // for preventing save warning from popping up every time.
+    $('#changes').hide();
+
     // loadSearch();
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
     $(document).ready(function () {
@@ -16,23 +19,43 @@ $(document).ready(function () {
 
 
     $(document).on("change", "#t_body td",function(){
-        $('#info').show();
-        $('#info strong').text("Click \"Save\" to Store Changes");
+        $('#changes').show();
+        $('#changes strong').text("Click \"Save\" to Store Changes");
         setTimeout(
             function () {
-                $('#info').fadeOut();
-            }, 6000);
+                $('#changes').fadeOut();
+            }, 3000);
+        return false;
     });
 
-    $(document).on("blur", '[contenteditable="true"]', function () {
-                $('#info').show();
-                $('#info strong').text("Click \"Save\" to Store Changes");
-                setTimeout(
-                    function () {
-                        $('#info').fadeOut();
-                    }, 6000);
+     //This fucntion causes a blur when the Enter Key is hit 
+    // it blurs the table so it appears that the editing is done
+    // Also it doesnt save changes when escape is entered
+    $(document).on("focus", '[contenteditable="true"]', function () {
+        $(this).on('keydown', function (e) {
+            if (e.which == 13 && e.shiftKey == false) {
+                $(this).blur();
                 return false;
+            } else if (e.which == 27) { // to exit editing without saving then reload db
+                $("#t_body").empty();
+                loadDB();
+                return false;
+            }
+        });
     });
+    // this is hwat happens when blured
+    $(document).on("blur", '[contenteditable="true"]', function () {
+        count++;
+        if(count%7 == 1){
+            $("#changes").fadeIn(200);
+        $('#changes strong').text("Click \"Save\" to Store Changes");
+        setTimeout(
+            function () {
+                $('#changes').fadeOut();
+            }, 3000);
+        }
+        return false;
+});
 
 
     // load the db function asynchronously 
@@ -97,17 +120,45 @@ $(document).ready(function () {
 
     }
 
-    // this adds a new row for adding more words
+    //// for making new boxes appear to be place holders
+    $(document).on("click", "#newbox", function () {
+        $(this).empty();
+        $(this).css('color', 'black');
+        $(this).attr('id','#oldbox');
+});
+
+    // this adds a new row for adding more words to the top
     // generates a new row with 0 as id database generates new id.
-    $('#addRow').click(function (event) {
+    $('#addRow2').click(function (event) {
         event.preventDefault();
         $.get('php/inc-addwords-getcategories.php', function (data) {
             $categoriesSel = data;
             var rows = $('<tr><td style="display:none;">0</td>' +
                 $categoriesSel +
-                '<td contenteditable= "true">Enter A New Word</td>' // term name
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">'
                 +
-                '<td contenteditable= "true">Enter New Definition</td>' /// for level
+               ' Click To Enter A New Word</td>' // term name
+                +
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">Click To Enter New Definition</td>' /// for level
+                +
+                '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+            $('#word_table').prepend(rows);
+        });
+    });
+
+    // this adds a new row for adding more words to the bottom
+    // generates a new row with 0 as id database generates new id.
+    $(' #addRow1').click(function (event) {
+        event.preventDefault();
+        $.get('php/inc-addwords-getcategories.php', function (data) {
+            $categoriesSel = data;
+            var rows = $('<tr><td style="display:none;">0</td>' +
+                $categoriesSel +
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">'
+                +
+               ' Click To Enter A New Word</td>' // term name
+                +
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">Click To Enter New Definition</td>' /// for level
                 +
                 '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
             $('#word_table').append(rows);
@@ -140,39 +191,21 @@ $(document).ready(function () {
                 data: currID
             },
             success: function (data) {
-                $('#success').show();
-                $('#success strong').text(data);
-                setTimeout(
-                    function () {
-                        $('#success').fadeOut();
-                    }, 8000);
+                $("#confirm .modal-title").text("Confirm");
+                $("#confirm .modal-body").text(data);
+                $("#confirm").modal('show');
+                $("#modalclose").on("click", function () {
+                    loadDB();
+                    $("#confirm").modal('hide');
+              });
+              
             }
         });
     }
 
-    //This fucntion causes a blur when the Enter Key is hit 
-    // it blurs the table so it appears that the editing is done
-    // Also it doesnt save changes when escape is entered
-    $(document).on("focus", '[contenteditable="true"]', function () {
-        $(this).on('keydown', function (e) {
-            if (e.which == 13 && e.shiftKey == false) {
-                $(this).blur();
-                $('#info').show();
-                $('#info strong').text("Click \"Save\" to Store Changes");
-                setTimeout(
-                    function () {
-                        $('#info').fadeOut();
-                    }, 6000);
-                return false;
-            } else if (e.which == 27) { // to exit editing without saving then reload db
-                $("#t_body").empty();
-                loadDB();
-                return false;
-            }
-        });
-    });
+    
     // saving new stuff to database by clicking save button of editable table
-    $(document).on("click", "#save", function () {
+    $(document).on("click", "#save1, #save2", function () {
         var save = true;
          
         // this iterates throught every value in the table and stores it in an array
@@ -208,21 +241,21 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     if (data == 0) { // this is for if a category is not selected.
-                        $('#warning').show(); // show warning messagees
-                        $('#warning strong').text("Make Sure You Select A Category"); // add that message to html
-                        setTimeout(
-                            function () {
-                                $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                            }, 7000);
+                        $("#confirm .modal-title").text("Please Select Category");
+                        $("#confirm .modal-body").text("The changes have been succsessfully saved.");
+            $("#confirm").modal('show');
+            $("#modalclose").on("click", function () {
+                $("#confirm").modal('hide');
+            });
                     } else {
                         if (data == 1) { // if a categroy is selected
-                            $('#success').show(); //show success message
-                            $('#success strong').text("Saved Successfully");
-                            setTimeout(
-                                function () {
-                                    $('#success').fadeOut(); // hide success messsage after 8 seconds
-                                }, 8000);
-
+                            $("#confirm .modal-title").text("Sucessfully Saved");
+                            $("#confirm .modal-body").text(data);
+                            $("#confirm").modal('show');
+                            $("#modalclose").on("click", function () {
+                                $("#confirm").modal('hide');
+                          });
+    
 
                             loadDB(); // refresh the newly updated the database
                         }
@@ -230,12 +263,12 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $('#warning').show(); // show warning messagees
-            $('#warning strong').text("You have an empty field. \n Please enter data into all fields"); // add the message to html
-            setTimeout(
-                function () {
-                    $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                }, 5000);
+            $("#confirm .modal-title").text("Data Not Saved");
+            $("#confirm .modal-body").text(data);
+            $("#confirm").modal('show');
+            $("#modalclose").on("click", function () {
+                $("#confirm").modal('hide');
+          });
         }
     });
 

@@ -48,45 +48,70 @@ include "sidebar-header.php"
 </div>
 
 <!-- Alert boxes stuff-->
-      <?php
-      include("alertmessages-header.php");
-      // check get variable for import success
-    if(isset($_GET["imp"])) {
-      echo specialMessages($_GET["imp"],"success");
-           
-    } else{
-// check get for import fail
-    if(isset($_GET["fal"])) {
-      
-       echo specialMessages($_GET["fal"],"error");
-     }else{
-      echo simpleMessages();
-     }
-    }  
-  ?>
+ 
+<div id ="confirm" class="modal fade">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- END of Alert box stufff-->
       <!--  Table Part-->
         <div class="table-responsive">
           <H2> Categories</H2>
+          <p class="Buttons">
+            <button class = " btn btn-primary" id="addRow2">Add Category</button>
+            <button class = " btn btn-primary" id="save2">Save Changes</button>
+            <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" 
+            data-placement="right" title="Add New Categories by Clicking Add Categories Button.
+                                          Save Changes by Clicking Save.">?</button>
+          </p>
+          <small  class="form-text text-muted">Click Table Cells To Edit</small>
           <table id="word_table" class="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>Category Name</th>
                 <th>Level</th>
-                <th> &nbsp;</th>
+                <th class="col-sm-auto"> <div class="dropdown">
+  <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  &#9776;
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" id="importSelect" href="import.php">Import Categories List</a>
+    <a class="dropdown-item"  id="exportSelect" href="export.php">Export Categories List</a>
+  </div>
+</div></th>
               </tr>
             </thead>
             <tbody id = "t_body"></tbody>
           </table>
           <p class="Buttons">
-            <button class = " btn btn-primary" id="addRow">Add Category</button>
-            <button class = " btn btn-primary" id="save">Save Changes</button>
+            <button class = " btn btn-primary" id="addRow1">Add Category</button>
+            <button class = " btn btn-primary" id="save1">Save Changes</button>
           </p>
         </div>
       </main>
     </div>
   </div>
+  <div id ="changes" style = 'position:fixed; bottom: 0; right:0;'  class="alert alert-warning alert-dismissible fade show" role="alert" >
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>Changes Made?</strong> Dont Forget To Save.
+</div>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS Code from bootstrap site -->
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

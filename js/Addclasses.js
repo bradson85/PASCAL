@@ -1,6 +1,14 @@
 $(document).ready(function () {
+    var count = 0 // for preventing save warning from popping up every time.
+    $('#changes').hide();
 
+    $("a#importSelect").click(function(){
+        $("#importModal").modal();
+    });
 
+    $("a#exportSelect").click(function(){
+        $("#exportModal").modal();
+    });
 
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
     $(document).ready(function () {
@@ -75,18 +83,59 @@ $(document).ready(function () {
         });
 
     }
+
+     //// for making new boxes appear to be place holders
+     $(document).on("click", "#newbox", function () {
+        $(this).empty();
+        $(this).css('color', 'black');
+        $(this).attr('id','#oldbox');
+});
     
 
-    // this adds a new row for adding more words
+    // this adds a new row  to the top of the list for adding more words
     // generates a new row with 0 as id database generates new id.
-    $('#addRow').click(function (event) {
+    $('#addRow2').click(function (event) {
         event.preventDefault();
         $.post('php/inc-addclasses-getclassselected.php',{
             update: "data"
         }, function (data) {
             $schoolsel = data;
             var rows = $('<tr><td style=\'display:none;\'>0</td>' +
-                '<td contenteditable= "true">Enter A Class Name</td>' // class name
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">Enter A Class Name</td>' // class name
+                +
+            '<td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>' /// for level
+            + 
+            '<option value = \"1\"> 1 </option>'
+            +
+            '<option value = \"2\"> 2 </option>'
+            +
+            '<option value = \"3\"> 3 </option>'
+            +
+            '<option value = \"4\"> 4 </option>'
+            +
+            '<option value = \"5\"> 5 </option>'
+            + 
+            '<option value = \"6\"> 6 </option>'
+            +
+            '<option value = \"7\"> 7 </option></select></td>'
+                +
+                $schoolsel
+                +
+                '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+            $('#word_table').prepend(rows);
+        });
+    });
+
+    // this adds a new row to the bottom of the list for adding more words
+    // generates a new row with 0 as id database generates new id.
+    $('#addRow1').click(function (event) {
+        event.preventDefault();
+        $.post('php/inc-addclasses-getclassselected.php',{
+            update: "data"
+        }, function (data) {
+            $schoolsel = data;
+            var rows = $('<tr><td style=\'display:none;\'>0</td>' +
+                '<td id ="newbox" contenteditable= "true" style="color:#778899;">Enter A Class Name</td>' // class name
                 +
             '<td><select class=\"form-control\" id=\"selLev\"><<option value = \"0\"> --Select Level--</option>' /// for level
             + 
@@ -139,36 +188,29 @@ $(document).ready(function () {
                 data: currID
             },
             success: function (data) {
-                $('#info').show();
-                $('#info strong').text(data);
-                setTimeout(
-                    function () {
-                        $('#info').fadeOut();
-                    }, 8000);
-
-                    loadDB(); // refresh the newly updated the database 
+                $("#confirm .modal-title").text("Confirm");
+                $("#confirm .modal-body").text(data);
+                $("#confirm").modal('show');
+                $("#modalclose").on("click", function () {
+                    loadDB();
                     setTimeout(
                         function () {
                             updateSelectedSchools();
                             updateSelectedLevels();
                         }, 250); 
+                    $("#confirm").modal('hide');
+              });      
             }
         });
     }
 
-    //This fucntion causes a blur when the Enter Key is hit 
+   //This fucntion causes a blur when the Enter Key is hit 
     // it blurs the table so it appears that the editing is done
     // Also it doesnt save changes when escape is entered
     $(document).on("focus", '[contenteditable="true"]', function () {
         $(this).on('keydown', function (e) {
             if (e.which == 13 && e.shiftKey == false) {
                 $(this).blur();
-                $('#info').show();
-                $('#info strong').text("Click \"Save\" to Store Changes");
-                setTimeout(
-                    function () {
-                        $('#info').fadeOut();
-                    }, 6000);
                 return false;
             } else if (e.which == 27) { // to exit editing without saving then reload db
                 $("#t_body").empty();
@@ -177,9 +219,22 @@ $(document).ready(function () {
             }
         });
     });
+    // this is hwat happens when blured
+    $(document).on("blur", '[contenteditable="true"]', function () {
+        count++;
+        if(count%7 == 1){
+            $("#changes").fadeIn(200);
+        $('#changes strong').text("Click \"Save\" to Store Changes");
+        setTimeout(
+            function () {
+                $('#changes').fadeOut();
+            }, 3000);
+        }
+        return false;
+});
 
     // saving new stuff to database by clicking save button of editable table
-    $("#save").on("click", function () {
+    $("#save1, #save2").on("click", function () {
         
                 $("#sure .modal-title").text("Are You Sure You Want To Save?");
                 $("#sure .modal-body").text("If you have changed a Class, all teachers and students associtated " +
@@ -231,41 +286,42 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     if (data == 1) { // this is for if successful query.
-                        $('#success').show(); //show success message
-                        $('#success strong').html("<h5>Saved Successfully<h5><h6> Any Duplicates Not Saved<\h6>");
-                        setTimeout(
-                            function () {
-                                $('#success').fadeOut(); // hide success messsage after 8 seconds
-                            }, 8000);
+                        $("#confirm .modal-title").text("Sucessfully Saved");
+                        $("#confirm .modal-body").text("The changes have been succsessfully saved.");
+                        $("#confirm").modal('show');
+                        $("#modalclose").on("click", function () {
+                            loadDB(); // refresh the newly updated the database
+                            setTimeout(
+                                function () {
+                                    updateSelectedSchools();
+                                 updateSelectedLevels();
+                                }, 250);
+    
+                                
+                            $("#confirm").modal('hide');
+                      });
 
-
-                        loadDB(); // refresh the newly updated the database
-                        setTimeout(
-                            function () {
-                                updateSelectedSchools();
-                updateSelectedLevels();
-                            }, 250);
-
-                            
+                      
+                       
                     } else {
-
-                        $('#warning').show(); // show warning messagees
-                        $('#warning strong').text(data); // add that message to html
-                        setTimeout(
-                            function () {
-                                $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                            }, 7000);
+                        $("#confirm .modal-title").text("Data Not Saved");
+                        $("#confirm .modal-body").text(data);
+                        $("#confirm").modal('show');
+                        $("#modalclose").on("click", function () {
+                            $("#confirm").modal('hide');
+                      });
+                       
                     }
 
                 }
             });
         } else {
-            $('#warning').show(); // show warning messagees
-            $('#warning strong').text("You have an empty field. \n Please enter data into all fields"); // add the message to html
-            setTimeout(
-                function () {
-                    $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                }, 5000);
+            $("#confirm .modal-title").text("Data Not Saved");
+            $("#confirm .modal-body").text('Empty field. \nPlease enter data into all fields.');
+            $("#confirm").modal('show');
+            $("#modalclose").on("click", function () {
+                $("#confirm").modal('hide');
+          });
         }
     }
 
