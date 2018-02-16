@@ -2,9 +2,18 @@ $(document).ready(function(){
     
     $('.messages').hide();
     
+    loadStudents(1);
+
+    $('#class').change(function() {
+        loadStudents(document.getElementById('#class').value());
+    });
 
     
+    $('#selfSelect').click(function (){
+        alert('self select is much harder but here you go....');
+    });
 
+    
 
 
     $(document).on("change", "select",function(){
@@ -31,7 +40,7 @@ $(document).ready(function(){
         function loadCategorySelect(){
               $.ajax({
                 type: "POST",
-                url: "../php/inc-createassessment-getcategories.php",
+                url: "php/inc-createassessment-getcategories.php",
                 data: {
                     data:  ""    
                 },
@@ -62,7 +71,7 @@ $(document).ready(function(){
     function loadAssessments(){
         $.ajax({
             type: "POST",
-            url: "../php/inc-createassessment-getassessments.php",
+            url: "php/inc-createassessment-getassessments.php",
             data: {
                 data:  ""    
             },
@@ -88,6 +97,27 @@ $(document).ready(function(){
         });
     });
 
+    function loadStudents(classID) {
+        $.ajax({
+            type: "POST",
+            url: "php/inc.create-assessment.php",
+            dataType: "json",
+            data: {
+                classID: classID
+            },
+            success: function(response) {
+                console.log(response);
+                $('#studentTable').append('<tbody>');
+                let checkbox = '<input type="checkbox" class="form-check-input checkbox">';
+                for(let i = 0; i < response.length; i++){
+                    $('#studentTable').append('<tr><td>' + checkbox + '</td><td>' + response[i].name + '</td></tr>');
+                }
+                $('#studentTable').append('</tbody>');
+
+            }
+        });
+    }
+
     function getTerms(catID, formResponse) {
         let array = [];
         console.log(catID);
@@ -103,12 +133,9 @@ $(document).ready(function(){
                 array = pickTerms(response, 20, 8);
                 console.log(array);
                 submit(array, formResponse);
-<<<<<<< HEAD
-=======
             },
             error: function(response) {
                 console.log(response);
->>>>>>> CreateAssessment
             }
         });
 
@@ -159,17 +186,11 @@ $(document).ready(function(){
         for(let i = 0; i < numTerms; i++) {
             terms[i] = array[i];
         }
-<<<<<<< HEAD
-        // Add the leftover terms to a new "extra" array for remaining definitions
-        for(let i = 0; i < numDefs; i++) {
-            extra[i] = array[i];
-=======
         let count = 0;
         // Add the leftover terms to a new "extra" array for remaining definitions
         for(let i = numTerms; i < (numDefs + numTerms); i++) {
             extra[count] = array[i];
             count++;
->>>>>>> CreateAssessment
         }
         // Store these arrays in an array for returning
         result[0] = terms;

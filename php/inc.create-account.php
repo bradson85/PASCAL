@@ -51,15 +51,17 @@
         $pdo = pdo_construct();
 
         //Compare strings because each account type has a separate table
-        $sql = "INSERT INTO accounts (name, email, type) VALUES ('$name', '$email', $type)";
+        
         if(strcmp($accountType, "Administrator") == 0)
         {
             $type = 0;
+            $sql = "INSERT INTO accounts (name, email, type) VALUES ('$name', '$email', $type)";
             //echo 'Ready to insert into admins';
         }
         elseif(strcmp($accountType, "Teacher") == 0)
         {
             $type = 1;
+            $sql = "INSERT INTO accounts (name, email, type) VALUES ('$name', '$email', $type)";
         }   
         elseif(strcmp($accountType, "Student") == 0) 
         {
@@ -69,7 +71,11 @@
         }
         
         $pdo->exec($sql);
+        $accountID = $pdo->lastInsertId();
         $pdo = null;
+
+        $pdo = pdo_construct();
+        $sql = "INSERT INTO classlist (classID, accountID) VALUES ($classID, $accountID)";
 
         // set up the email and database insertion to create a password.
         // once an account is created, a unique random ID is generated
