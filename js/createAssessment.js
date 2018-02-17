@@ -19,15 +19,20 @@ $(document).ready(function(){
     $(document).on("change", "select",function(){
         var catID = $(this).val();
         console.log(catID);
+
         $.ajax({
             type: "POST",
-            url: "../php/inc-createassessmentupdatetable.php",
+            url: "php/inc.create-assessment.php",
+            dataType: "json",
             data: {
-                data: catID       
+                catID: catID
             },
-            success: function (data) {
-                $('#t_body').html(data);
-                $('.messages').show(); 
+            success: function(response) {
+                console.log(response);
+                for(let i = 0; i < response.length; i++) {
+                    setTimeout(50,showTerms(response[i]));
+                    
+                }
             }
         });
     });
@@ -81,6 +86,31 @@ $(document).ready(function(){
         });
     }
 
+    function showTerms(obj) {
+        let preTitle = "<div class=\"card\"> <div class=\"card-header\" id=\"heading" + obj.ID + "\"> <h5 class=\"mb-0\"><button class=\"btn btn-link\" data-toggle=\"collapse\" data-target=\"#collapse" + obj.ID + "\" aria-controls=\"collapse" + obj.ID + "\">";
+        let postTitle = "</button> </h5> </div>";
+        let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse show\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"terms\" <div class=\"card-body\"> <table class=\"table table-striped\"> <thead><tr><th></th><th>Term</th><th>Definition</th><th>Match</th></tr></thead><tbody>";
+        let postBody = "</tbody></table></div></div>";
+        let html = "";
+        html += (preTitle + obj.name + " - Grade " + obj.level + postTitle + preBody);
+        $.ajax({
+            type: "POST",
+            url: "php/inc-createassessmentupdatetable.php",
+            data: {
+                data: obj.ID       
+            },
+            success: function (data) {
+                html += (data);
+                html += (postBody);
+                $('#terms').append(html);
+                $('.messages').show(); 
+            }
+        });
+
+        
+        
+    }
+
     $('#submit').click(function (){
         $.ajax({
             type: "POST",
@@ -110,7 +140,7 @@ $(document).ready(function(){
                 $('#studentTable').append('<tbody>');
                 let checkbox = '<input type="checkbox" class="form-check-input checkbox">';
                 for(let i = 0; i < response.length; i++){
-                    $('#studentTable').append('<tr><td>' + checkbox + '</td><td>' + response[i].name + '</td></tr>');
+                    $('#studentTable').append('<tr><td value="'+ response[i].ID + '">' + checkbox + '</td><td>' + response[i].name + '</td></tr>');
                 }
                 $('#studentTable').append('</tbody>');
 

@@ -15,7 +15,7 @@ $(document).ready(function () {
 
     // load the db function asynchronously 
     function loadDB() {
-        $.get('/php/inc-addcategories-getcategories.php', function (data) {
+        $.get('php/inc-addcategories-getcategories.php', function (data) {
             $("#t_body").html(data);
         });
     }
@@ -35,7 +35,7 @@ $(document).ready(function () {
         ID = JSON.stringify(ID);
         $.ajax({
             type: "POST",
-            url: "/php/inc-addcategories-getlevels.php",
+            url: "php/inc-addcategories-getlevels.php",
             data: {
                 IDs: ID,
             },
@@ -85,7 +85,7 @@ $(document).ready(function () {
         var wordnumber = $('#word_table tr:last-child td:first-child').html();
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-addcategories-deleterow.php",
+            url: "php/inc-addcategories-deleterow.php",
             data: {
                 data: currID
             },

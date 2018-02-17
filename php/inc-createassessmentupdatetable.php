@@ -13,7 +13,7 @@
        DB_USER, DB_PWD);
        $pdo->setAttribute(PDO::ATTR_ERRMODE,
        PDO::ERRMODE_EXCEPTION);
-      
+       $html = "";
        // prepare sql and bind parameters
        // example query. updates if an update has happend INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
        $sql = $pdo->prepare("SELECT * FROM terms
@@ -27,12 +27,16 @@
         $def = $row['definition'];    
       $id = $row['ID'];       
 
-    echo ("<tr><td>$count</td>
+    $html = $html . ("<tr><td><input type=\"checkbox\" class=\"form-check-input checkbox\"></td>
    <td>$word</td>  
     <td>$def</td>
+    <td><input type=\"checkbox\" class=\"form-check-input checkbox\"></td>
     </tr>");
-    $count++;
+
+
+    
   }
+  echo $html;
   $pdo = null;  
        }
    catch(PDOException $e)
