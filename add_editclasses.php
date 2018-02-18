@@ -119,6 +119,9 @@ include "sidebar-header.php"
           <p class="Buttons">
             <button class = " btn btn-primary" id="addRow2">Add Class</button>
             <button class = " btn btn-primary" id="save2">Save Changes</button>
+            <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" 
+            data-placement="right" title="Add New Class by Clicking Add Class Button.
+                       Save Changes by Clicking Save."><img src ="img/helpicon.png" width="25"> </button>
           </p>
           <small  class="form-text text-muted">Click Table Cells To Edit</small>
           <table id="word_table" class="table table-striped table-bordered">
@@ -132,7 +135,7 @@ include "sidebar-header.php"
   &#9776;
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" id="importSelect" href="#">Import Class List</a>
+    <a class="dropdown-item" id="classImportSelect" href="#">Import Class List</a>
     <a class="dropdown-item"  id="exportSelect" href="#">Export Class List</a>
   </div>
 </div></th>

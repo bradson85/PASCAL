@@ -62,14 +62,14 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
         fclose($file); // close file
          // this redirects back to add words page with a message in the get
          // use "imp" in get for fail
-        $success = "CSV import success" ;
-        header("Location: ../add_editschools.php?imp=$success");
+        echo $success = "CSV import success" ;
+        
     }
     else {
          // this redirects back to add words page with a message in the get
          // use "fal" in get for fail 
-        $error=  "Error: No csv found";
-        header("Location: ../add_editschools.php?fal=$error");
+       echo $error=  "Error: No csv found";
+       
     }
     }
     ?>

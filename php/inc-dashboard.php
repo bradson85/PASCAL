@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
   integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+<!--dataTables Testing responsive table-->
+
+<link rel="stylesheet" href= "https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+
+
   <!-- Custom styles for this template -->
   <link rel="stylesheet" href="../css/cssAddWords.css" />
 </head>
@@ -142,48 +147,12 @@
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Tiger Nixon</td>
-                  <td>Grade 3 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>9</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Garrett Winters</td>
-                  <td>Grade 4</td>
-                  <td>Mrs. Doe</td>
-                  <td>Town</td>
-                  <td>10</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Donna Snider</td>
-                  <td>Grade 5 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>11</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Michael Bruce</td>
-                  <td>Grade 3 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>9</td>
-                  <td>95</td>
-                  <td>9/4/17</td>
-                </tr>
+              <tbody id="studentList">
+               
                 </tbody>
             </table>
           </div>
         </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>
       
         
@@ -197,6 +166,7 @@
     crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
+    <script src= "https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"/>
     <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
   <script src="/tests/tests.js"></script>
   <script>
@@ -215,7 +185,7 @@
       }
     });
   </script>
-  <script src="../js/Addwords.js"></script>
+  <script src="../js/dashboard.js"></script>
 </body>
 
 </html>

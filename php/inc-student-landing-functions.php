@@ -25,6 +25,8 @@ $assignmentID = assignedAssessments($id);
 function assignedAssessments($id){
     
     $assessmentID = 0;
+    $date = strtotime("now");
+    $finalID = 0;
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
         DB_USER, DB_PWD);
@@ -33,15 +35,40 @@ function assignedAssessments($id){
     // query to get all categries for drop down menu
         $sql = "SELECT assessmentID FROM assessmentassignments Where studentID = '$id'";
         $result = $pdo->query($sql);
-        $row = $result->fetch(PDO::FETCH_ASSOC);
+        while($row = $result->fetch(PDO::FETCH_ASSOC)){
             $assessmentID = $row["assessmentID"];   
-            
+            $date1 = getAssessmentDate($assessmentID);
+            if ($date1 < $date){
+                $date = $date1;
+                $finalID = $assessmentID;
+            }
+        }
       $pdo = null;
       } catch (PDOException $e) {
       die( $e->getMessage() );
       } 
-    return $assessmentID;
+    return $finalID;
 }
+
+function getAssessmentDate($id){
+    try {
+        $pdo = new PDO(DB_CONNECTION_STRING,
+        DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE,
+        PDO::ERRMODE_EXCEPTION);
+    // query to get all categries for drop down menu
+        $sql = "SELECT start_date FROM assessments Where ID = '$id'";
+        $result = $pdo->query($sql);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+            $date = $row["start_date"];   
+      $pdo = null;
+      } catch (PDOException $e) {
+      die( $e->getMessage() );
+      } 
+    return $date;
+
+}
+
 
 function getAssessmentData($id){
     try {
@@ -53,7 +80,7 @@ function getAssessmentData($id){
         $sql = "SELECT * FROM assessments where ID = '$id'";
         $result = $pdo->query($sql);
         $row = $result->fetch(PDO::FETCH_ASSOC);
-            $start = $row["start_date"];   
+            $start = $row["start_date"];  
             $end = $row["end_date"];
             $class = getClassName($row['classID']);
             $category = getCategoryName($row['catID']);
@@ -68,7 +95,7 @@ function getAssessmentData($id){
       "start" => $start
       );
        
-      return $arr;
+      return($arr);
 
 }
 

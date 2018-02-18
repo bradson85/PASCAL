@@ -23,22 +23,13 @@
 
         <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a class="nav-link" href="import.php">Import From CSV</a>
+          <a class="nav-link" href="import.php">Import Term Data From CSV</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="export.php">Export To CSV</a>
+          <a class="nav-link" href="export.php">Export Term Data To CSV</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="add_editwords.php">Add or Edit Terms</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="add_editcategories.php">Add or Edit Categories</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="add_editschools.php">Add or Edit Schools</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="add_editclasses.php">Add or Edit Classes</a>
+          <a class="nav-link" href="admin_data.php">Data Administration</a>
         </li>
       </ul>
 
@@ -48,10 +39,6 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="deleteAccounts.php">Delete Accounts</a>
-    </li>
-    
-      <li class="nav-item">
-      <a class="nav-link" href="#">Another nav item</a>
     </li>
       </ul>
       </nav>

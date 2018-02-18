@@ -75,9 +75,9 @@ include "sidebar-header.php"
           <p class="Buttons">
             <button class = " btn btn-primary" id="addRow2">Add Category</button>
             <button class = " btn btn-primary" id="save2">Save Changes</button>
-            <button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" 
+            <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" 
             data-placement="right" title="Add New Categories by Clicking Add Categories Button.
-                                          Save Changes by Clicking Save.">?</button>
+                       Save Changes by Clicking Save."><img src ="img/helpicon.png" width="25"> </button>
           </p>
           <small  class="form-text text-muted">Click Table Cells To Edit</small>
           <table id="word_table" class="table table-striped table-bordered">
@@ -92,6 +92,7 @@ include "sidebar-header.php"
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <a class="dropdown-item" id="importSelect" href="import.php">Import Categories List</a>
     <a class="dropdown-item"  id="exportSelect" href="export.php">Export Categories List</a>
+    <a class="dropdown-item"  id="exportSelect" href="export.php">Edit Terms List</a>
   </div>
 </div></th>
               </tr>

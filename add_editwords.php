@@ -78,6 +78,9 @@ include "topbar-header.php";
         <p class="Buttons">
             <button class = " btn btn-primary" id="addRow2">Add Term</button>
             <button class = " btn btn-primary" id="save2">Save Changes</button>
+            <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" 
+            data-placement="right" title="Add New Terms by Clicking Add Terms Button.
+                       Save Changes by Clicking Save."><img src ="img/helpicon.png" width="25"> </button>
           </p>
           <small  class="form-text text-muted">Click Table Cells To Edit</small>
       <!--  Table Part-->
@@ -95,6 +98,7 @@ include "topbar-header.php";
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <a class="dropdown-item" id="importSelect" href="import.php">Import Terms List</a>
     <a class="dropdown-item"  id="exportSelect" href="export.php">Export Terms List</a>
+    <a class="dropdown-item"  id="categorySelect" href="add_editcategories.php">Edit Categories List</a>
   </div>
 </div></th>
               </tr>

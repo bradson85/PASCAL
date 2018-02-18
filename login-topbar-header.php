@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault"> <!--  This is what makes it responsive-->
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#"> Help</a>
+          <a class="nav-link" href="#">About</a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

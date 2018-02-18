@@ -17,7 +17,10 @@ session_start();
           </a>
         </li>
         <li class="nav-item customlink">
-          <a class="nav-link" href="#">&#9881 &nbsp Settings</a>
+          <a class="nav-link" href="admin_data.php">&#9881 Data Management&nbsp</a>
+        </li>
+        <li class="nav-item customlink">
+          <a class="nav-link" href="account_manage.php">&#128100 &nbsp Account Management&nbsp</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#"> Help</a>
@@ -25,9 +28,9 @@ session_start();
       </ul>
       <ul class="nav navbar-nav navbar-right">
       <li class="nav-item customlink">
-      <a class="nav-link" href="php/logout.php">&#128274 &nbsp Logout</a>
+      <a class="nav-link" href="php/logout.php">&#128274 &nbsp Logout &nbsp</a>
       <li class="nav-item">
-          <a class="nav-link" href="#">&#128100  &nbsp  <?php print_r( $_SESSION['user']); ?></a>
+          <a class="nav-link" href="#">  &nbsp  <?php print_r( $_SESSION['user']); ?></a>
     </ul>
     </div>
   </nav>

@@ -26,7 +26,6 @@ session_start();
 <?php 
 
 include  __DIR__ ."/../topbar-header.php"; 
-include  __DIR__ ."/../teacher-sidebar-header.php";
 
 
 ?>

@@ -116,7 +116,7 @@ function dbGetAssessments(){
         echo "Error: " . $e->getMessage();
         }
     $pdo = null;
-    return $selectString.= "</select>";
+    return $selectString.= "</select> <p class='text-sm-right'><a class='text-muted' href='createAssessment.php'>Create New Assessment</a></p>";
 }
 
 
@@ -249,8 +249,8 @@ function dbGetAssessments(){
             $sql = "SELECT * FROM assessments where ID = '$id'";
             $result = $pdo->query($sql);
             $row = $result->fetch(PDO::FETCH_ASSOC);
-                $start = $row["assessmentID"];   
-                $end = $row["assessmentID"];
+                $start = $row["start_date"];   
+                $end = $row["end_date"];
                 $class = getClassName($row['classID']);
                 $category = getCategoryName($row['catID']);
           $pdo = null;

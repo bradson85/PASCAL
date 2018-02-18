@@ -1,6 +1,7 @@
 $(document).ready(function () {
     var count = 0 // for preventing save warning from popping up every time.
     $('#changes').hide();
+    $('[data-toggle="tooltip"]').tooltip();
 
     // loadSearch();
     // loads data table when document loads  then has slight delay for select statments so they dont load before everything
@@ -16,6 +17,8 @@ $(document).ready(function () {
     $(document).on("change", "#sort",function(){
         loadDB();
     });
+
+    
 
 
     $(document).on("change", "#t_body td",function(){
@@ -80,9 +83,9 @@ $(document).ready(function () {
     }
 
     function loadSearch(){
-        $.get('php/inc-addwords-getsorting.php', function (data) {
-            $categoriesSel = data;
-            var rows = "<td> View Words By Category:</td>" + $categoriesSel;
+        $.post('php/inc-addwords-getsorting.php', function (data) {
+            categoriesSel = data;
+            var rows = "<td> View Words By Category:</td>" + categoriesSel;
             $("#sort_body").html(rows);
         });
        

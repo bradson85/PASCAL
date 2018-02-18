@@ -47,13 +47,22 @@
 
      <!--Sorting Stuff-->
      
-         <H2> Assign An Assessment To A Student</H2>
+         <H2> Assign An Assessment</H2>
+         <small  class="form-text text-muted">To Assign an Assessment: Pick School, Class,
+          Assign To Choice, Assign To Student or Entire Class , Pick Which Assessment To Assign:</small>
           <br>
-          <div id= "school"></div>
-          <div id= "classes"></div>
-          <div id= "options"></div>
-          <div id= "students"></div>
-          <div id= "assessments"></div>
+          <div id= "school">
+         
+          </div>
+          <div id= "classes">
+         
+          </div>
+          <div id= "options">
+          </div>
+          <div id= "students">
+          </div>
+          <div id= "assessments">
+          </div>
           <br>
             <p class="Buttons">
             <button class = " btn btn-primary" id="assign" disabled >Assign Assessment</button>

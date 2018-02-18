@@ -133,6 +133,9 @@ include "sidebar-header.php"
           <p class="Buttons">
             <button class = " btn btn-primary" id="addRow1">Add School</button>
             <button class = " btn btn-primary" id="save1">Save Changes</button>
+            <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" 
+            data-placement="right" title="Add New School by Clicking Add School Button.
+                       Save Changes by Clicking Save."><img src ="img/helpicon.png" width="25"> </button>
           </p>
           <small  class="form-text text-muted">Click Table Cells To Edit</small>
           <table id="word_table" class="table table-striped table-bordered">
