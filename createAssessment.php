@@ -30,7 +30,7 @@ include "sidebar-header.php"
         </div>
         <div class="col-sm-4">
           <label for="date">Date:</label>
-          <input type="date" id="date">
+          <input type="date" id="startDate">
         </div>
         <div class="col-sm-4">
           <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -67,7 +67,7 @@ include "sidebar-header.php"
       <div class="row">
         
         <div class="col">
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn btn-primary" id="submit">Create</button>
         </div>
       </div>
       <!--  Table Part-->

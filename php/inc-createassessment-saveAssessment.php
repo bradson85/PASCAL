@@ -11,7 +11,7 @@
         $startDate = $_POST['startDate'];
         $classID = $_POST['classID'];
 
-        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ($startDate, $catID, $classID)";
+        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ('$startDate', $catID, $classID)";
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
 

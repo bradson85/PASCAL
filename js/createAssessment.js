@@ -1,25 +1,49 @@
 $(document).ready(function(){
     
     $('.messages').hide();
+    $('#terms').hide();
     
     loadStudents(1);
+    cats = [];
+    checkedNum = 0;
+    matchedNum = 0;
 
     $('#class').change(function() {
         loadStudents(document.getElementById('#class').value());
     });
 
+    $(document).on('hidden.bs.collapse', '#collapse2', function() {
+        console.log('i collapsed');
+    });
     
     $('#selfSelect').click(function (){
-        alert('self select is much harder but here you go....');
+        $('#terms').show();
+    });
+
+    $('#random').click(function() {
+        $('#terms').hide();
     });
 
     
 
 
+    $(document).on("click", "#selectAll", function() {
+        let table = $(this).closest('table');
+        $('td input:checkbox', table).prop('checked', this.checked);
+    });
+    
+    $(document).on('change', '.check', function() {
+        if(this.checked)
+            checkedNum++;
+        else
+            checkedNum--;
+        console.log(checkedNum);
+    });
+
     $(document).on("change", "select",function(){
         var catID = $(this).val();
         console.log(catID);
-
+        $('#terms').empty();
         $.ajax({
             type: "POST",
             url: "php/inc.create-assessment.php",
@@ -29,8 +53,9 @@ $(document).ready(function(){
             },
             success: function(response) {
                 console.log(response);
+                cats = response;
                 for(let i = 0; i < response.length; i++) {
-                    setTimeout(50,showTerms(response[i]));
+                    setTimeout(1000,showTerms(response[i]));
                     
                 }
             }
@@ -87,9 +112,9 @@ $(document).ready(function(){
     }
 
     function showTerms(obj) {
-        let preTitle = "<div class=\"card\"> <div class=\"card-header\" id=\"heading" + obj.ID + "\"> <h5 class=\"mb-0\"><button class=\"btn btn-link\" data-toggle=\"collapse\" data-target=\"#collapse" + obj.ID + "\" aria-controls=\"collapse" + obj.ID + "\">";
+        let preTitle = "<div class=\"card\" style=\"height: 10%\"> <div class=\"card-header\" id=\"heading" + obj.ID + "\"> <h5 class=\"mb-0\"><button class=\"btn btn-link collapsed\" data-toggle=\"collapse\" data-target=\"#collapse" + obj.ID + "\" aria-controls=\"collapse" + obj.ID + "\">";
         let postTitle = "</button> </h5> </div>";
-        let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse show\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"terms\" <div class=\"card-body\"> <table class=\"table table-striped\"> <thead><tr><th></th><th>Term</th><th>Definition</th><th>Match</th></tr></thead><tbody>";
+        let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"#terms\"> <div class=\"card-body\" style=\"overflow-y: auto\"> <table class=\"table table-striped\"> <thead><tr><th></th><th>Term</th><th>Definition</th><th>Match</th></tr></thead><tbody>";
         let postBody = "</tbody></table></div></div>";
         let html = "";
         html += (preTitle + obj.name + " - Grade " + obj.level + postTitle + preBody);
@@ -112,20 +137,77 @@ $(document).ready(function(){
     }
 
     $('#submit').click(function (){
+        if($('#selfSelect').checked)
+            processChecks();
+        else {
+            console.log("Self select wasn't checked on submit!");
+            console.log($('#startDate').val());
+            $.ajax({
+                type: "POST",
+                url: "php/inc-createassessment-saveAssessment.php",
+                data: {
+                    catID: $('#categorySelect').val(),
+                    classID: 1,
+                    startDate: $('#startDate').val()
+                },
+                success: function(response) {
+                    console.log(response);
+                    for(let i = 0; i < cats.length; i++) {
+                        getTerms(cats[i].ID, response);
+                    }
+                }
+            });
+            
+        }
+
+        
+    });
+
+    function processChecks(){
+        let terms = [];
+        let assessmentID = 0;
         $.ajax({
             type: "POST",
-            url: "../php/inc-createassessment-saveAssessment.php",
+            url: "php/inc-createassessment-saveAssessment.php",
             data: {
                 catID: $('#categorySelect').val(),
                 classID: 1,
-                startDate: Date.now()
+                startDate: $('#startDate').val()
             },
             success: function(response) {
                 console.log(response);
-                getTerms($('#categorySelect').val(), response);
+                $('#terms tr').each(function() {
+                    $(this).find('td:eq(0) input:checked').each(function () {
+                        if($(this).closest('tr').find('td:eq(3) input:checked').length > 0){
+                            console.log($(this).val());
+                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 1});
+                        }
+                            
+                        else {
+                            console.log($(this).val());
+                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 0});
+                        }
+                    });
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "php/inc-createassessment-saveAssessment.php",
+                    data: {
+                        assessData: JSON.stringify(terms)
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
             }
-        });
-    });
+        });        
+
+        
+
+        
+
+    }
 
     function loadStudents(classID) {
         $.ajax({
@@ -137,8 +219,8 @@ $(document).ready(function(){
             },
             success: function(response) {
                 console.log(response);
-                $('#studentTable').append('<tbody>');
                 let checkbox = '<input type="checkbox" class="form-check-input checkbox">';
+                $('#studentTable').append('<tbody><tr><td value="0"> <input type="checkbox" id="selectAll" class="form-check-input checkbox"> </td><td>(Check All)</td></tr>');
                 for(let i = 0; i < response.length; i++){
                     $('#studentTable').append('<tr><td value="'+ response[i].ID + '">' + checkbox + '</td><td>' + response[i].name + '</td></tr>');
                 }
@@ -153,7 +235,7 @@ $(document).ready(function(){
         console.log(catID);
         $.ajax({
             type: "POST",
-            url: "../php/inc-createassessment-saveAssessment.php",
+            url: "php/inc-createassessment-saveAssessment.php",
             dataType: "json",
             data: {
                 catID: catID
@@ -187,14 +269,14 @@ $(document).ready(function(){
         console.log(assessArray);
         $.ajax({
             type: "POST",
-            url: "../php/inc-createassessment-saveAssessment.php",
+            url: "php/inc-createassessment-saveAssessment.php",
             data: {
                 assessData: JSON.stringify(assessArray)
             },
             success: function(response) {
                 console.log(response);
             }
-        })
+        });
     }
 
     // This should be used when creating the assessment to randomize which words are tested.
