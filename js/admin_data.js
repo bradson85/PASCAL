@@ -17,9 +17,13 @@ $(document).ready(function () {
     setTimeout(
         function () {
             updateSelected('categories');
+           $('#word_table').DataTable({
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('categories');
+                    }
+                  });
 
         }, 350);
-
 
 
     //for tooltip help
@@ -33,6 +37,7 @@ $(document).ready(function () {
         setTimeout(
             function () {
                 updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values
+                
             }, 300);
     });
       /// for class inport modal
@@ -73,8 +78,15 @@ $(document).on("click","a#schoolExportSelect",function(){
         getTableData("categories");
         setTimeout(
             function () {
+   
                 updateSelected('categories');
-
+                $('#word_table').DataTable({
+                   
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('categories');
+                    }
+                  });
+               
             }, 250);
 
     });
@@ -88,8 +100,14 @@ $(document).on("click","a#schoolExportSelect",function(){
         loadSearch(); // laads serach box data at top
         setTimeout(
             function () {
-                updateSearch();
+            updateSearch();
                 updateSelected('terms');
+                $('#word_table').DataTable({
+                	retrieve: true,
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('terms');
+                    }
+                  });
 
             }, 250);
     });
@@ -100,11 +118,17 @@ $(document).on("click","a#schoolExportSelect",function(){
         $(this).tab("show");
         currentPage = "schools";
         $("#topTable").hide();
-        getTableData("schools")
+        getTableData("schools");
+       
         setTimeout(
             function () {
                 updateSelected('schools');
-
+                $('#word_table').DataTable({
+               
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('schools');
+                    }
+                  });
             }, 250);
 
     });
@@ -114,10 +138,17 @@ $(document).on("click","a#schoolExportSelect",function(){
         $(this).tab("show");
         $("#topTable").hide();
         currentPage = "classes";
-        getTableData("classes")
+        getTableData("classes");
+      
         setTimeout(
             function () {
                 updateSelected('classes');
+                 $('#word_table').DataTable({
+             
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('classes');
+                    }
+                  });
 
             }, 250);
     });
@@ -397,7 +428,14 @@ $(document).on("click","a#schoolExportSelect",function(){
                 $("#".type).tab("show");
                 setTimeout(
                     function () {
-                        updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values
+                        updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
+ 		$('#word_table').DataTable({
+           			retrieve: true,
+                    "fnDrawCallback": function( oSettings ) {
+                        updateSelected('categories');
+                    }
+                  });
+
                     }, 300);
             }
         });
@@ -572,6 +610,6 @@ $(document).on("click","a#schoolExportSelect",function(){
         }
     }
 
-
+    
 
 });

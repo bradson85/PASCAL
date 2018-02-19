@@ -110,24 +110,21 @@ function createHTMLSelect($optionContent,$optionID,$idName,$selectTitle){
 
 }
 
-function getSearchBox(){
+function getSearchBoxSchool(){
 
-$selectString = "<td><select class=\"form-control\" id=\"sort\"><<option value=\"All\">All Words</option>";
+$selectString = "<td><select class=\"form-control\" id=\"sort\"><<option value=\"0\">Select School</option>";
 
 try {
     $pdo = newPDO();
 // query all the categories
-$query = ("SELECT * FROM categories");
+$query = ("SELECT * FROM schools");
 
 $result = pdo_query($pdo,$query);
  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-       $catID = $row['ID'];
-       $catName = $row['name'];
-       $level = $row['level']; 
+       $schoolName = $row['name'];
 // more of the html placing the variables inside
 //   . here for concatination you concat with . not + in php;
-       $selectString.= "<option value = \"$catName $level\"> $catName - Level $level</option>";
-
+       $selectString.= "<option value = \"$schoolName \"> $schoolName</option>";
  }
 }
 catch(PDOException $e)
@@ -139,5 +136,34 @@ $pdo = null;
 $selectString.= "</select></td>";
 echo $selectString; // return string.
 }
+
+
+function getSearchBoxClass(){
+
+    $selectString = "<td><select class=\"form-control\" id=\"sort\"><<option value=\"0\">Select Class</option>";
+    
+    try {
+        $pdo = newPDO();
+    // query all the categories
+    $query = ("SELECT * FROM classes");
+    
+    $result = pdo_query($pdo,$query);
+     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+           $className = $row['name'];
+           $gradeLevel = $row['gradeLevel'];
+    // more of the html placing the variables inside
+    //   . here for concatination you concat with . not + in php;
+           $selectString.= "<option value = \"$schoolName \"> $schoolName</option>";
+     }
+    }
+    catch(PDOException $e)
+        {
+            echo pdo_error($e);
+        }
+    $pdo = null;
+    // close the html brackets
+    $selectString.= "</select></td>";
+    echo $selectString; // return string.
+    }
 
 ?>

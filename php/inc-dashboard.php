@@ -135,6 +135,11 @@
         <h5 class="card-title">Recent Tests Taken</h5></div>
         <div class="card-body">
         <div class="table-responsive">
+          <table id="sort_table" class="table table-bordered">
+            <tbody id = "sort_body"></tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -142,9 +147,6 @@
                   <th>Grade</th>
                   <th>Teacher</th>
                   <th>School</th>
-                  <th>Age</th>>
-                  <th>Average</th>
-                  <th>Date</th>
                 </tr>
               </thead>
               <tbody id="studentList">

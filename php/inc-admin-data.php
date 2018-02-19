@@ -400,6 +400,7 @@ function tableHeadings($choice){
     switch ($choice) {
         case "terms":
         return ' <tr>
+        <th style="display:none;">ID</th>
         <th>Category And Grade Level</th>
         <th>Word</th>
         <th>Definition</th>
@@ -415,6 +416,7 @@ function tableHeadings($choice){
 
         case "categories":
         return '  <tr>
+        <th style="display:none;">ID</th>
                 <th>Category Name</th>
                 <th> Grade Level</th>
                 <th class="col-sm-auto"> <div class="dropdown">
@@ -429,6 +431,7 @@ function tableHeadings($choice){
 
         case "schools":
             return '<tr>
+            <th style="display:none;">ID</th>
             <th>School Name</th>
             <th class="col-sm-auto"> <div class="dropdown">
             <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -443,6 +446,7 @@ function tableHeadings($choice){
 
         case "classes":
            return  '<tr>
+           <th style="display:none;">ID</th>
            <th>Class Name</th>
            <th>Grade Level</th>
            <th>School</th>
@@ -508,9 +512,10 @@ function createTable($title,$type,$tableData){
       <thead>
        '.tableHeadings($type).'
       </thead>
-      <tbody id = "t_body">
+      <tbody id ="t_body">
       '.$tableData.'
       </tbody>
+      
     </table>
     <p class="Buttons">
       <button class = " btn btn-primary" id="addRow1">Add '.ucfirst($type).'</button>
