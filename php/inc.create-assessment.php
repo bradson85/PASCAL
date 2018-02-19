@@ -9,6 +9,10 @@
     {
         getIDs($_POST['catID']);
     }
+    else if((isset($_POST['students'])))
+    {
+        submitStudents($_POST['students']);
+    }
 
 
     function getStudents($classID)
@@ -27,6 +31,25 @@
         $result = pdo_query($pdo, $sql);
 
         echo json_encode($result->fetchAll());
+    }
+
+    function submitStudents($students)
+    {
+        $students = json_decode($students, true);
+
+        $pdo = pdo_construct();
+        $sql = $pdo->prepare("INSERT INTO assessmentassignments (assessmentID, studentID) VALUES (?, ?)");
+        $sql->bindParam(1, $assessID);
+        $sql->bindParam(2, $studentID);
+
+        foreach($students as $value)
+        {
+            $assessID = $value['assessmentID'];
+            $studentID = $value['studentID'];
+            $sql->execute();
+        }
+        $pdo = null;
+        echo "Success";
     }
 
 ?>

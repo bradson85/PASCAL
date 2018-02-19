@@ -137,6 +137,8 @@ $(document).ready(function(){
     }
 
     $('#submit').click(function (){
+        let assessmentID = 0;
+        let students = [];
         if($('#selfSelect').checked)
             processChecks();
         else {
@@ -152,14 +154,14 @@ $(document).ready(function(){
                 },
                 success: function(response) {
                     console.log(response);
+                    asessmentID = response;
                     for(let i = 0; i < cats.length; i++) {
                         getTerms(cats[i].ID, response);
                     }
+                    submitStudents(response);
                 }
             });
-            
         }
-
         
     });
 
@@ -200,13 +202,29 @@ $(document).ready(function(){
                         console.log(response);
                     }
                 });
+                submitStudents(assessmentID);
             }
         });        
 
-        
+    }
 
-        
+    function submitStudents(assessmentID) {
+        let students = [];
+        $('#studentTable tr').find('td input:checked').each(function() {
+            if($(this).val() !== "0")
+                students.push({studentID: $(this).val(), assessmentID: assessmentID});
+        })
 
+        $.ajax({
+            type: "POST",
+            url: "php/inc.create-assessment.php",
+            data: {
+                students: JSON.stringify(students)
+            },
+            success: function(response) {
+                console.log(response);
+            }
+        });
     }
 
     function loadStudents(classID) {
@@ -220,9 +238,9 @@ $(document).ready(function(){
             success: function(response) {
                 console.log(response);
                 let checkbox = '<input type="checkbox" class="form-check-input checkbox">';
-                $('#studentTable').append('<tbody><tr><td value="0"> <input type="checkbox" id="selectAll" class="form-check-input checkbox"> </td><td>(Check All)</td></tr>');
+                $('#studentTable').append('<tbody><tr><td> <input type="checkbox" id="selectAll" class="form-check-input checkbox" value="0"> </td><td>(Check All)</td></tr>');
                 for(let i = 0; i < response.length; i++){
-                    $('#studentTable').append('<tr><td value="'+ response[i].ID + '">' + checkbox + '</td><td>' + response[i].name + '</td></tr>');
+                    $('#studentTable').append('<tr><td><input type="checkbox" class="form-check-input checkbox" value="' + response[i].ID + '"></td><td>' + response[i].name + '</td></tr>');
                 }
                 $('#studentTable').append('</tbody>');
 
