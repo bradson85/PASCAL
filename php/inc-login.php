@@ -2,7 +2,7 @@
 session_start();
  require_once("../dbconfig.php");
  
-
+ 
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if($_POST['submit'] == 'true'){
    
@@ -26,8 +26,8 @@ session_start();
         $stringLink ="";
         switch($accounttype){
           case "1": 
-          $_SESSION["class"] = getClassID($id);
-          $_SESSION['school'] =getSchoolID($id);
+         $_SESSION["class"] = getClassID($id);
+          $_SESSION['school'] = getSchoolID($id);
           $stringLink = "../teacher-dashboard.php"; //to redirect back to "teacher-dashboard.php"
             break;
           case "0":
@@ -35,7 +35,7 @@ session_start();
             break;
    
           case "2":
-          $_SESSION["class"] = getClassName($id);
+          $_SESSION["class"] = getClassID($id);
           $_SESSION["ID"] = $id;
           $_SESSION['school'] =getSchoolID($id);
           $stringLink ="../student-landing.php"; //to redirect back to "studentlanding.php"
@@ -163,25 +163,27 @@ $ID = 0;
 
     
         function getSchoolID($accountID){
-                
+           $classID = getClassID($accountID); 
+           $school = array();
           try {
             $pdo = new PDO(DB_CONNECTION_STRING,
             DB_USER, DB_PWD);
             $pdo->setAttribute(PDO::ATTR_ERRMODE,
             PDO::ERRMODE_EXCEPTION);
-        // query to get all categries for drop down menu
-            $sql = "SELECT schoolID FROM classes WHERE ID = 
-            (SELECT DISTINCT classID FROM classlist WHERE accountID = \"$accountID\")";
+            foreach ($classID as $value) {
+              $item = $value['classID'];
+            $sql = ("SELECT DISTINCT schoolID FROM classes WHERE ID = \"$item\"");
             $result = $pdo->query($sql);
           $row = $result->fetch(PDO::FETCH_ASSOC) ;
-               $school = $row["schoolId"];
-                 
+               $school[] = $row["schoolID"];
+            }
+            unset($value);
           $pdo = null;
           } catch (PDOException $e) {
           die( $e->getMessage() );
           } 
            
-          return $school;
+          return($school[0]);
           } 
 
  		// this for checkign what assessment has been assigned to student;

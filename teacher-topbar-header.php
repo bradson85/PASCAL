@@ -19,6 +19,9 @@ session_start();
         <li class="nav-item customlink">
           <a class="nav-link" href="classlist.php">&#128100 &nbsp Class List&nbsp</a>
         </li>
+        <li class="nav-item customlink">
+          <a class="nav-link" href="assignAssessmentTeacher.php">	&#9998 &nbsp Assign Assessments&nbsp</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="#"> Help</a>
         </li>

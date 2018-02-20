@@ -43,14 +43,8 @@ include  __DIR__ ."/../teacher-topbar-header.php";
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-comments"></i>
               </div>
-              <div id ="completed" class="mr-5">26 Completed Assesments</div>
+              <div id ="completed" class="mr-5">2 Completed Assesments</div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="#">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -59,52 +53,13 @@ include  __DIR__ ."/../teacher-topbar-header.php";
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-list"></i>
               </div>
-              <div class="mr-5">11 Assessments Incomplete</div>
+              <div id='available' class="mr-5">2 Assessments Incomplete</div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="#">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
           </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-success o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <i class="fa fa-fw fa-shopping-cart"></i>
-              </div>
-              <div class="mr-5"> Some Text Here</div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="#">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-danger o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <i class="fa fa-fw fa-support"></i>
-              </div>
-              <div class="mr-5">&#9888 &nbsp 2 Alerts</div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="#">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Area Chart Example-->
-      <div class="row">
-        <div class="col-lg-8">
+
+              <div class="row">
+        <div class="col-lg-16">
         <div class="card text-center">
     <div class="card-header">
       <h5>Assign Assessments</h5>
@@ -114,13 +69,34 @@ include  __DIR__ ."/../teacher-topbar-header.php";
           <p class="card-text">Assign an adaptive assessment to a student or students.</p>
           <a href="assignAssessmentTeacher.php" class="btn btn-primary">Assign</a>
             </div> <br>
-               <div class="card-footer text-muted">
-                             2 days ago
-                        </div>
                     </div>
 <br>
+      
+<div class="card mb-10">
+        <div class="card-header">
+        <h5 class="card-title">Available Assessments</h5></div>
+        <div class="card-body">
+        <div id = "topTable" class="table-responsive">
+     </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="assessTableTeach" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Category and Grade Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    
           <!-- Example  Card-->
-      <div class="card mb-3">
+      <div class="card mb-6">
         <div class="card-header">
         <h5 class="card-title">Class Stats</h5></div>
         <div class="card-body">
@@ -136,8 +112,8 @@ include  __DIR__ ."/../teacher-topbar-header.php";
                   <th>Name</th>
                   <th>Grade</th>
                   <th>Class</th>
-                  <th>Current Assessment Name</th>
-                  <th>Current Assessment Level</th>
+                  <th>Last Taken Assessment</th>
+                  <th>Last Assessment Level</th>
                   <th>Date Completed</th>
                 </tr>
               </thead>

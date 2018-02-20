@@ -40,7 +40,7 @@ function dbGetStudentNames($id){
             $pdo->setAttribute(PDO::ATTR_ERRMODE,
             PDO::ERRMODE_EXCEPTION);
         // query all the categories
-         $sql = ("SELECT name FROM accounts WHERE type = '2' And ID =$id");
+         $sql = ("SELECT name FROM accounts WHERE ID =$id");
          $result = $pdo->query($sql);
          while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                $name = $row['name'];
@@ -58,39 +58,50 @@ function dbGetStudentNames($id){
 
 }
 
-function dbGetStudents($id){
-
-     // start html selelct class
-     $selectString = "<form><div class='form-group' id ='studentChoice'>
-     <label for='sel3'>Select Student:</label>
-     <select class='form-control' size='5' id='sel3'><option disabled value = \"0\"> Student Name- Class</option>";
-     
+// returns all the classIDs a teacher belongs to.
+function getTeacherClassIDs(){
+    return $_SESSION['class'];
+ }
  
-   try {
-       $pdo = new PDO(DB_CONNECTION_STRING,
-       DB_USER, DB_PWD);
-       $pdo->setAttribute(PDO::ATTR_ERRMODE,
-       PDO::ERRMODE_EXCEPTION);
-   // query all the categories
-    $sql = ("SELECT accountID FROM classlist WHERE classID =$id");
-    $result = $pdo->query($sql);
-    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-          $accountID = $row['accountID'];
-           $name = dbGetStudentNames($accountID);
+ function getSchoolID(){
+     return $_SESSION['school'];
+ }
 
-          // more of the html placing the variables inside
-    //   . here for concatination you concat with . not + in php;
-    $selectString.= "<option value = \"$accountID\"> $name</option>"; //html  ;
-    }
+ function dbGetStudents($id){
+
+    // start html selelct class
+    $selectString = "<form><div class='form-group' id ='studentChoice'>
+    <label for='sel3'>Select Student:</label>
+    <select class='form-control' size='5' id='sel3'><option disabled value = \"0\"> Student Name - Class</option>";
+    
+
+  try {
+      $pdo = new PDO(DB_CONNECTION_STRING,
+      DB_USER, DB_PWD);
+      $pdo->setAttribute(PDO::ATTR_ERRMODE,
+      PDO::ERRMODE_EXCEPTION);
+  // query all the categories
+   $sql = ("SELECT accountID FROM classlist WHERE classID =$id");
+   $result = $pdo->query($sql);
+   while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+         $accountID = $row['accountID'];
+
+         if(!checkForTeacher($accountID)){
+          $name = dbGetStudentNames($accountID);
+
+         // more of the html placing the variables inside
+   //   . here for concatination you concat with . not + in php;
+   $selectString.= "<option value = \"$accountID\"> $name</option>"; //html  ;
+         }
    }
-   catch(PDOException $e)
+  }
+  catch(PDOException $e)
        {
        echo "Error: " . $e->getMessage();
        }
    $pdo = null;
    $selectString.= "</select></form><br>";
    return $selectString; // return string.
-
 }
 
 function dbGetAssessments(){
@@ -415,6 +426,30 @@ function assignToClass($classID,$assessmentID){
 $pdo = null;
     
 }
+
+function checkForTeacher($ID){
+
+    $exists = false;
+    try {
+        $pdo = new PDO(DB_CONNECTION_STRING,
+        DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE,
+        PDO::ERRMODE_EXCEPTION);
+        $sql = ("SELECT name FROM accounts WHERE ID = '$ID' AND type =1");
+        $result = $pdo->query($sql);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        if($row){
+            $exists = true;
+        }
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $exists;
+
+} 
 
 
 ?>

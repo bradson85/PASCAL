@@ -30,6 +30,8 @@ $(document).ready(function () {
      $(document).on("change", "#classNames", function () {
             $('#selStudents').prop("disabled", false);
             $('#selClass').prop("disabled", false);
+            updateStudentList();
+            $('#selStudents').prop('checked', true);
 
     });
 

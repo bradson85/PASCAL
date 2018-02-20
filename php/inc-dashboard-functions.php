@@ -4,17 +4,36 @@ require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
 
 if(isset($_POST['classSelect'])){
-    $option = $_POST['classSelect']; // for now nothing
-         echo assembleClassSelect();
+    $option = $_POST['classSelect']; 
+         echo assembleClassSelect($option);
 }
 
 if(isset($_POST['classChoice'])){
-    $class = $_POST['classChoice']; // for now nothing
+    $class = $_POST['classChoice']; 
          echo assembleInfoTable($class);
 }
 
+if(isset($_POST['assessment'])){
+    $assessment = $_POST['assessment']; // for now nothing
+         echo assembleAssessmentTable();
+}
 
+if(isset($_POST['numComplete'])){
+   // $assessment = $_POST['numComplete']; // for now nothing
+         echo assessmentsFinished();
+}
 
+if(isset($_POST['numAvailable'])){
+    // $assessment = $_POST['numComplete']; // for now nothing
+          echo getAvailableAssessments();
+ }
+
+ if(isset($_POST['listChoice'])){
+    $class = $_POST['listChoice']; 
+         echo assembleClassListTable($class);
+}
+
+ 
 
 // creat new pd object
 function newPDO(){
@@ -64,6 +83,27 @@ function getTeacherClassIDs(){
 
 function getSchoolID(){
     return $_SESSION['school'];
+}
+
+function getSchoolName($schoolID){
+
+    try {
+        $pdo = new PDO(DB_CONNECTION_STRING,
+        DB_USER, DB_PWD);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE,
+        PDO::ERRMODE_EXCEPTION);
+    // query to get all categries for drop down menu
+        $sql = "SELECT name FROM schools Where ID = '$schoolID'";
+        $result = $pdo->query($sql);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+            $name = $row["name"];   
+            
+      $pdo = null;
+      } catch (PDOException $e) {
+      die( $e->getMessage() );
+      } 
+    return $name;
+
 }
      
 function studentListTable($classID){
@@ -173,6 +213,61 @@ function getClassInfo($classID){
 
 }
 
+function getCategoryLevelFromCatID($catID){
+
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT level FROM categories WHERE ID = '$catID'");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $catLev = $row['level'];
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $catLev;
+
+
+}
+
+function getCategoryNameFromCatID($catID){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name FROM categories WHERE ID = '$catID'");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $catName = $row['name'];
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $catName;
+}
+
+
+function getAsessmentData(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT ID, start_date, end_date, catID FROM assessments");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $row;
+
+}
+
 
 function getClassName($classID){
     $info = getClassInfo($classID);
@@ -190,7 +285,7 @@ function checkForTeacher($ID){
     $exists = false;
     try {
         $pdo = newPDO();
-        $query = ("SELECT name FROM accounts WHERE ID = '$ID' AND type =2");
+        $query = ("SELECT name FROM accounts WHERE ID = '$ID' AND type =1");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -207,7 +302,45 @@ function checkForTeacher($ID){
 
 } 
 
+function getAvailableAssessments(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT Count(*) as total
+        FROM (SELECT DISTINCT ID FROM assessments) AS T");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $count = $row['total'];
+    }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $count;
 
+}
+
+
+
+function assessmentsFinished(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT Count(*) as total
+        FROM (SELECT DISTINCT assessmentID FROM results) AS T");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $count = $row['total'];
+    }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $count;
+
+}
 
 
  // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
@@ -215,7 +348,7 @@ function assembleInfoTable($classID){
   $studentList = studentListTable($classID);  // all the acount ID's from of student in this calss
   $string="";
     foreach ($studentList as $value) {
-        if (checkForTeacher($value["accountID"])){
+        if (!checkForTeacher($value["accountID"])){
         $studentName = getStudentName($value["accountID"]);
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
@@ -223,21 +356,46 @@ function assembleInfoTable($classID){
   $string .= "<tr><td>$studentName</td>
    <td>$gradeLevel</td>
    <td>$className</td> 
-         <td> Assessment Here</td>  
-          <td>Assessment Level</td>
-           <td>Date Completed</td></tr>" ; // html stuff
+         <td> Assessment 38 </td>  
+          <td> 4</td>
+           <td>2/1/18</td></tr>" ; // html stuff
         }
     }
     unset($value); //php manual says do this after for each
 
     return $string;
 }
+ //ID , Start Date End Date Category and Grade Level
+function assembleAssessmentTable(){
+   $assessmentList = getAsessmentData();
+   $string="";
+   foreach ($assessmentList as $value) {
+    $catName = getCategoryNameFromCatID($value['catID']);
+    $catLev = getCategoryLevelFromCatID($value['catID']);
+    $tempdate = $value['start_date'];
+    $timestamp = strtotime($tempdate);
+    $startdate = date("m-d-Y", $timestamp);
+    $tempdate = $value['end_date'];
+    $timestamp = strtotime($tempdate);
+    $enddate = date("m-d-Y", $timestamp);
+    $id = $value["ID"];
+    
+$string .= "<tr><td>$id</td>
+<td>$startdate</td>
+<td>$enddate</td> 
+<td>$catName - $catLev</td></tr>" ; // html stuff
+    }
 
-function assembleClassSelect(){
+unset($value); //php manual says do this after for each
+
+return $string;
+}
+
+function assembleClassSelect($option){
 
 $teacherClassesID = getTeacherClassIDs();
 
-$selectString = "<td><select class='form-control' id='classChoice'><option disabled selected value = \"0\"> Select A Class</option>";
+$selectString = "<td><select class='form-control' id='$option'><option disabled selected value = \"0\"> Select A Class</option>";
 
 foreach ($teacherClassesID as $value) {
     $classname = getClassName($value["classID"]);
@@ -251,6 +409,30 @@ $selectString.= "</select></td>";
 return $selectString;
 
 }
+
+
+
+function assembleClassListTable($classID){
+    $studentList = studentListTable($classID);  // all the acount ID's from of student in this calss
+    $string="";
+      foreach ($studentList as $value) {
+          if (!checkForTeacher($value["accountID"])){
+          $studentName = getStudentName($value["accountID"]);
+          $className = getClassName($classID);
+          $gradeLevel = getClassGradeLevel($classID);
+          $schoolID =   getSchoolID();
+          $schoolName = getSchoolName($schoolID);
+
+    $string .= "<tr><td>$studentName</td>
+     <td>$gradeLevel</td>
+     <td>$className</td> 
+           <td> $schoolName </td></tr>" ; // html stuff
+          }
+      }
+      unset($value); //php manual says do this after for each
+  
+      return $string;
+  }
 
 
 

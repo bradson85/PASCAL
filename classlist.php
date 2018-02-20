@@ -25,10 +25,60 @@
 
 <!-- Start main html-->
       <main class="col-sm-9  col-md-10 pt-3" role="main">
+      <div class="modal fade" id="importModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal import content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:15px 40px;">
+          <H5>Import List</H5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px 50px;">
+        <form method="POST" action="#" enctype="multipart/form-data" id="fileForm">
+  <div class="form-group">
+  <label for="InputFile">Import CSV</label>
+  <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID.</small>
+  <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
+  </div>
+  </form>
+    </div>   
+      </div> 
+    </div>  
+ </div>
+
+ <div class="modal fade" id="exportModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal import content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:15px 40px;">
+          <H5>Export List</H5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:20px 50px;">
+        <div class="col-sm-6"><label >Export CSV</label><br><br>
+  <small id="downloadHelp" class="form-text text-muted">Click Download To Export Class List to CSV</small>
+  <a href="#"  id="exportbutton" class="btn btn-primary" role="button" download="exportedterms">Download</a>
+  
+  </div>
+    </div>   
+      </div> 
+    </div>  
+ </div>
 
  <div class="card mb-3">
         <div class="card-header">
-        <h5 class="card-title">Class Stats</h5></div>
+        <h5  id ='listHeader' class="card-title"> Class Lists For <?php echo $_SESSION['user']?></h5><div class="dropdown">
+            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            &#9776;
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" id="classListImportSelect" href="#">Import Class List</a>
+            <a class="dropdown-item"  id="classListExportSelect" href="#">Export Class List</a>
+            </div>
+            </div></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
@@ -36,15 +86,13 @@
        </table>
      </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="classListTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>Grade</th>
                   <th>Class</th>
-                  <th>Current Assessment Name</th>
-                  <th>Current Assessment Level</th>
-                  <th>Date Completed</th>
+                  <th>School</th>
                 </tr>
               </thead>
               <tbody>

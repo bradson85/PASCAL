@@ -5,7 +5,7 @@ $(document).ready(function () {
     function initData() {
         $.ajax({ // delete from database
             type: "POST",
-            url: "/php/inc-assignAssessment-functions.php",
+            url: "/php/inc-assignAssessment-functionsTeacher.php",
             data: {
                 init: "init"
             },
@@ -21,15 +21,11 @@ $(document).ready(function () {
     }
 
 
-    $(document).on("change", "#schoolChoice", function () {
-                        updateClassList();
-                        $('#selStudents').prop("disabled", true);
-                        $('#selClass').prop("disabled", true);
-             });
-
      $(document).on("change", "#classNames", function () {
             $('#selStudents').prop("disabled", false);
             $('#selClass').prop("disabled", false);
+            updateStudentList();
+            $('#selStudents').prop('checked', true);
 
     });
 
@@ -70,28 +66,13 @@ $(document).ready(function () {
 
     }
 
-    function updateClassList() {
-        var schoolChoice = $('#schoolChoice :selected').val();
-        $.ajax({
-            type: "POST",
-            url: "php/inc-assignAssessment-functions.php",
-            data: {
-                school: schoolChoice
-            },
-            success: function (data) {
-
-                $("#classes").html(data);
-            }
-        });
-
-
-    }
+   
 
     function updateStudentList(selected) {
         var classChoice = $('#classNames :selected').val();
         $.ajax({
             type: "POST",
-            url: "php/inc-assignAssessment-functions.php",
+            url: "php/inc-assignAssessment-functionsTeacher.php",
             data: {
                 class: classChoice
             },
@@ -115,7 +96,7 @@ $(document).ready(function () {
         var classChoice = $('#classNames :selected').val();
             $.ajax({
                 type: "POST",
-                url: "/php/inc-assignAssessment-functions.php",
+                url: "/php/inc-assignAssessment-functionsTeacher.php",
                 data: {
                     studentChoice: studentChoice, assessmentChoice: assessmentChoice
                 },
@@ -156,7 +137,7 @@ $(document).ready(function () {
             
         $.ajax({
             type: "POST",
-            url: "/php/inc-assignAssessment-functions.php",
+            url: "/php/inc-assignAssessment-functionsTeacher.php",
             data: {
                 classChoice: classChoice, assessmentChoice: assessmentChoice
             },
