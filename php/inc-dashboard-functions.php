@@ -3,10 +3,17 @@ session_start();
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
 
-if(isset($_POST['option'])){
-    $option = $_POST['option']; // for now nothing
+if(isset($_POST['classSelect'])){
+    $option = $_POST['classSelect']; // for now nothing
          echo assembleClassSelect();
 }
+
+if(isset($_POST['classChoice'])){
+    $class = $_POST['classChoice']; // for now nothing
+         echo assembleInfoTable($class);
+}
+
+
 
 
 // creat new pd object
@@ -62,7 +69,8 @@ function getSchoolID(){
 function studentListTable($classID){
     try {
         $pdo = newPDO();
-        $query = ("SELECT accountID FROM classlist WHERE classID = '$classID'");
+        $query = ("SELECT accountID FROM classlist
+                     WHERE classID ='$classID'");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -116,7 +124,7 @@ function getStudentName($accountID){
 
     try {
         $pdo = newPDO();
-        $query = ("SELECT name FROM accounts WHERE ID = '$accountID' AND type = 2");
+        $query = ("SELECT name FROM accounts WHERE ID = '$accountID'");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -177,30 +185,59 @@ function getClassGradeLevel($classID){
 
 }
 
+function checkForTeacher($ID){
 
- // Name, Grade ,Class ,Assessment Name ,Score, Date Completed
+    $exists = false;
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name FROM accounts WHERE ID = '$ID' AND type =2");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        if($row){
+            $exists = true;
+        }
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $exists;
+
+} 
+
+
+
+
+ // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
 function assembleInfoTable($classID){
   $studentList = studentListTable($classID);  // all the acount ID's from of student in this calss
+  $string="";
     foreach ($studentList as $value) {
+        if (checkForTeacher($value["accountID"])){
         $studentName = getStudentName($value["accountID"]);
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
         
-   "<tr><td'>$studentName</td><td>
-           <select class='form-control' id='selcat'><<option value = \"0\"> --Select Category/Level--</option> $input
-          </select></td> 
-         <td contenteditable= 'true'> $word </td>  
-          <td contenteditable= 'true'>$def</td>
-           <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>" ; // html stuff
+  $string .= "<tr><td>$studentName</td>
+   <td>$gradeLevel</td>
+   <td>$className</td> 
+         <td> Assessment Here</td>  
+          <td>Assessment Level</td>
+           <td>Date Completed</td></tr>" ; // html stuff
+        }
     }
     unset($value); //php manual says do this after for each
+
+    return $string;
 }
 
 function assembleClassSelect(){
 
 $teacherClassesID = getTeacherClassIDs();
 
-$selectString = "<td><select class='form-control' id='sel3'><option disabled selected value = \"0\"> Class Choice</option>";
+$selectString = "<td><select class='form-control' id='classChoice'><option disabled selected value = \"0\"> Select A Class</option>";
 
 foreach ($teacherClassesID as $value) {
     $classname = getClassName($value["classID"]);

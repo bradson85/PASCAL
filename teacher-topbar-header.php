@@ -12,7 +12,7 @@ session_start();
     <div class="collapse navbar-collapse" id="navbarsExampleDefault"> <!--  This is what makes it responsive-->
     <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link customlink" href="dashboard.php">&#8962  &nbsp Dashboard
+          <a class="nav-link customlink" href="teacher-dashboard.php">&#8962  &nbsp Dashboard
             <span class="sr-only">(current)</span>   
           </a>
         </li>

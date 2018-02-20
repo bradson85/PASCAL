@@ -107,12 +107,12 @@ include  __DIR__ ."/../teacher-topbar-header.php";
         <div class="col-lg-8">
         <div class="card text-center">
     <div class="card-header">
-      <h5>Directions</h5>
+      <h5>Assign Assessments</h5>
          </div>
            <div class="card-block">
-            <h4 class="card-title"><br>What Works?</h4>
-          <p class="card-text">None of these dashboard cards work. <br>However most nav-links work on the left Navbar. Check them out.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h4 class="card-title"><br></h4>
+          <p class="card-text">Assign an adaptive assessment to a student or students.</p>
+          <a href="assignAssessmentTeacher.php" class="btn btn-primary">Assign</a>
             </div> <br>
                <div class="card-footer text-muted">
                              2 days ago
@@ -120,22 +120,9 @@ include  __DIR__ ."/../teacher-topbar-header.php";
                     </div>
 <br>
           <!-- Example  Card-->
-          <div class="card mb-3">
-            <div class="card-header">
-              Information Card Example</div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-sm-8 my-auto">
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-          </div>
       <div class="card mb-3">
         <div class="card-header">
-        <h5 class="card-title">ClassList</h5></div>
+        <h5 class="card-title">Class Stats</h5></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
@@ -143,7 +130,7 @@ include  __DIR__ ."/../teacher-topbar-header.php";
        </table>
      </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Name</th>
