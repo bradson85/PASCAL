@@ -17,11 +17,7 @@ $(document).ready(function () {
     setTimeout(
         function () {
             updateSelected('categories');
-           $('#word_table').DataTable({
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('categories');
-                    }
-                  });
+         
 
         }, 350);
 
@@ -80,12 +76,7 @@ $(document).on("click","a#schoolExportSelect",function(){
             function () {
    
                 updateSelected('categories');
-                $('#word_table').DataTable({
-                   
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('categories');
-                    }
-                  });
+               
                
             }, 250);
 
@@ -102,12 +93,7 @@ $(document).on("click","a#schoolExportSelect",function(){
             function () {
             updateSearch();
                 updateSelected('terms');
-                $('#word_table').DataTable({
-                	retrieve: true,
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('terms');
-                    }
-                  });
+              
 
             }, 250);
     });
@@ -123,12 +109,7 @@ $(document).on("click","a#schoolExportSelect",function(){
         setTimeout(
             function () {
                 updateSelected('schools');
-                $('#word_table').DataTable({
                
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('schools');
-                    }
-                  });
             }, 250);
 
     });
@@ -143,12 +124,7 @@ $(document).on("click","a#schoolExportSelect",function(){
         setTimeout(
             function () {
                 updateSelected('classes');
-                 $('#word_table').DataTable({
-             
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('classes');
-                    }
-                  });
+                
 
             }, 250);
     });
@@ -429,12 +405,6 @@ $(document).on("click","a#schoolExportSelect",function(){
                 setTimeout(
                     function () {
                         updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
- 		$('#word_table').DataTable({
-           			retrieve: true,
-                    "fnDrawCallback": function( oSettings ) {
-                        updateSelected('categories');
-                    }
-                  });
 
                     }, 300);
             }

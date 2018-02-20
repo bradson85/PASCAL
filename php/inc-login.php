@@ -22,9 +22,12 @@ session_start();
 		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && ($success)){
        
         $_SESSION["type"] = $accounttype;
+      
         $stringLink ="";
         switch($accounttype){
           case "1": 
+          $_SESSION["class"] = getClassID($id);
+          $_SESSION['school'] =getSchoolID($id);
           $stringLink = "../teacher-dashboard.php"; //to redirect back to "teacher-dashboard.php"
             break;
           case "0":
@@ -32,7 +35,9 @@ session_start();
             break;
    
           case "2":
+          $_SESSION["class"] = getClassName($id);
           $_SESSION["ID"] = $id;
+          $_SESSION['school'] =getSchoolID($id);
           $stringLink ="../student-landing.php"; //to redirect back to "studentlanding.php"
             break;
    
@@ -110,7 +115,8 @@ $ID = 0;
         $sql = "SELECT * FROM accounts";
         $result = $pdo->query($sql);
         while($row = $result->fetch(PDO::FETCH_ASSOC) ){
-             if( ($username == $row['email'] || $username == $row['name']) && password_verify($password , $row['password'])){
+             if( ($username == $row['email'] || $username == $row['name'])
+              && password_verify($password , $row['password'])){
               $_SESSION["user"] = $row["name"]; 
               $_SESSION["email"] =$row["email"]; 
                $ID = $row["ID"];
@@ -132,6 +138,51 @@ $ID = 0;
        
       return $arr;
       } 
+
+      // checks to see which class  or classes a teacher or student belongs to.
+      function getClassID($accountID){
+                
+        try {
+          $pdo = new PDO(DB_CONNECTION_STRING,
+          DB_USER, DB_PWD);
+          $pdo->setAttribute(PDO::ATTR_ERRMODE,
+          PDO::ERRMODE_EXCEPTION);
+      // query to get all categries for drop down menu
+          $sql = "SELECT classID FROM classlist WHERE accountID = \"$accountID\"";
+          $result = $pdo->query($sql);
+        $row = $result->fetchAll(PDO::FETCH_ASSOC) ;
+
+               
+        $pdo = null;
+        } catch (PDOException $e) {
+        die( $e->getMessage() );
+        } 
+         
+        return $row;
+        } 
+
+    
+        function getSchoolID($accountID){
+                
+          try {
+            $pdo = new PDO(DB_CONNECTION_STRING,
+            DB_USER, DB_PWD);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE,
+            PDO::ERRMODE_EXCEPTION);
+        // query to get all categries for drop down menu
+            $sql = "SELECT schoolID FROM classes WHERE ID = 
+            (SELECT DISTINCT classID FROM classlist WHERE accountID = \"$accountID\")";
+            $result = $pdo->query($sql);
+          $row = $result->fetch(PDO::FETCH_ASSOC) ;
+               $school = $row["schoolId"];
+                 
+          $pdo = null;
+          } catch (PDOException $e) {
+          die( $e->getMessage() );
+          } 
+           
+          return $school;
+          } 
 
  		// this for checkign what assessment has been assigned to student;
    function checkStudentAssessment($id){

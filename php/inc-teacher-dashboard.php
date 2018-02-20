@@ -25,7 +25,7 @@ session_start();
 <!-- Add Nav Bar part-->
 <?php 
 
-include  __DIR__ ."/../topbar-header.php"; 
+include  __DIR__ ."/../teacher-topbar-header.php"; 
 
 
 ?>
@@ -34,7 +34,7 @@ include  __DIR__ ."/../topbar-header.php";
 
 
 <!-- Start main html-->
-      <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+      <main class="col-sm-9  col-md-10 pt-3 " role="main">
          <!-- Icon Cards examples-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -43,7 +43,7 @@ include  __DIR__ ."/../topbar-header.php";
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-comments"></i>
               </div>
-              <div class="mr-5">26 Completed Assesments</div>
+              <div id ="completed" class="mr-5">26 Completed Assesments</div>
             </div>
             <a class="card-footer text-white clearfix small z-1" href="#">
               <span class="float-left">View Details</span>
@@ -135,63 +135,30 @@ include  __DIR__ ."/../topbar-header.php";
           </div>
       <div class="card mb-3">
         <div class="card-header">
-        <h5 class="card-title">Recent Tests Taken</h5></div>
+        <h5 class="card-title">ClassList</h5></div>
         <div class="card-body">
+        <div id = "topTable" class="table-responsive">
+       <table id="sort_table" class="table table-bordered">
+         <tbody id = "sort_body"></tbody>
+       </table>
+     </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>Grade</th>
-                  <th>Teacher</th>
-                  <th>School</th>
-                  <th>Age</th>>
-                  <th>Average</th>
-                  <th>Date</th>
+                  <th>Class</th>
+                  <th>Current Assessment Name</th>
+                  <th>Current Assessment Level</th>
+                  <th>Date Completed</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Tiger Nixon</td>
-                  <td>Grade 3 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>9</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Garrett Winters</td>
-                  <td>Grade 4</td>
-                  <td>Mrs. Doe</td>
-                  <td>Town</td>
-                  <td>10</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Donna Snider</td>
-                  <td>Grade 5 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>11</td>
-                  <td>95</td>
-                  <td>9/5/17</td>
-                </tr>
-                <tr>
-                  <td>Michael Bruce</td>
-                  <td>Grade 3 </td>
-                  <td>Mrs. Smith</td>
-                  <td>Edwardsville</td>
-                  <td>9</td>
-                  <td>95</td>
-                  <td>9/4/17</td>
-                </tr>
                 </tbody>
             </table>
           </div>
         </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>
       
         
@@ -208,22 +175,22 @@ include  __DIR__ ."/../topbar-header.php";
     <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
   <script src="/tests/tests.js"></script>
   <script>
-    if (typeof ($.fn.modal) === \'undefined\') {
-      document.write(\'<script src="/js/bootstrap.min.js"><\/script>\')
+    if (typeof ($.fn.modal) === 'undefined') {
+      document.write('<script src="/js/bootstrap.min.js"><\/script>')
     }
   </script>
   <script>
-    window.jQuery || document.write(\'<script src="/js/jquery-3.2.1.min.js"><\/script>\');
+    window.jQuery || document.write('<script src="/js/jquery-3.2.1.min.js"><\/script>');
   </script>
   <div id="bootstrapCssTest" class="hidden"></div>
   <script>
     $(function () {
-      if ($(\'#bootstrapCssTest\').is(\':visible\')) {
-        $("head").prepend(\'<link rel="stylesheet" href="/css/bootstrap.min.css">\');
+      if ($('#bootstrapCssTest').is(':visible')) {
+        $("head").prepend('<link rel="stylesheet" href="/css/bootstrap.min.css">');
       }
     });
   </script>
-  <script src="/js/Addwords.js"></script>
+  <script src="/js/dashboard.js"></script>
 </body>
 
 </html>
