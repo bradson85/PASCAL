@@ -370,23 +370,24 @@ function addClassesToTable(){
 
 
 // set what dropdwon options are available in the hambureger menu
-function dropdown($choice){
+function importExport($choice){
     switch ($choice) {
         case "terms":
-        return '<a class="dropdown-item" id="importSelect" href="import.php">Import Terms List</a>
-        <a class="dropdown-item"  id="exportSelect" href="export.php">Export Terms List</a>';
+        return 
+        '<a class="btn btn-secondary btn-sm" id="importSelect" href="import.php">Import Terms</a>
+        <a class="btn btn-secondary btn-sm"  id="exportSelect" href="export.php">Export Terms</a>';
             break;
         case "categories":
-        return ' <a class="dropdown-item" id="importSelect" href="import.php">Import Categories List</a>
-        <a class="dropdown-item"  id="exportSelect" href="export.php">Export Categories List</a>';
+        return ' <a class="btn btn-secondary btn-sm" id="importSelect" href="import.php">Import Categories</a>
+        <a class="btn btn-secondary btn-sm"  id="exportSelect" href="export.php">Export Categories</a>';
             break;
         case "schools":
-            return '<a class="dropdown-item" id="schoolImportSelect" href="#">Import School List</a>
-            <a class="dropdown-item"  id="schoolExportSelect" href="#">Export School List</a>';
+            return '<a class="btn btn-secondary btn-sm" id="schoolImportSelect" href="#">Import School List</a>
+            <a class="btn btn-secondary btn-sm"  id="schoolExportSelect" href="#">Export School List</a>';
             break;
         case "classes":
-           return  '<a class="dropdown-item" id="classImportSelect" href="#">Import Class List</a>
-           <a class="dropdown-item"  id="classExportSelect" href="#">Export Class List</a>';
+           return  '<a class="btn btn-secondary btn-sm" id="classImportSelect" href="#">Import Class List</a>
+           <a class="btn btn-secondary btn-sm"  id="classExportSelect" href="#">Export Class List</a>';
             break;
         default:
             return "";
@@ -404,13 +405,8 @@ function tableHeadings($choice){
         <th>Category And Grade Level</th>
         <th>Word</th>
         <th>Definition</th>
-        <th class="col-sm-auto"> <div class="dropdown">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            &#9776;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'.dropdown($choice).'
-            </div>
-            </div></th>
+        <th class="col-sm-auto">
+            </th>
             </tr>';
             break;
 
@@ -419,13 +415,7 @@ function tableHeadings($choice){
         <th style="display:none;">ID</th>
                 <th>Category Name</th>
                 <th> Grade Level</th>
-                <th class="col-sm-auto"> <div class="dropdown">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            &#9776;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'.dropdown($choice).'
-             </div>
-            </div></th>
+                <th class="col-sm-auto"></th>
               </tr>';
             break;
 
@@ -433,14 +423,7 @@ function tableHeadings($choice){
             return '<tr>
             <th style="display:none;">ID</th>
             <th>School Name</th>
-            <th class="col-sm-auto"> <div class="dropdown">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            &#9776;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            '.dropdown($choice).'
-            </div>
-             </div></th>
+            <th class="col-sm-auto"> </th>
             </tr>';
             break;
 
@@ -450,14 +433,7 @@ function tableHeadings($choice){
            <th>Class Name</th>
            <th>Grade Level</th>
            <th>School</th>
-           <th class="col-sm-auto"> <div class="dropdown">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            &#9776;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            '.dropdown($choice).'
-            </div>
-            </div></th>
+           <th class="col-sm-auto"> </th>
             </tr>';
             break;
         default:
@@ -496,7 +472,7 @@ function createTable($title,$type,$tableData){
     
    return  '<div class="table-responsive">
     <br><H2>'.$title.'</H2>
-    <p class="Buttons">
+    <span class="Buttons">
       <button class = " btn btn-primary" id="addRow2" data-toggle="tooltip" 
       data-placement="right" title="'.helpMessage($type).'">Add '.ucfirst($type).'</button>
       <button class = " btn btn-primary" id="save2""data-toggle="tooltip" 
@@ -506,8 +482,10 @@ function createTable($title,$type,$tableData){
        There is also an "Add" button add the bottom of the table that adds a new table row to the bottom.
       Click "Save" to save all new changes.\'
       ><img src ="img/helpicon.png" width="25"> </button>
-    </p>
-    <small  class="form-text text-muted">Click Table Cells To Edit</small>
+      &nbsp; &nbsp; &nbsp; &nbsp;
+    <div class="btn-group" role="group" aria-label="Basic example">' .importExport($type).'</div>
+    </span>
+    <small  class="form-text text-muted">Click Table Cells To Edit </small>
     <table id="word_table" class="table table-striped table-bordered">
       <thead>
        '.tableHeadings($type).'

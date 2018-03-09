@@ -26,7 +26,7 @@ session_start();
 <?php 
 
 include  __DIR__ ."/../teacher-topbar-header.php"; 
-
+include  __DIR__ ."/../teacher-sidebar-header.php"
 
 ?>
 
@@ -34,7 +34,7 @@ include  __DIR__ ."/../teacher-topbar-header.php";
 
 
 <!-- Start main html-->
-      <main class="col-sm-9  col-md-10 pt-3 " role="main">
+<main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
          <!-- Icon Cards examples-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -61,20 +61,20 @@ include  __DIR__ ."/../teacher-topbar-header.php";
               <div class="row">
         <div class="col-lg-16">
         <div class="card text-center">
-    <div class="card-header">
-      <h5>Assign Assessments</h5>
+    <div class="card-header boardModule">
+      <h5 class= "text-white">Assign Assessments</h5>
          </div>
            <div class="card-block">
             <h4 class="card-title"><br></h4>
           <p class="card-text">Assign an adaptive assessment to a student or students.</p>
-          <a href="assignAssessmentTeacher.php" class="btn btn-primary">Assign</a>
+          <a href="assignAssessment.php" class="btn btn-primary">Assign</a>
             </div> <br>
-                    </div>
+          </div>
 <br>
       
 <div class="card mb-10">
-        <div class="card-header">
-        <h5 class="card-title">Available Assessments</h5></div>
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white">Available Assessments</h5></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
      </div>
@@ -94,11 +94,11 @@ include  __DIR__ ."/../teacher-topbar-header.php";
           </div>
         </div>
       </div>
-    
+      <br>
           <!-- Example  Card-->
       <div class="card mb-6">
-        <div class="card-header">
-        <h5 class="card-title">Class Stats</h5></div>
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white">Class Stats</h5></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
@@ -123,7 +123,6 @@ include  __DIR__ ."/../teacher-topbar-header.php";
           </div>
         </div>
       </div>
-      
         
       </main>
     

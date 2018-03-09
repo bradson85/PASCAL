@@ -70,21 +70,18 @@
 
  <div class="card mb-3">
         <div class="card-header">
-        <h5  id ='listHeader' class="card-title"> Class Lists For <?php echo $_SESSION['user']?></h5><div class="dropdown">
-            <button class="btn btn-primary btn-sm dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            &#9776;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" id="classListImportSelect" href="#">Import Class List</a>
-            <a class="dropdown-item"  id="classListExportSelect" href="#">Export Class List</a>
+        <h5  id ='listHeader' class="card-title"> Class Lists For <?php echo $_SESSION['user']?></h5>
             </div>
-            </div></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
          <tbody id = "sort_body"></tbody>
        </table>
      </div>
+     <div class="btn-group float-right " role="group" aria-label="Basic example">
+            <a class="btn btn-secondary btn-sm" id="classListImportSelect" href="#">Import Class List</a>
+            <a class="btn btn-secondary btn-sm"  id="classListExportSelect" href="#">Export Class List</a>
+            </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="classListTable" width="100%" cellspacing="0">
               <thead>

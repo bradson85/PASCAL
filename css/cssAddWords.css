@@ -12,6 +12,12 @@ body {
   padding-top: 3.5rem;
 }
 
+.boardModule {
+
+  background-color:  #033e79;
+}
+
+
 /* Navbar*/
 
 .navbar-dark .navbar-nav .nav-link  {
