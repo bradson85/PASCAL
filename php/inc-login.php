@@ -76,7 +76,7 @@ function showLogin(){
       <div class='checkbox'>
         <label><input type='checkbox'> Remember me</label>
       </div>
-      <button type='submit' id='loginbutton' class='btn btn-default'>Submit</button>
+      <button type='submit' id='loginbutton' class='btn btn-primary'>Login</button>
     </form>
     <br> ");
   }  
@@ -95,7 +95,7 @@ function showLogin(){
       <div class='checkbox'>
         <label><input type='checkbox'> Remember me</label>
       </div>
-      <button type='submit' id='loginbutton' class='btn btn-default'>Submit</button>
+      <button type='submit' id='loginbutton' class='btn btn-primary'>Login</button>
     </form>
     <br>");
   }

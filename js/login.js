@@ -22,6 +22,31 @@ function getLogin(){
     });
 }
 
+function getModalLogin(){
+    $.ajax({
+           type: "GET",
+           url: "/php/processlogin.php",
+           data: {
+               data: ""
+           },
+           success: function (data) {
+              $('#addform').html(data);  
+           }
+       });
+   }
+
+   $("#topbarlogin").click(function(e){
+    e.preventDefault();
+    getModalLogin();
+    $("#myModal").modal();
+});
+
+$("#middlelogin").click(function(e){
+    e.preventDefault();
+    getModalLogin();
+    $("#myModal").modal();
+});
+
 
 function validateLogin(){
 
@@ -45,6 +70,7 @@ function validateLogin(){
             catch(err)
             {
                     $('#mainarea').html(data);
+                    $('#addform').html(data); 
             }                
            
           

@@ -1,0 +1,70 @@
+body {
+    font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+  }
+  
+  header.masthead {
+    position: relative;
+    background: url("../img/Deat_to_Stock_Goods_2-1.jpg") no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+  
+  header.masthead .overlay {
+    position: absolute;
+    background-color: #033e79;
+    height: 100%;
+    width: 100%;
+    top: 3em;
+    left: 0;
+    opacity: 0.8;
+  }
+  
+  header.masthead h1 {
+    font-size: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    header.masthead {
+      padding-top: 12rem;
+      padding-bottom: 12rem;
+    }
+    header.masthead h1 {
+      font-size: 3rem;
+    }
+  }
+  
+  
+  section {
+    padding: 6rem 0;
+    background-color: #033e79;
+}
+  
+  
+  footer.footer {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .modal-header, .close {
+    background-color: #033e79;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+}
+.modal-footer {
+    background-color: #f9f9f9;
+}
