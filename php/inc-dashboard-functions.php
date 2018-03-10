@@ -179,6 +179,25 @@ function getStudentName($accountID){
 
 } 
 
+function getStudentInfo($accountID){
+    $info = array();
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name, password, email FROM accounts WHERE ID = '$accountID'");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $info = array("name"=>$row['name'],"pwd"=>$row['password'],"email"=> $row["email"]);
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $info;
+
+} 
+
 function getClassInfoFromSchool($schoolID){
     try {
         $pdo = newPDO();
@@ -417,13 +436,20 @@ function assembleClassListTable($classID){
     $string="";
       foreach ($studentList as $value) {
           if (!checkForTeacher($value["accountID"])){
-          $studentName = getStudentName($value["accountID"]);
+          $info = getStudentInfo($value["accountID"]);
+          if(!empty(trim($info['pwd']," "))){
+            $password = "&#10003";
+        } else $password = "No Password";
+          $studentName = $info['name'];
+          $email= $info['email'];
           $className = getClassName($classID);
           $gradeLevel = getClassGradeLevel($classID);
           $schoolID =   getSchoolID();
           $schoolName = getSchoolName($schoolID);
 
     $string .= "<tr><td>$studentName</td>
+    <td>$email</td>
+    <td>$password</td>
      <td>$gradeLevel</td>
      <td>$className</td> 
            <td> $schoolName </td></tr>" ; // html stuff

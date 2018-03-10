@@ -1,7 +1,7 @@
 <?php session_start(); ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -25,9 +25,46 @@
 
 <!-- Start main html-->
       <main class="col-sm-9  col-md-10 pt-3" role="main">
+<!--small modal content-->
+<div id ="confirm" class="modal fade">
+<div class="modal-dialog modal-sm" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Confirm</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Modal body text goes here.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" id ="modalclosesmall"class="btn btn-secondary" data-dismiss="modal">OK</button>
+    </div>
+  </div>
+</div>
+</div>
+<!--response modal content-->
+      <div id ="sure" class="modal fade">
+<div class="modal-dialog" role="dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Result</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Modal body text goes here.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
       <div class="modal fade" id="importModal" role="dialog">
     <div class="modal-dialog">
-    
       <!-- Modal import content-->
       <div class="modal-content">
         <div class="modal-header" style="padding:15px 40px;">
@@ -39,7 +76,7 @@
   <div class="form-group">
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
-  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Name, Password, Class, Grade Level , School ID.</small>
+  <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Name, Email, Password, Class, Grade Level , School ID.</small>
   <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
   </div>
   </form>
@@ -50,7 +87,6 @@
 
  <div class="modal fade" id="exportModal" role="dialog">
     <div class="modal-dialog">
-    
       <!-- Modal import content-->
       <div class="modal-content">
         <div class="modal-header" style="padding:15px 40px;">
@@ -58,10 +94,13 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body" style="padding:20px 50px;">
+        <form method="POST" action="#" id="exportForm">
+  <div class="form-group">
         <div class="col-sm-6"><label >Export CSV</label><br><br>
   <small id="downloadHelp" class="form-text text-muted">Click Download To Export Class List to CSV</small>
-  <a href="#"  id="exportbutton" class="btn btn-primary" role="button" download="exportedterms">Download</a>
-  
+  <button type="submit" class="btn btn-primary" id="exportbutton" download="classlist">Download</button>
+  </div>
+  </form>
   </div>
     </div>   
       </div> 
@@ -87,7 +126,9 @@
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Grade</th>
+                  <th>Email</th>
+                  <th>Password Set</th>
+                  <th>Grade Level</th>
                   <th>Class</th>
                   <th>School</th>
                 </tr>

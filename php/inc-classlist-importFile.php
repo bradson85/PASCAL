@@ -2,8 +2,11 @@
 // This file imports CSV file into database
 require_once("../dbconfig.php");
 
-if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploaded
-{
+
+
+if(isset($_FILES["InputFile"]["name"])&& isset($_POST['listChoice'])) // check to see if file is being uploaded
+{   
+    $classNum = $_POST['listChoice'];
     $filename= $_FILES["InputFile"]["name"];
     $ext=substr($filename,strrpos($filename,"."),(strlen($filename)-strrpos($filename,".")));
 
@@ -20,10 +23,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
       $flag = true;
 
     try {
-        $pdo = new PDO(DB_CONNECTION_STRING,
-        DB_USER, DB_PWD);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE,
-        PDO::ERRMODE_EXCEPTION);
+        $pdo = newPDO();
         while (($data = fgetcsv($file, 10000, ",")) !== FALSE) // retrive data from csv
         {
 
@@ -34,15 +34,22 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
                 <th>" .$data[0]. "</th>
                 <th>" .$data[1]. "</th>
                 <th>" .$data[2]. "</th>
-                <th> School Exists Already</th>
+                <th>" .$data[3]. "</th>
+                <th>" .$data[4]. "</th>
+                <th>" .$data[5]. "</th>
+                <th> Student or Teacher Exists Already</th>
               </tr></thead>  <tbody id = 't_body'>" ;
                 }
                 else {  // replace with correct Titles.
                     $htmlString .= "<thead><tr>
+                    <th> Name </th>
+                    <th> Email </th>
+                    <th> Password </th>
                     <th> Class Name </th>
                     <th> Grade Level </th>
                     <th> School ID </th>
-                    <th> School Exists Already</th>
+                    <th> Student or Teacher Exists Already</th>
+                    <th> Already in Class List</th>
                   </tr></thead>  <tbody id = 't_body'>
                   ";
 
@@ -51,6 +58,9 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
                 <th>" .$data[0]. "</th>
                 <th>" .$data[1]. "</th>
                 <th>" .$data[2]. "</th>
+                <th>" .$data[3]. "</th>
+                <th>" .$data[4]. "</th>
+                <th>" .$data[5]. "</th>
                 <th> CSV Format Error: First Row Not Saved </th> </tr>";
                 }
             }else {
@@ -59,30 +69,28 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
                 $htmlString .= "<tr>
                 <th>" .$data[0]. "</th>
                 <th>" .$data[1]. "</th>
-                <th>" .$data[2]. "</th>";
+                <th>" .$data[2]. "</th>
+                <th>" .$data[3]. "</th>
+                <th>" .$data[4]. "</th>
+                <th>" .$data[5]. "</th>";
      
-           // query to see if data exists
-     $sql = $pdo->prepare("SELECT * From classes WHERE name = :name AND gradeLevel = :gradeLevel 
-                            AND schoolID = :schoolID");
-     $sql->bindParam(':name', $name);
-     $sql->bindParam(':gradeLevel', $gradeLevel);
-     $sql->bindParam(':schoolID', $schoolID);
-     $name = trim($data[0]," ");
-     $gradeLevel = trim($data[1]," ");
-     $schoolID =trim($data[2]," ");
+           // query to see if data exists in accounts
+           $query = ("SELECT ID FROM accounts WHERE name =:name and email = :email");
+         $list = array(0 => ":name",1  => ":email");
+         $data = array(0 => $data[0],1=>data[1]);           
+        $success = pdo_preparedStmt($pdo,$query,$list,$data);
          $sql->execute();
          $row = $sql->fetch(PDO::FETCH_ASSOC) ;
+         $accountID = $row['ID'];
            if(!$row) { // no data exists then insert
-           
-            $sql = $pdo->prepare("INSERT INTO classes (name, gradeLevel, schoolID)
-             Values (:name, :gradeLevel, :schoolID)");
-            $sql->bindParam(':name', $name);
-            $sql->bindParam(':gradeLevel', $gradeLevel);
-            $sql->bindParam(':schoolID', $schoolID);
-            $name = trim($data[0]," ");
-            $gradeLevel = trim($data[1]," ");
-            $schoolID = trim($data[2]," ");
-           $sql->execute();
+            if(strcmp($data[6],'True')== 0){
+                $password = $data[6];
+            } else {$password = password_hash(trim($data[6]," "), PASSWORD_DEFAULT);}
+            $query =("INSERT INTO accounts (name, email, password)
+            Values (:name, :email, :password)");
+           $list = array(0 => ":name",1  => ":email",2 =>":password");
+           $data = array(0 => $name,1=>$email,2=> $password);           
+          $sql = pdo_preparedStmt($pdo,$query,$list,$data);
           
             // if school  not in table already then leave exists? columns blanck
             $htmlString .= "<th> &nbsp </th>";   
@@ -91,6 +99,27 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
             else{ // if data exists then update
                 $htmlString .= "<th> &#10003 </th>"; 
             }
+              // query to see if data exists in classes
+           $query = ("SELECT * FROM classList WHERE accountID = :accountID AND classID = :classID");
+           $list = array(0 => ":accountId", ":classID");
+           $data = array(0=> $accountID ,1 => $classNum);           
+          $success = pdo_preparedStmt($pdo,$query,$list,$data);
+           $sql->execute();
+           $row = $sql->fetch(PDO::FETCH_ASSOC) ;
+             if(!$row) { // no data exists then insert
+              $query =("INSERT INTO classList (accountID, classID)
+              Values (:accountID, :classID)");
+             $list = array(0 => ":accountId", ":classID");
+             $data = array(0=> $accountID ,1 => $classNum);            
+            $sql = pdo_preparedStmt($pdo,$query,$list,$data);
+            
+              // if   not in classlist  table already then leave exists? columns blanck
+              $htmlString .= "<th> &nbsp </th>";   
+                  
+             }
+              else{ // if data exists then update
+                  $htmlString .= "<th> &#10003 </th>"; 
+              }
         }
         $htmlString .= "</tr>";
      }
@@ -98,7 +127,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
     catch(PDOException $e)
         {
             // use "fal" in get for fail 
-        $error = "Error: " . $e->getMessage();
+        echo pdo_error($e);
         $errorflag = true;
         }
     $pdo = null;
@@ -125,5 +154,44 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
 
     echo json_encode($arr);
 }
+
+
+// creat new pd object
+function newPDO(){
+    $pdo = new PDO(DB_CONNECTION_STRING,
+    DB_USER, DB_PWD);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE,
+    PDO::ERRMODE_EXCEPTION);
+
+    return $pdo;
+
+}
+// preapared statement for insertins updates deletions.
+// input: pdo object  output: sql 
+function pdo_preparedStmt($pdo,$query,$parmList,$parmData){
+$sql = $pdo->prepare($query);
+for ($i=0; $i < count($parmList); $i++) { 
+    $sql->bindParam($parmList[$i], $parmData[$i]);
+}
+
+return $sql->execute();
+}
+
+// for select queryies
+// Takes PDO object and sql query and returns the resuling data not prepared
+function pdo_query($pdo, $query)
+{
+    $result = $pdo->query($query);
+    
+    return $result;
+}
+
+function pdo_error($message){
+
+    $error =  $message->getCode();
+    return "Error". $message;}
+      
+
+
     ?>
 

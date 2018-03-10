@@ -16,11 +16,11 @@ body {
 
   background-color:  #033e79;
 }
-.modal-dialog{
+#sure{
   overflow-y: initial !important
 }
-.modal-body{
-  height: 50vh;
+#sure{
+  height: 80vh;
   overflow-y: auto;
 }
 
