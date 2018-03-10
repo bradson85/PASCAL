@@ -4,11 +4,12 @@ require_once("../dbconfig.php");
 
 // output headers so that the file is downloaded rather than displayed
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename=export.csv');
+header('Content-Disposition: attachment; filename=schoolList.csv');
 
 // create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
-// run query that exports in the format     word , definition , category name , category level.
+fputcsv($output, array('School Name'));
+// run query that exports in the format     school name
  try {
     $pdo = new PDO(DB_CONNECTION_STRING,
     DB_USER, DB_PWD);

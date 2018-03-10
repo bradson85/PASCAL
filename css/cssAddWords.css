@@ -16,7 +16,13 @@ body {
 
   background-color:  #033e79;
 }
-
+.modal-dialog{
+  overflow-y: initial !important
+}
+.modal-body{
+  height: 50vh;
+  overflow-y: auto;
+}
 
 /* Navbar*/
 

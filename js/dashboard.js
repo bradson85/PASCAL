@@ -13,13 +13,13 @@ if($('#dataTableTeach').length){
 
 // for modals on class list page
 $(document).on("click","a#classListImportSelect",function(){
-    $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Student Name, Grade Level, Class, SchoolID");
+    $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Student Name, Student Password, Grade Level, Class, SchoolID");
   //  $('#fileForm').attr('action', "/php/inc-classlist-importFile.php");
         $("#importModal").modal();
     });
 // for school export modal
 $(document).on("click","a#classListExportSelect",function(){
-    $("#downloadHelp").text("Click Download To Export Class List to CSV in the FORM OF: Student Name, Grade Level, Class, SchoolID") ;
+    $("#downloadHelp").text("Click Download To Export Class List to CSV in the FORM OF: Student Name, Student Password, Grade Level, Class, SchoolID") ;
   
         $("#exportModal").modal();
   
