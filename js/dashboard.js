@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     loadNumberCompleted();
+      
 
     if ($('#dataTableTeach').length) {
 
@@ -10,24 +11,31 @@ $(document).ready(function () {
 
     } else loadSchoolListSearch();
 
-    // for modals on class list page
-    $(document).on("click", "a#classListImportSelect", function () {
-        $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Student Name, Student Password, Grade Level, Class, SchoolID");
-        //  $('#fileForm').attr('action', "/php/inc-classlist-importFile.php");
-        $("#importModal").modal();
+    $(document).on("click", ".assessmentLink", function () {
+        alert(this.id);
     });
+
+    $(document).on("click", ".studentLink", function () {
+        alert(this.id);
+    });
+    
     // for school export modal
     $(document).on("click", "a#classListExportSelect", function () {
         var listChoice = $('#classlist :selected').val();
+           // in case delete mode is mopen
+           $('#undeleteStudent').text("Delete Mode").removeClass("btn-danger active").addClass("btn-secondary");;
+           $('#classListTable tr').not(":first").each(function (row, tr) {
+               $(tr).find('td:eq(6)').attr('hidden', true);
+           });
+           $("#edithead").prop('hidden', true);
+           $('#undeleteStudent').attr("id","deleteStudent");
         if(listChoice ==0){
             $("#confirm .modal-title").text("Select Class");
-        $("#confirm .modal-body").text("Please select which class you want to export.");
+        $("#confirm .modal-body").text("Please select a class before you export.");
         $("#confirm").modal('show');
-        $("#modalclose").on("click", function () {
-            $("#confirm").modal('hide');
-        });
+      
         }else{
-        $("#downloadHelp").text("Click Download To Export Class List to CSV in the FORM OF: Student Name, Student Password, Grade Level, Class, SchoolID");
+        $("#downloadHelp").text("Click Download To Export Class List to CSV in the FORM OF: Student Name, Email, Student Password, Grade Level, Class, School Name, Password Hashed Or Not");
         var input = $("<input>")
                .attr("type", "hidden")
                .attr("name", "classNum").val(listChoice);
@@ -35,6 +43,52 @@ $(document).ready(function () {
         $('#exportForm').attr("action","php/inc-classlist-exportFile.php");
         $("#exportModal").modal('show');
         }
+    });
+    // for import claass list
+    $(document).on("click", "a#classListImportSelect", function () {
+        var listChoice = $('#classlist :selected').val();
+           // in case delete mode is mopen
+           $('#undeleteStudent').text("Delete Mode").removeClass("btn-danger active").addClass("btn-secondary");;
+           $('#classListTable tr').not(":first").each(function (row, tr) {
+               $(tr).find('td:eq(6)').attr('hidden', true);
+           });
+           $("#edithead").prop('hidden', true);
+           $('#undeleteStudent').attr("id","deleteStudent");
+        if(listChoice ==0){
+            $("#confirm .modal-title").text("Select Class");
+        $("#confirm .modal-body").text("Please select a class before you import.");
+        $("#confirm").modal('show');
+        }else{
+        $("#fileHelp").text("Add a list of CSV Info in the FORM OF:  Student Name, Email, Student Password, Grade Level, Class, School Name, Password Hashed or Not");
+        var output = $("<input>")
+        .attr("type", "hidden")
+        .attr("name", "classNum").val(listChoice);
+        $('#fileForm').append(output);
+        $("#importModal").modal('show');
+    }
+    });
+  // for submitting import file
+    $('#fileForm').on("submit", function (e) {
+        e.preventDefault(); //form will not submitted
+        $.ajax({
+            url: "php/inc-classlist-importFile.php",
+            method: "POST",
+            data: new FormData(this),
+            contentType: false,          // The content type used when sending data to the server.  
+            cache: false,                // To unable request pages to be cached  
+            processData: false,          // To send DOMDocument or non processed data file it is set to false  
+            success: function (data) {
+                $("#importModal").modal('hide');
+                var json = $.parseJSON(data);
+                if (json[0] == true) {
+                    importSuccessModal("Error", json[3]);
+                } else {
+                    importSuccessModal(json[1], json[2]);
+                }
+                loadClassList();
+               
+            }
+        })
     });
 
     $(document).on("click", "#exportbutton", function () {
@@ -48,6 +102,66 @@ $(document).ready(function () {
     $(document).on("change", "#classlist", function () {
         loadClassList();
     });
+
+    $(document).on("click", "a#deleteStudent", function () {
+        var listChoice = $('#classlist :selected').val();
+        if(listChoice ==0){
+        $("#confirm .modal-title").text("Select Class");
+        $("#confirm .modal-body").text("Please select a class before you delete students.");
+        $("#confirm").modal('show');
+        $("#modalclose").on("click", function () {
+            $("#confirm").modal('hide');
+        });
+        }else{
+        $(this).text("Close Delete Mode").removeClass("btn-secondary").addClass("btn-danger active");
+        $('#classListTable tr').not(":first").each(function (row, tr) {
+            $(tr).find('td:eq(6)').removeAttr('hidden');
+        });
+        $("#edithead").removeAttr("hidden");
+        $('#deleteStudent').attr("id","undeleteStudent");
+        $("#confirm .modal-title").text("Select Who To Delete");
+        $("#confirm .modal-body").text("Click appropriate delete button in the row you want to delete student" +
+        " from. If a student already has assessment data, you cannot delete them.");
+        $("#confirm").modal('show');
+        $("#modalclose").on("click", function () {
+            $("#confirm").modal('hide');
+        });
+    }
+    });
+
+    $(document).on("click", "a#undeleteStudent", function () {
+        $(this).text("Delete Mode").removeClass("btn-danger active").addClass("btn-secondary");;
+        $('#classListTable tr').not(":first").each(function (row, tr) {
+            $(tr).find('td:eq(6)').attr('hidden', true);
+        });
+        $("#edithead").prop('hidden', true);
+        $('#undeleteStudent').attr("id","deleteStudent");
+    });
+
+    $(document).on("click", "a#deleteChoice", function () {
+        name= $(this).parent().siblings("td:eq(0)").text().trim(); // get rows name
+       email = $(this).parent().siblings("td:eq(1)").text().trim(); // get rows email
+      
+       $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + name + "\" From Class List?");
+       $("#sure .modal-body").text("You will not be able to undo this action.");
+       $("#modalsave").text("Delete");
+       $('#modalsave').removeClass('btn-warning').addClass('btn-danger');
+       $("#modalsave").show();
+       $("#sure").modal('show');
+   });
+
+   $("#modalsave").on("click", function () {
+    deleteRows(name, email);
+    $("#sure").modal('hide');
+});
+
+$("#modalclose").on("click", function () {
+    $("#sure").modal('hide');
+});
+
+$("#modalclose").on("click", function () {
+    $("#confirm").modal('hide');
+});
 
 
     loadAssessmentData();
@@ -166,25 +280,38 @@ $(document).ready(function () {
         });
 
     }
-
-
-    function importClassList() {
-
-        var listChoice = $('#classlist :selected').val();
+    function deleteRows(name,email) {
+        var classID = $('#classlist :selected').val();
         $.ajax({ // delete from database
             type: "POST",
-            url: "php/inc-classlist-importFile.php",
+            url: "/php/inc-dashboard-functions.php",
             data: {
-                listChoice: listChoice
+                name: name,
+                email: email,
+                classID: classID
             },
             success: function (data) {
-                $("#classListTable tbody").html(data);
+                $("#confirm .modal-title").text("Result");
+                $("#confirm .modal-body").text(data);
+                $("#confirm").modal('show');
+                $("#modalclose").on("click", function () {
+                    $("#confirm").modal('hide');
+                });
+                loadClassList();
+                setTimeout(
+                    function () {
+                $('#classListTable tr').not(":first").each(function (row, tr) {
+                    $(tr).find('td:eq(6)').removeAttr('hidden');
+                });
+                $("#edithead").removeAttr("hidden");
+            }, 350);
             }
         });
-
     }
+
     // alters confirmatrion modal to alert what has taken place.
     function importSuccessModal(message1,message2) {
+        $("#modalsave").hide();
         $("#sure .modal-title").text(message1);
         $("#sure .modal-body").html(message2);
         $("#sure").modal('show');

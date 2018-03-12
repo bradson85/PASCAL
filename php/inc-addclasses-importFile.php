@@ -74,7 +74,7 @@ if(isset($_FILES["InputFile"]["name"])) // check to see if file is being uploade
          $row = $sql->fetch(PDO::FETCH_ASSOC) ;
            if(!$row) { // no data exists then insert
            
-            $sql = $pdo->prepare("INSERT INTO classes (name, gradeLevel, schoolID)
+            $sql = $pdo->prepare("INSERT IGNORE INTO classes (name, gradeLevel, schoolID)
              Values (:name, :gradeLevel, :schoolID)");
             $sql->bindParam(':name', $name);
             $sql->bindParam(':gradeLevel', $gradeLevel);

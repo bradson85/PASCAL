@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once("../dbconfig.php");
-
+if(isset($_POST['classNum'])){
 $classNum = $_POST['classNum'];
 
 // output headers so that the file is downloaded rather than displayed
@@ -12,45 +12,26 @@ header('Content-Disposition: attachment; filename=currentClassList.csv');
 $output = fopen('php://output', 'w');
 
 // save the column headers
-fputcsv($output, array('Name', "Email" ,'Password','Class', 'Grade Level', 'School',"Is Hashed?"));
+fputcsv($output, array('Name', "Email" ,'Password','Class', 'Grade Level', 'School',"Is Hashed?", "Teacher?"));
 
-// run query that exports in the format   .
- try {
-    $pdo = newPDO();
-    $query1 = "SELECT name FROM Schools Where ID = (SELECT schoolID From classes WHERE ID =$classNum)";
-    $query3 = "SELECT name, gradeLevel FROM classes WHERE ID = $classNum";
-    $query4 = "SELECT classlist.accountID From classlist Where classID = $classNum";
-    
-    // query 1
-    $result = pdo_query($pdo,$query1);
-    $row = $result->fetch(PDO::FETCH_ASSOC);
-    $schoolName = $row['name'];
-    // end query 1
-    //query 3
-    $result = pdo_query($pdo,$query3);
-    $row = $result->fetch(PDO::FETCH_ASSOC);
-    $className =$row['name'];
-    $gradeLevel=$row['gradeLevel'];
-    //end query 3
-    //query 4
-    $result = pdo_query($pdo,$query4);
-    $row = $result->fetch(PDO::FETCH_ASSOC); // has multile results;
-    foreach ($row as $value) {
-        //query 2
-        $query2 = "SELECT accounts.name , accounts.email, accounts.password FROM accounts 
-    WHERE accounts.ID = $value";
-        $result = pdo_query($pdo,$query2);
-        $newRow = $result->fetch(PDO::FETCH_ASSOC) ;
-           $arr = array($newRow["name"], $newRow['email'], $newRow['password'],$className,$gradeLevel,"True");
-           fputcsv($output, $arr); // phph function that saves to csv
-        }  
-    //end query 4
-     fclose($output);
-     $pdo = null;
-     setcookie("exported", "true", time() + (60*1), "/"); 
-        } catch (PDOException $e) {
-       echo pdo_error($e);
+$school = getSchoolNameFromClassID($classNum); //name
+$classinfo=getClassInfoFromClassID($classNum); // name, gradelevel
+$accounts = getClassListAccountID($classNum); /// 2d array of all accounts [accountID]
+
+    foreach ($accounts as $value) {
+        $info = getAccountInfo($value["accountID"]);
+        if(checkForTeacher($value["accountID"])){
+            $arr = Array($info['name'],$info['email'],$info['password'],$classinfo['name'],$classinfo['gradeLevel'],$school,"True", "True");
+            fputcsv($output, $arr); // phph function that saves to csv
+        }else{
+            $arr = Array($info['name'],$info['email'],$info['password'],$classinfo['name'],$classinfo['gradeLevel'],$school,"True", "False");
+            fputcsv($output, $arr); // phph function that saves to csv
+        }
+           
         } 
+     fclose($output);
+      
+    } else echo "Error";   
  
 
 // creat new pd object
@@ -88,5 +69,80 @@ function pdo_error($message){
     $error =  $message->getCode();
     return "Error". $message;}
       
+function getClassListAccountID($classNum){
+    try {
+    $pdo = newPDO();
+    $query = "SELECT accountID From classlist Where classID = $classNum";
+    $result = pdo_query($pdo,$query);
+    $row = $result->fetchAll(PDO::FETCH_ASSOC); // has multile results;
+    $pdo = null;
+} catch (PDOException $e) {
+    echo pdo_error($e);
+     }
+     return $row; 
+}
 
+
+function getAccountInfo($accountID){
+    try {
+    $pdo = newPDO();
+    $query = "SELECT name , email, password FROM accounts 
+    WHERE ID = $accountID";
+    $result = pdo_query($pdo,$query);
+        $row = $result->fetch(PDO::FETCH_ASSOC) ;
+        $pdo = null;
+        } catch (PDOException $e) {
+            echo pdo_error($e);
+             }
+             return $row;
+}
+
+function getSchoolNameFromClassID($classNum){
+
+    try {
+        $pdo = newPDO();
+        $query = "SELECT name FROM Schools Where ID = (SELECT schoolID From classes WHERE ID =$classNum)";
+        $result = pdo_query($pdo,$query);
+        $row = $result->fetch(PDO::FETCH_ASSOC); // has multile results;
+        $pdo = null;
+    } catch (PDOException $e) {
+        echo pdo_error($e);
+         }
+         return $row['name'];
+}
+
+function getClassInfoFromClassID($classNum){
+
+    try {
+        $pdo = newPDO();
+        $query= "SELECT name, gradeLevel FROM classes WHERE ID = $classNum";
+        $result = pdo_query($pdo,$query);
+        $row = $result->fetch(PDO::FETCH_ASSOC); // has multile results;
+        $pdo = null;
+    } catch (PDOException $e) {
+        echo pdo_error($e);
+         }
+         return $row;
+}
+function checkForTeacher($ID){
+
+    $exists = false;
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name FROM accounts WHERE ID = '$ID' AND type =1");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        if($row){
+            $exists = true;
+        }
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $exists;
+
+} 
 ?>

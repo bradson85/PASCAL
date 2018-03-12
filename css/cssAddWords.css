@@ -21,7 +21,9 @@ body {
 }
 #sure{
   height: 80vh;
+  width: 100vw;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 /* Navbar*/

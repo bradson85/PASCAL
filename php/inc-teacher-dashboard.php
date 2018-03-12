@@ -43,7 +43,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-comments"></i>
               </div>
-              <div id ="completed" class="mr-5">2 Completed Assesments</div>
+              <div id ="completed" class="mr-5">- Completed Assesments</div>
             </div>
           </div>
         </div>
@@ -53,23 +53,10 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-list"></i>
               </div>
-              <div id='available' class="mr-5">2 Assessments Incomplete</div>
+              <div id='available' class="mr-5">- Assessments Incomplete</div>
             </div>
           </div>
         </div>
-
-              <div class="row">
-        <div class="col-lg-16">
-        <div class="card text-center">
-    <div class="card-header boardModule">
-      <h5 class= "text-white">Assign Assessments</h5>
-         </div>
-           <div class="card-block">
-            <h4 class="card-title"><br></h4>
-          <p class="card-text">Assign an adaptive assessment to a student or students.</p>
-          <a href="assignAssessment.php" class="btn btn-primary">Assign</a>
-            </div> <br>
-          </div>
 <br>
       
 <div class="card mb-10">
@@ -79,6 +66,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
         <div id = "topTable" class="table-responsive">
      </div>
         <div class="table-responsive">
+        <small class='text-muted'>Click on row to view assessment.</small>
             <table class="table table-bordered" id="assessTableTeach" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -98,7 +86,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
           <!-- Example  Card-->
       <div class="card mb-6">
         <div class="card-header boardModule">
-        <h5 class="card-title text-white">Class Stats</h5></div>
+        <h5 class="card-title text-white">Class Table Stats</h5></div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
@@ -106,6 +94,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
        </table>
      </div>
         <div class="table-responsive">
+        <small class='text-muted'>Click on row to view student data.</small>
             <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -122,8 +111,26 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
             </table>
           </div>
         </div>
-      </div>
-        
+      
+  <!-- graph stuff -->
+       <div class="row">
+        <div class="col-lg-10">
+        <div class="card text-center">
+    <div class="card-header boardModule">
+      <h5 class= "text-white">Student Graphs of Scores</h5>
+         </div>
+         <br> <span id='graphclassoption'><select>
+  <option value="volvo">Homeroom 9AM</option>
+  <option value="saab">Science 12:30PM</option>
+</select></span><br>
+            <span id='graphstudentoption'><select>
+            <option value="volvo">Jane Student</option>
+  <option value="saab">Bob Student</option>
+  <option value="mercedes">Steve Student</option>
+</select></span>
+            <canvas id="myChart" width="200" height="100"></canvas>
+          </div>
+          </div>
       </main>
     
   <!-- Optional JavaScript -->
@@ -135,6 +142,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
   <script src="/tests/tests.js"></script>
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
@@ -153,6 +161,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
     });
   </script>
   <script src="/js/dashboard.js"></script>
+  <script src="/js/studentData.js"></script>
 </body>
 
 </html>

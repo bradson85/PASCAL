@@ -49,7 +49,7 @@ function pdo_error($message){
 function deleteFromTable($table, $where,$data){
     try {
        $pdo = newPDO();
-     ("DELETE FROM $table WHERE $where = :$where");
+     $query= ("DELETE FROM $table WHERE $where = :$where");
         $list = array(0 => ":$where");
         $newdata = array(0 => $data); 
        $success = pdo_preparedStmt($pdo,$query,$list,$newdata);

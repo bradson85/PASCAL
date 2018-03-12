@@ -8,6 +8,10 @@ if(isset($_POST['classSelect'])){
          echo assembleClassSelect($option);
 }
 
+if(isset($_POST['schoolSelect'])){ 
+        // echo assembleSchoolSelect();  // not DoNE
+}
+
 if(isset($_POST['classChoice'])){
     $class = $_POST['classChoice']; 
          echo assembleInfoTable($class);
@@ -28,9 +32,22 @@ if(isset($_POST['numAvailable'])){
           echo getAvailableAssessments();
  }
 
+ // for class list page 
  if(isset($_POST['listChoice'])){
     $class = $_POST['listChoice']; 
          echo assembleClassListTable($class);
+}
+
+if(isset($_POST['name'])){
+    $name = $_POST['name']; 
+    $email = $_POST['email'];
+    $classID = $_POST['classID'];
+    $accountID = getAccountID($name,$email);
+    $results = checkResults($accountID); 
+    if($results){
+       echo deleteFromTable($accountID,$classID);
+    } else echo "Assessment results exist. Cannot delete student.";
+       
 }
 
  
@@ -69,9 +86,7 @@ function pdo_error($message){
 
     $error =  $message->getCode();
     if($error == 23000){
-      return "Cannot delete Category. Terms Exist in the database 
-      that depend on this category. Delete all the Terms associated with
-      this category first. ";
+      return "Cannot delete. Other data depends on this Data. ";
   
     }else {return "Error". $message;}
       }
@@ -346,7 +361,7 @@ function assessmentsFinished(){
     try {
         $pdo = newPDO();
         $query = ("SELECT Count(*) as total
-        FROM (SELECT DISTINCT assessmentID FROM results) AS T");
+        FROM (SELECT DISTINCT assessmentID, studentID FROM results) AS T");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -361,6 +376,43 @@ function assessmentsFinished(){
 
 }
 
+function getAccountID($name,$email){
+   try {
+    $pdo = newPDO();
+    $query = ("SELECT ID FROM accounts WHERE name='$name' and email ='$email'");
+    $result = pdo_query($pdo,$query);
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    $info = $row['ID']; 
+      }  catch(PDOException $e)
+         {
+          echo pdo_error($e);
+         }
+      $pdo = null;
+      return $info;
+}
+
+// delete item from table
+function deleteFromTable($accountID,$classID){
+    try {
+       $pdo = newPDO();
+       $query= ("DELETE FROM classlist WHERE accountID = :accountID AND classID = :classID" );
+        $list = array(0 => ":accountID",1=>":classID");
+        $newdata = array(0 => $accountID,1 => $classID); 
+       $success = pdo_preparedStmt($pdo,$query,$list,$newdata);
+         if($success){
+         echo "Deleted Item Successfully";
+         }
+         else{ echo "Deletion of Data ID:$data Failed";}
+         }
+     catch(PDOException $e)
+         {
+         echo pdo_error($e);
+         }
+     $pdo = null;
+
+}
+
+
 
  // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
 function assembleInfoTable($classID){
@@ -372,7 +424,7 @@ function assembleInfoTable($classID){
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
         
-  $string .= "<tr><td>$studentName</td>
+  $string .= "<tr class='studentLink' id='".$value['accountID']."'><td>$studentName</td>
    <td>$gradeLevel</td>
    <td>$className</td> 
          <td> Assessment 38 </td>  
@@ -399,7 +451,7 @@ function assembleAssessmentTable(){
     $enddate = date("m-d-Y", $timestamp);
     $id = $value["ID"];
     
-$string .= "<tr><td>$id</td>
+$string .= "<tr class='assessmentLink' id='$id'><td>$id</td>
 <td>$startdate</td>
 <td>$enddate</td> 
 <td>$catName - $catLev</td></tr>" ; // html stuff
@@ -452,14 +504,32 @@ function assembleClassListTable($classID){
     <td>$password</td>
      <td>$gradeLevel</td>
      <td>$className</td> 
-           <td> $schoolName </td></tr>" ; // html stuff
+           <td> $schoolName </td>
+           <td id='hiddenbutton' hidden> <a class='btn btn-danger btn-sm'  id='deleteChoice' href='#'>Delete Student</a> </td></tr>" ; // html stuff
           }
       }
       unset($value); //php manual says do this after for each
   
       return $string;
   }
-
-
+//returns true if results don't exist.
+  function checkResults($accountID){
+      $exists =false;
+    try {
+     $pdo = newPDO();
+     $query = ("SELECT * FROM results WHERE studentID='$accountID'");
+     $result = pdo_query($pdo,$query);
+     $row = $result->fetch(PDO::FETCH_ASSOC);
+    if(!$row){
+            $exists =true;
+    }
+       }  catch(PDOException $e)
+          {
+           echo pdo_error($e);
+          }
+       $pdo = null;
+       return $exists;
+ }
+ 
 
 ?>

@@ -58,6 +58,7 @@
       <p>Modal body text goes here.</p>
     </div>
     <div class="modal-footer">
+    <button type="button" id="modalsave" class="btn btn-danger">OverWrite</button>
       <button type="button" id ="modalclose "class="btn btn-secondary" data-dismiss="modal">Close</button>
     </div>
   </div>
@@ -108,8 +109,8 @@
  </div>
 
  <div class="card mb-3">
-        <div class="card-header">
-        <h5  id ='listHeader' class="card-title"> Class Lists For <?php echo $_SESSION['user']?></h5>
+        <div class="card-header boardModule">
+        <h5  id ='listHeader' class="card-title text-white"> Class Lists For <?php echo $_SESSION['user']?></h5>
             </div>
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
@@ -120,6 +121,7 @@
      <div class="btn-group float-right " role="group" aria-label="Basic example">
             <a class="btn btn-secondary btn-sm" id="classListImportSelect" href="#">Import Class List</a>
             <a class="btn btn-secondary btn-sm"  id="classListExportSelect" href="#">Export Class List</a>
+            <a class="btn btn-secondary btn-sm"  id="deleteStudent" href="#">Delete Mode</a>
             </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="classListTable" width="100%" cellspacing="0">
@@ -131,6 +133,7 @@
                   <th>Grade Level</th>
                   <th>Class</th>
                   <th>School</th>
+                  <th id ="editHead" hidden></th>
                 </tr>
               </thead>
               <tbody>

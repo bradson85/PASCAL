@@ -78,14 +78,13 @@ $(document).ready(function () {
         
     });
 
-
-        
     // for  class export modal
     $(document).on("click", "a#classExportSelect", function () {
         $("#downloadHelp").text("Click Download To Export Class List to CSV");
         $('#exportbutton').attr("href", "/php/inc-addclasses-exportFile.php");
         $("#exportModal").modal();
     });
+    
     // for school import modal
     $(document).on("click", "a#schoolImportSelect", function () {
         $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID");
@@ -283,7 +282,6 @@ $(document).ready(function () {
     //when modal is ready on delete
     $("body").on("click",".delete", function () {
         deleteRows(tabID, currentPage);
-        $($(this).parents('tr')).remove(); // remove row
         $("#sure").modal('hide');
     });
     $("#modalclose").on("click", function () {
@@ -619,7 +617,6 @@ $(document).ready(function () {
             }
             count++;
         });
-
         return TableData;
 
     }
