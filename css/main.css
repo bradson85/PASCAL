@@ -8,7 +8,22 @@
 .checkbox {
     display: block;
     margin: 0 auto;
-    width: 100%
+    width: 100%;
+}
+
+.check {
+    margin: 0;
+    padding: 0;
+    display: block;
+    text-align: center;
+}
+
+#createAssessment {
+    margin-top: 3%;
+}
+
+#createAssessment #terms {
+    margin: 2% 0;
 }
 
 .createAccount {
@@ -25,7 +40,7 @@
     margin-top: 5%;
 }
 
-.card {
+.quizCard {
     margin-top: 2%;
     z-index: 1; 
     border: solid 2px #385D8A !important;
@@ -48,6 +63,24 @@
 #next {
     margin-left: 80.5%;
     margin-top: 2.5%;
+}
+
+#directions p {
+    font-size: 16pt;
+}
+
+.card-title {
+    font-size: 24pt;
+}
+
+#startButton,
+#returnButton {
+    margin: 5% 30%;
+    text-align: center;
+    width: 40%;
+    height: 100px;
+    font-size: 16pt;
+    cursor: pointer;
 }
 
 .speak {

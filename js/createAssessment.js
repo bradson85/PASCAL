@@ -2,8 +2,9 @@ $(document).ready(function(){
     
     $('.messages').hide();
     $('#terms').hide();
+    $('#studentAssignments').hide();
     
-    loadStudents(1);
+    //loadStudents(1);
     cats = [];
     checkedNum = 0;
     matchedNum = 0;
@@ -55,7 +56,7 @@ $(document).ready(function(){
                 console.log(response);
                 cats = response;
                 for(let i = 0; i < response.length; i++) {
-                    setTimeout(1000,showTerms(response[i]));
+                    setTimeout(2500,showTerms(response[i]));
                     
                 }
             }
@@ -63,7 +64,7 @@ $(document).ready(function(){
     });
     // this calls funtion loadCategory for top category dropdown on doculment load
                 loadCategorySelect();
-    //this calls loading existing assessments to open\
+    //this calls loading existing assessments to open
                 loadAssessments();
     
     
@@ -114,7 +115,7 @@ $(document).ready(function(){
     function showTerms(obj) {
         let preTitle = "<div class=\"card\" style=\"height: 10%\"> <div class=\"card-header\" id=\"heading" + obj.ID + "\"> <h5 class=\"mb-0\"><button class=\"btn btn-link collapsed\" data-toggle=\"collapse\" data-target=\"#collapse" + obj.ID + "\" aria-controls=\"collapse" + obj.ID + "\">";
         let postTitle = "</button> </h5> </div>";
-        let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"#terms\"> <div class=\"card-body\" style=\"overflow-y: auto\"> <table class=\"table table-striped\"> <thead><tr><th></th><th>Term</th><th>Definition</th><th>Match</th></tr></thead><tbody>";
+        let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"#terms\"> <div class=\"card-body\" style=\"overflow-y: auto\"> <table class=\"table table-striped termTable\"> <thead><tr><th></th><th>Term</th><th>Definition</th></tr></thead><tbody>";
         let postBody = "</tbody></table></div></div>";
         let html = "";
         html += (preTitle + obj.name + " - Grade " + obj.level + postTitle + preBody);
@@ -139,8 +140,10 @@ $(document).ready(function(){
     $('#submit').click(function (){
         let assessmentID = 0;
         let students = [];
-        if($('#selfSelect').checked)
+        if($('#selfInput').is(':checked')) {
             processChecks();
+            console.log("Self selection has been checked...");
+        }    
         else {
             console.log("Self select wasn't checked on submit!");
             console.log($('#startDate').val());
@@ -158,7 +161,7 @@ $(document).ready(function(){
                     for(let i = 0; i < cats.length; i++) {
                         getTerms(cats[i].ID, response);
                     }
-                    submitStudents(response);
+                    //submitStudents(response);
                 }
             });
         }
@@ -276,25 +279,31 @@ $(document).ready(function(){
         let assessArray = [];
         let count = 0;
         console.log(array);
-        for(let i = 0; i < array[0].length; i++) {
-            assessArray[count] = {termID: array[0][i].ID, assessmentID: formResponse, isMatch: 1};
-            count++;
-        }
-        for(let i = 0; i < array[1].length; i++) {
-            assessArray[count] = {termID: array[0][i].ID, assessmentID: formResponse, isMatch: 0};
-            count++;
-        }
-        console.log(assessArray);
-        $.ajax({
-            type: "POST",
-            url: "php/inc-createassessment-saveAssessment.php",
-            data: {
-                assessData: JSON.stringify(assessArray)
-            },
-            success: function(response) {
-                console.log(response);
+        if(typeof array[1][7] == 'undefined'){
+            console.log("There were less than 28 terms found");
+        }     
+        else {
+            for(let i = 0; i < array[0].length; i++) {
+                assessArray[count] = {termID: array[0][i].ID, assessmentID: formResponse, isMatch: 1};
+                count++;
             }
-        });
+            for(let i = 0; i < array[1].length; i++) {
+                assessArray[count] = {termID: array[1][i].ID, assessmentID: formResponse, isMatch: 0};
+                count++;
+            }
+            console.log(assessArray);
+            $.ajax({
+                type: "POST",
+                url: "php/inc-createassessment-saveAssessment.php",
+                data: {
+                    assessData: JSON.stringify(assessArray)
+                },
+                success: function(response) {
+                    console.log(response);
+                }
+            });
+        }
+        
     }
 
     // This should be used when creating the assessment to randomize which words are tested.

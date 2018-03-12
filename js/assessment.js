@@ -1,13 +1,18 @@
+var complete = false;
+$('.quizCard').hide();
+$('#next').hide();
+
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
     $('.countdown').hide();    
 
+    $(window).on('beforeunload', function(){
+        if(!complete) return("Are you sure?");
+    });
     // Hide timer (not visible)
     // San serif font ( Arial 16pt)
     // Button color and clickability should change when all terms have been matched
-
-    $('#directions').modal('show');
 
     // Set up global variables
     terms = [];
@@ -76,6 +81,16 @@ $(document).ready(function() {
         speechSynthesis.speak(msg);
     });
 
+    $('#startButton').click(function() {
+        $('#directions').hide();
+        $('#startButton').hide();
+        $('.quizCard').show();
+        $('#next').show();
+    });
+
+    $(document).on('click', '#returnButton', function() {
+        window.location.replace('student-landing.php');
+    });
 
     $('#next').click(function() {
         console.log("Number of terms: " + termCount);
@@ -114,7 +129,7 @@ $(document).ready(function() {
         
     });
     
-    $.ajax({
+    setTimeout(100, ($.ajax({
         type: "POST",
         url: "php/inc.assessment.php",
         dataType: "json",
@@ -135,6 +150,7 @@ $(document).ready(function() {
                 setHeight();
             }
             else {
+                console.log(response);
                 alert("Oops! Error loading assessment");
             }
             
@@ -144,7 +160,7 @@ $(document).ready(function() {
             console.log("Error!");
             console.log(response);
         }
-    });
+    })));
 
     function count(num) {
         termCount += num;
@@ -177,6 +193,26 @@ $(document).ready(function() {
             //minutes = (minutes < 10) ?  minutes : minutes;
             $('.countdown').html(minutes + ':' + seconds);
             timer2 = minutes + ':' + seconds;
+        }, 1000);
+    }
+
+    function pageTimer() {
+        var pageTimer2 = "1:01";
+        var pageInterval = setInterval(function() {
+            var pageTimer = pageTimer2.split(':');
+
+            var pageMinutes = parseInt(pageTimer[0], 10);
+            var pageSeconds = parseInt(pageTimer[1], 10);
+            --pageSeconds;
+            pageMinutes = (pageSeconds < 0) ? --pageMinutes : pageMinutes;
+            if (pageMinutes < 1 && pageSeconds == 0) {
+                clearInterval(pageInterval);
+            }
+
+            pageSeconds = (pageSeconds < 0) ? 59 : pageSeconds;
+            pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
+
+            pageTimer2 = pageMinutes + ':' + pageSeconds;
         }, 1000);
     }
 
@@ -363,8 +399,9 @@ $(document).ready(function() {
             if(correct[i].correct === 1)
                 numCorrect++;
         }   
-
-        $('.container-fluid').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
+        complete = true;
+        $('.container-fluid').append("<h2 class='text-center'>You have successfully completed the assessment.</h2>");
+        $('.container-fluid').append("<button class='btn btn-primary' id='returnButton'>Return</button>");
     }
 
     function submitResults(){
@@ -384,14 +421,14 @@ $(document).ready(function() {
     function setHeight(){
         // Thanks to ghayes for detecting max height: https://stackoverflow.com/questions/6781031/use-jquery-css-to-find-the-tallest-of-all-elements
         // Get an array of all element heights
-        var elementHeights = $('.card').map(function() {
+        var elementHeights = $('.quizCard').map(function() {
             return $(this).height();
         }).get();
         // Math.max takes a variable number of arguments
         // `apply` is equivalent to passing each height as an argument
         var maxHeight = Math.max.apply(null, elementHeights);
         // Set each height to the max height
-        $('.card').height(maxHeight);
+        $('.quizCard').height(maxHeight);
     }
   
 

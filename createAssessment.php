@@ -1,4 +1,4 @@
-<?php session_start()?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 
@@ -10,7 +10,7 @@
     crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link rel="stylesheet" href="css/createAssessment.css" />
+  <link rel="stylesheet" href="css/main.css" />
 </head>
 
 <body>
@@ -52,8 +52,8 @@ include "sidebar-header.php"
       </div>
       <div class="row">
         <div class="col-sm-5">
-          <div class="card">
-            <div class="card-header" id="studentAssignments">
+          <div class="card" id="studentAssignments" style="display: none">
+            <div class="card-header">
               Student Assignments
             </div>
             <div class="card-body">

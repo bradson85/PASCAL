@@ -30,7 +30,6 @@
     $html = $html . ("<tr><td><input type=\"checkbox\" class=\"form-check-input check\" value=\"$id\"></td>
    <td>$word</td>  
     <td>$def</td>
-    <td><input type=\"checkbox\" class=\"form-check-input match\"></td>
     </tr>");
 
 
