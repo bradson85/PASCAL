@@ -2,10 +2,12 @@
 session_start();
 require_once("../dbconfig.php");
 
+
 if(isset($_POST['categoriesSel'])){
 
    
 }
+
 
 // creat new pd object
 function newPDO(){
@@ -48,6 +50,23 @@ function pdo_error($message){
     }else {return "Error". $message;}
       }
 
+ // funciton to get all studetns in a lcass
+function getSchoolList(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT * FROM schools");
+        $result = pdo_query($pdo,$query);;
+         
+        $row = $result->fetchAll(PDO::FETCH_ASSOC);
+         
+          }
+      catch(PDOException $e)
+          {
+          echo pdo_error($e);
+          }
+      $pdo = null;
+ return $row;
+ }     
 
 // funciton to get all studetns in a lcass
 function getClassList($id){

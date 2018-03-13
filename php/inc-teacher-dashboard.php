@@ -90,6 +90,7 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
         <div class="card-body">
         <div id = "topTable" class="table-responsive">
        <table id="sort_table" class="table table-bordered">
+       <small class='text-muted'>Select Options to View Data.</small>
          <tbody id = "sort_body"></tbody>
        </table>
      </div>
@@ -110,25 +111,19 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
                 </tbody>
             </table>
           </div>
-        </div>
+        </div><br>
       
   <!-- graph stuff -->
-       <div class="row">
+  <div class="row">
         <div class="col-lg-10">
         <div class="card text-center">
     <div class="card-header boardModule">
-      <h5 class= "text-white">Student Graphs of Scores</h5>
+      <h5 class= "text-white">Graphs of Student Scores</h5>
          </div>
-         <br> <span id='graphclassoption'><select>
-  <option value="volvo">Homeroom 9AM</option>
-  <option value="saab">Science 12:30PM</option>
-</select></span><br>
-            <span id='graphstudentoption'><select>
-            <option value="volvo">Jane Student</option>
-  <option value="saab">Bob Student</option>
-  <option value="mercedes">Steve Student</option>
-</select></span>
-            <canvas id="myChart" width="200" height="100"></canvas>
+         </div><small class='text-muted'>Select Options to View Graph.</small><br><span id='graphschooloption'></span>
+          <span id='graphclassoption'></span>
+          <span id='graphstudentoption'></span><br>
+         <canvas id="dashboardChart" width="200" height="100"></canvas>
           </div>
           </div>
       </main>

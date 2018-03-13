@@ -1,14 +1,27 @@
 <?php
+session_start();
+
+if(!isset($_SESSION['type'])){
+
+    echo "Unauthorized access";
+    exit();
+}else{
     $page_title = "Report";
     $css_path = "css/main.css";
     include('php/inc.header.php');
+}
 ?>
 
     <body>
 
     <?php 
+    if($_SESSION['type'] == 1){
+        include('teacher-topbar-header.php');
+        include('teacher-sidebar-header.php'); 
+    }else if($_SESSION['type'] == 2){
         include('topbar-header.php');
         include('sidebar-header.php'); 
+    }
     ?>
         <div class="container report">
             <div class="row">

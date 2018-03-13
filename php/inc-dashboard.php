@@ -62,7 +62,7 @@ include  __DIR__ ."/../sidebar-header.php"
         <div class="card-header boardModule">
         <h5 class="card-title text-white">Available Assessments</h5></div>
         <div class="card-body">
-        <div id = "topTable" class="table-responsive">
+        <div id = "topTable">
      </div>
         <div class="table-responsive">
         <small class='text-muted'>Click on row to view assessment.</small>
@@ -87,10 +87,10 @@ include  __DIR__ ."/../sidebar-header.php"
         <div class="card-header boardModule">
         <h5 class="card-title text-white">Class Table Stats</h5></div>
         <div class="card-body">
-        <div id = "topTable" class="table-responsive">
-       <table id="sort_table" class="table table-bordered">
-         <tbody id = "sort_body"></tbody>
-       </table>
+        <div id = "topTable">
+       <small class='text-muted'>Select Options to View Graph.</small>
+        <span id='schoolOptions'></span>
+        <span id='classOptions'></span>
      </div>
         <div class="table-responsive">
         <small class='text-muted'>Click on row to view student data.</small>
@@ -116,22 +116,12 @@ include  __DIR__ ."/../sidebar-header.php"
         <div class="col-lg-10">
         <div class="card text-center">
     <div class="card-header boardModule">
-      <h5 class= "text-white">Student Graphs of Scores</h5>
+      <h5 class= "text-white">Graphs of Student Scores</h5>
          </div>
-         <br> <span id='graphschooloption'><select>
-  <option value="volvo">Edwardsville</option>
-  <option value="saab">Fox C-9</option>
-</select></span><br>
-<span id='graphclassoption'><select>
-  <option value="volvo">Homeroom 9AM</option>
-  <option value="saab">Science 12:30PM</option>
-</select></span><br>
-            <span id='graphstudentoption'><select>
-            <option value="volvo">Jane Student</option>
-  <option value="saab">Bob Student</option>
-  <option value="mercedes">Steve Student</option>
-</select></span>
-            <canvas id="myChart" width="200" height="100"></canvas>
+         </div><small class='text-muted'>Select Options to View Graph.</small><br><span id='graphschooloption'></span>
+          <span id='graphclassoption'></span>
+          <span id='graphstudentoption'></span><br>
+         <canvas id="dashboardChart" width="200" height="100"></canvas>
           </div>
           </div>
       </main>
@@ -164,7 +154,7 @@ include  __DIR__ ."/../sidebar-header.php"
     });
   </script>
   <script src="/js/dashboard.js"></script>
-  <script src="/js/studentData.js"></script>
+ <script src="/js/studentData.js"></script>
 </body>
 
 </html>

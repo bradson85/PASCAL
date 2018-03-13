@@ -2,19 +2,43 @@
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
-
 if(isset($_POST['classSelect'])){
     $option = $_POST['classSelect']; 
          echo assembleClassSelect($option);
 }
 
 if(isset($_POST['schoolSelect'])){ 
-        // echo assembleSchoolSelect();  // not DoNE
+         echo assembleSchoolSelect();  
+}
+
+if(isset($_POST['graphSchoolSelect'])){ 
+    echo assembleGraphSchoolSelect();  
+}
+
+
+if(isset($_POST['graphClassChoice'])){ 
+    $class = $_POST['graphClassChoice'];
+    echo assembleStudentSelect($class) ;
+}
+
+if(isset($_POST['graphTeahClass'])){ 
+    $school = getSchoolID();
+         echo assembleGraphClassSelect($school);
 }
 
 if(isset($_POST['classChoice'])){
     $class = $_POST['classChoice']; 
          echo assembleInfoTable($class);
+}
+
+if(isset($_POST['schoolChoice'])){
+    $school = $_POST['schoolChoice']; 
+         echo assembleAdminClassSelect($school);
+}
+
+if(isset($_POST['graphSchoolChoice'])){
+    $school = $_POST['graphSchoolChoice']; 
+         echo assembleGraphClassSelect($school);
 }
 
 if(isset($_POST['assessment'])){
@@ -99,6 +123,22 @@ function getTeacherClassIDs(){
 function getSchoolID(){
     return $_SESSION['school'];
 }
+function getSchoolList(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT * FROM schools");
+        $result = pdo_query($pdo,$query);;
+         
+        $row = $result->fetchAll(PDO::FETCH_ASSOC);
+         
+          }
+      catch(PDOException $e)
+          {
+          echo pdo_error($e);
+          }
+      $pdo = null;
+ return $row;
+ }     
 
 function getSchoolName($schoolID){
 
@@ -175,6 +215,8 @@ function getAssessmentCategoryName($assessmentID){
         return $catName;
 }
 
+
+
 function getStudentName($accountID){
 
     try {
@@ -193,6 +235,8 @@ function getStudentName($accountID){
         return $catName;
 
 } 
+
+
 
 function getStudentInfo($accountID){
     $info = array();
@@ -216,7 +260,7 @@ function getStudentInfo($accountID){
 function getClassInfoFromSchool($schoolID){
     try {
         $pdo = newPDO();
-        $query = ("SELECT name, gradeLevel FROM classes WHERE schoolID = \"$schoolID\"");
+        $query = ("SELECT ID, name, gradeLevel FROM classes WHERE schoolID = \"$schoolID\"");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -420,11 +464,13 @@ function assembleInfoTable($classID){
   $string="";
     foreach ($studentList as $value) {
         if (!checkForTeacher($value["accountID"])){
+        $info = getStudentInfo($value["accountID"]);
+        $email= $info['email'];
         $studentName = getStudentName($value["accountID"]);
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
         
-  $string .= "<tr class='studentLink' id='".$value['accountID']."'><td>$studentName</td>
+  $string .= "<tr class='studentLink' id='$email'><td>$studentName</td>
    <td>$gradeLevel</td>
    <td>$className</td> 
          <td> Assessment 38 </td>  
@@ -436,6 +482,29 @@ function assembleInfoTable($classID){
 
     return $string;
 }
+
+ // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
+ function assembleStudentSelect($classID){
+    $studentList = studentListTable($classID);  // all the acount ID's from of student in this calss
+    $selectString = "<td><select class='form-control' id='studentSelect'><option disabled selected value = \"0\"> Select A Student</option>";
+
+    foreach ($studentList as $value) {
+        if (!checkForTeacher($value["accountID"])){
+            $info = getStudentInfo($value["accountID"]);
+            $email= $info['email'];
+            $studentName = getStudentName($value["accountID"]);
+            
+            $selectString.= "<option value = '$email'> $studentName</option>";
+            }
+    
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+  }
  //ID , Start Date End Date Category and Grade Level
 function assembleAssessmentTable(){
    $assessmentList = getAsessmentData();
@@ -480,6 +549,78 @@ $selectString.= "</select></td>";
 return $selectString;
 
 }
+// for admin dashboard
+function assembleAdminClassSelect($school){
+
+   $schoolinfo = getClassInfoFromSchool($school);
+    $selectString = "<td><select class='form-control' id='adminClassList'><option disabled selected value = \"0\"> Select A Class</option>";
+    
+    foreach ($schoolinfo as $value) {
+        $classname = $value["name"];
+        $selectString.= "<option value = \"".$value["ID"]."\"> $classname</option>";
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+    
+    }
+ // graph choices
+    function assembleGraphClassSelect($school){
+
+        $schoolinfo = getClassInfoFromSchool($school);
+         $selectString = "<td><select class='form-control' id='graphClassList'><option disabled selected value = \"0\"> Select A Class</option>";
+         
+         foreach ($schoolinfo as $value) {
+             $classname = $value["name"];
+             $selectString.= "<option value = \"".$value["ID"]."\"> $classname</option>";
+         }
+         unset($value); //php manuel says do this after for each
+         
+         $selectString.= "</select></td>";
+         
+         
+         return $selectString;
+         
+         }
+
+function assembleSchoolSelect(){
+
+    
+    $selectString = "<td><select class='form-control' id='schoolSelect'><option disabled selected value = \"0\"> Select A School</option>";
+    $school = getSchoolList();
+    foreach ($school as $value) {
+        $schoolname = $value["name"];
+        $selectString.= "<option value = \"".$value["ID"]."\"> $schoolname</option>";
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+    
+    }
+
+    function assembleGraphSchoolSelect(){
+
+    
+        $selectString = "<td><select class='form-control' id='graphSchoolSelect'><option disabled selected value = \"0\"> Select A School</option>";
+        $school = getSchoolList();
+        foreach ($school as $value) {
+            $schoolname = $value["name"];
+            $selectString.= "<option value = \"".$value["ID"]."\"> $schoolname</option>";
+        }
+        unset($value); //php manuel says do this after for each
+        
+        $selectString.= "</select></td>";
+        
+        
+        return $selectString;
+        
+        }
 
 
 

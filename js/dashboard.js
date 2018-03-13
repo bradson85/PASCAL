@@ -1,22 +1,26 @@
 $(document).ready(function () {
 
     loadNumberCompleted();
-      
+    $("tbody").css( 'cursor', 'pointer' );
 
     if ($('#dataTableTeach').length) {
-
         loadClassListSearch("dashboard");
+        loadGraphClassSearchTeach();
     } else if ($('#classListTable').length) {
         loadClassListSearch("classlist");
 
-    } else loadSchoolListSearch();
+    } else {loadSchoolListSearch();
+        loadGraphSchoolListSearch();
+    }
 
     $(document).on("click", ".assessmentLink", function () {
-        alert(this.id);
+        location.href = 'assessment.php?id='+this.id;
     });
 
-    $(document).on("click", ".studentLink", function () {
-        alert(this.id);
+    $(document).on("click", ".studentLink", function (e) {
+       $("<form id='form-id' method='post' action='studentData.php'>"
+       + "<input type='hidden'name='email' value='"+ this.id +"'>"
+       +" </form>").appendTo('body').submit();
     });
     
     // for school export modal
@@ -103,6 +107,27 @@ $(document).ready(function () {
         loadClassList();
     });
 
+    $(document).on("change", "#schoolSelect", function () {
+        loadClassListSearchAdmin();
+    });
+
+    $(document).on("change", "#adminClassList", function () {
+        loadAdminClassList();
+    });
+
+    $(document).on("change", "#graphclassoption", function () {
+       loadGraphStudentList();
+    });
+
+    $(document).on("change", "#graphschooloption", function () {
+        loadGraphClassSearch();
+    });
+
+    // This is on the graph js page studentData !!!!!!
+   // $(document).on("change", "#graphstudentoption", function () {
+
+
+
     $(document).on("click", "a#deleteStudent", function () {
         var listChoice = $('#classlist :selected').val();
         if(listChoice ==0){
@@ -183,6 +208,50 @@ $("#modalclose").on("click", function () {
 
     }
 
+    function loadClassListSearchAdmin() {
+        var schoolChoice = $('#schoolSelect :selected').val();
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                schoolChoice: schoolChoice
+            },
+            success: function (data) {
+                $("#classOptions").html(data);
+            }
+        });
+
+    }
+
+    function loadGraphClassSearch() {
+        var schoolChoice = $('#graphSchoolSelect :selected').val();
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                graphSchoolChoice: schoolChoice
+            },
+            success: function (data) {
+                $("#graphclassoption").html(data);
+            }
+        });
+
+    }
+
+    function loadGraphClassSearchTeach() {
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                graphTeahClass: ""
+            },
+            success: function (data) {
+                $("#graphclassoption").html(data);
+            }
+        });
+
+    }
+
 
     function loadNumberCompleted() {
 
@@ -242,6 +311,24 @@ $("#modalclose").on("click", function () {
             success: function (data) {
                 var rows = "<td> Select Which School:</td>" + data;
                 $("#sort_body").html(rows);
+                $("#schoolOptions").html(data);
+            }
+        });
+
+    }
+
+    function loadGraphSchoolListSearch() {
+
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                graphSchoolSelect: "selectSchool"
+            },
+            success: function (data) {
+                var rows = "<td> Select Which School:</td>" + data;
+                $("#sort_body").html(rows);
+                $("#graphschooloption").html(data);
             }
         });
 
@@ -265,6 +352,24 @@ $("#modalclose").on("click", function () {
 
     }
 
+    function loadAdminClassList() {
+
+        var classChoice = $('#adminClassList :selected').val();
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                classChoice: classChoice,
+
+            },
+            success: function (data) {
+                $("#dataTableAdmin tbody").html(data);
+            }
+        });
+
+    }
+    
+
     function loadClassList() {
 
         var listChoice = $('#classlist :selected').val();
@@ -276,6 +381,22 @@ $("#modalclose").on("click", function () {
             },
             success: function (data) {
                 $("#classListTable tbody").html(data);
+            }
+        });
+
+    }
+
+    function loadGraphStudentList() {
+
+        var graphClassChoice = $('#graphclassoption :selected').val();
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                graphClassChoice: graphClassChoice
+            },
+            success: function (data) {
+                $("#graphstudentoption").html(data);
             }
         });
 

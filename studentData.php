@@ -1,6 +1,12 @@
 <?php
 // Start the session
 session_start();
+if((!isset($_SESSION['type'])) && $_SESSION['type'] != 1){
+   echo "Unauthorized access";
+  header("Location:index.php"); //to redirect back to "index.php" after logging out
+  exit();
+} 
+$_SESSION['currStudentEmail'] = $_POST["email"];
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,10 +41,8 @@ include  "teacher-sidebar-header.php"
 <!-- Start main html-->
 <main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
         <div id="chart">
-        <canvas id="myChart" width="400" height="400"></canvas>
+        <canvas id="studentChart" width="300" height="200"></canvas>
         </div>
-     
-        
       </main>
     
   <!-- Optional JavaScript -->

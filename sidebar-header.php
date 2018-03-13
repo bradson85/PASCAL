@@ -10,9 +10,6 @@
             <a class="nav-link" href="createAssessment.php">Create or Edit Assessment
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="assessment.php?id=37&student=1">Take Sample Assessment</a>
-            </li>
             <li class="nav-item">
             <a class="nav-link" href="assignAssessment.php">Assign Assessment</a>
             </li>

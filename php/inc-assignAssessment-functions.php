@@ -352,8 +352,9 @@ function dbGetAssessments(){
     }
 
 function assignToStudents($studentID, $assessmentID){
+    $name = dbGetStudentNames($studentID);
 if(checkIfAssignedExists($studentID, $assessmentID)){
-  echo "Cannot Assign Another Assessment \n Student $studentID Is Already Assigned Assessment";
+  echo "Cannot Assign Another Assessment <br> $name Is Already Assigned Assessment $assessmentID <br>";
 }else {
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -363,7 +364,11 @@ if(checkIfAssignedExists($studentID, $assessmentID)){
         $sql = $pdo->prepare("INSERT INTO assessmentassignments (assessmentID, studentID) VALUES (:assessmentID,:studentID)");
          $sql->bindParam(':studentID', $studentID);
          $sql->bindParam(':assessmentID', $assessmentID);
-         $sql->execute();
+         $success = $sql->execute();
+         if($success){
+            echo "Assigned Item Assessment $assessmentID to $name Successfully<br>";
+            }
+            else{ echo "Assignment of Assessment $assessmentID Failed<br>";}
     }
     catch(PDOException $e)
     {
@@ -415,7 +420,10 @@ function assignToClass($classID,$assessmentID){
          while(  $row = $sql->fetch(PDO::FETCH_ASSOC)){
              $studentID = $row['accountID'];
 
-            assignToStudents($studentID,$assessmentID);
+             if(!checkForTeacher($studentID)){
+                assignToStudents($studentID,$assessmentID);
+               }
+             
            
          }
     }
