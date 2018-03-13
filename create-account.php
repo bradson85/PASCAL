@@ -1,7 +1,7 @@
 <?php 
     session_start();
-    $_SESSION['user'] = "Name";
-    $_SESSION['email'] = "student@test.com";
+    //$_SESSION['user'] = "Name";
+    //$_SESSION['email'] = "student@test.com";
     $page_title = "Create Account";
     $css_path = "css/main.css";
 
