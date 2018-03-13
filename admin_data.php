@@ -144,7 +144,7 @@ function importModal(){
   <label for="InputFile">Import CSV</label>
   <input type="file" accept=".csv" class="form-control-file" id="InputFile" name= "InputFile" aria-describedby="fileHelp">
   <small id="fileHelp" class="form-text text-muted">Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID.</small>
-  <button type="submit" class="btn btn-primary" id="fileup">Upload</button>
+  <button type="submit" class="btn btn-primary" id="fileup" disabled>Upload</button>
   </div>
   </form>
     </div>   

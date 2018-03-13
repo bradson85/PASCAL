@@ -5,59 +5,115 @@ $(document).ready(function () {
 
     var count = 0 // for preventing save warning from popping up every time.
     $('#changes').hide();
-     var index = 0;
+    var index = 0;
     var currentPage = "categories";
     var lastSort = "All";
     // start out with categories
     getTableData("categories");
     $("#categories").tab("show");
     $("#topTable").hide();
-   
+
 
     setTimeout(
         function () {
             updateSelected('categories');
-         
-
         }, 350);
 
 
     //for tooltip help
     $('[data-toggle="tooltip"]').tooltip();
 
-   // when search button changes
-    $(document).on("change", "#sort",function(){
+    $(document).on("change" ,"input:file", function (){
+        var fileName = $(this).val();
+        if(fileName) { // returns true if the string is not empty
+            $('#fileup').removeAttr('disabled');
+        } else { // no file was selected
+            
+        }
+      });
+
+    // when search button changes
+    $(document).on("change", "#sort", function () {
         // start out with categories
         getTableData(currentPage);
         $("#" + currentPage).tab("show");
         setTimeout(
             function () {
                 updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values
-                
+
             }, 300);
     });
-      /// for class inport modal
-      $(document).on("click", "a#classImportSelect",function(){
+    /// for class inport modal
+    $(document).on("click", "a#classImportSelect", function () {
         $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID");
-        $('#fileForm').attr('action', "/php/inc-addclasses-importFile.php");
-        $("#importModal").modal();
+        $("#importModal").modal('show');
+        $('#fileForm').on("submit", function (e) {
+            e.preventDefault(); //form will not submitted
+            $.ajax({
+                url: "php/inc-addclasses-importFile.php",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,          // The content type used when sending data to the server.  
+                cache: false,                // To unable request pages to be cached  
+                processData: false,          // To send DOMDocument or non processed data file it is set to false  
+                success: function (data) {
+                    $("#importModal").modal('hide');
+                    var json = $.parseJSON(data);
+                    if (json[0] == true) {
+                        importSuccessModal("Error", json[3]);
+                    } else {
+                        importSuccessModal(json[1], json[2]);
+                    }
+                    getTableData(currentPage);
+                    $("#".currentPage).tab("show");
+                    setTimeout(
+                        function () {
+                            updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
+    
+                        }, 300);
+            
+                }
+            })
+        });
+        
     });
-// for  class export modal
-$(document).on("click","a#classExportSelect",function(){
-    $("#downloadHelp").text("Click Download To Export Class List to CSV");
-    $('#exportbutton').attr("href", "/php/inc-addclasses-exportFile.php");
+
+    // for  class export modal
+    $(document).on("click", "a#classExportSelect", function () {
+        $("#downloadHelp").text("Click Download To Export Class List to CSV");
+        $('#exportbutton').attr("href", "/php/inc-addclasses-exportFile.php");
         $("#exportModal").modal();
     });
- // for school import modal
- $(document).on("click","a#schoolImportSelect",function(){
-    $("#fileHelp").text("Add a list of CSV Info in the FORM OF: School Name");
-    $('#fileForm').attr('action', "/php/inc-addschools-importFile.php");
-        $("#importModal").modal();
+    
+    // for school import modal
+    $(document).on("click", "a#schoolImportSelect", function () {
+        $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID");
+        $("#importModal").modal('show');
+        $('#fileForm').on("submit", function (e) {
+            e.preventDefault(); //form will not submitted
+            $.ajax({
+                url: "php/inc-addschools-importFile.php",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,          // The content type used when sending data to the server.  
+                cache: false,                // To unable request pages to be cached  
+                processData: false,          // To send DOMDocument or non processed data file it is set to false  
+                success: function (data) {
+                    $("#importModal").modal('hide');
+                    var json = $.parseJSON(data);
+                    if (json[0] == true) {
+                        importSuccessModal("Error", json[3]);
+                    } else {
+                        importSuccessModal(json[1], json[2]);
+                    }
+                }
+            })
+        });
     });
-// for school export modal
-$(document).on("click","a#schoolExportSelect",function(){
-    $("#downloadHelp").text("Click Download To Export School List to CSV") ;
-    $('#exportbutton').attr("href", "/php/inc-addschools-exportFile.php");
+    // for school export modal
+    $(document).on("click", "a#schoolExportSelect", function () {
+        $("#downloadHelp").text("Click Download To Export School List to CSV");
+        $('#exportbutton').attr("href", "/php/inc-addschools-exportFile.php");
         $("#exportModal").modal();
     });
 
@@ -74,16 +130,16 @@ $(document).on("click","a#schoolExportSelect",function(){
         getTableData("categories");
         setTimeout(
             function () {
-   
+
                 updateSelected('categories');
-               
-               
+
+
             }, 250);
 
     });
     // sets tab for opening terms db interfacd
     $(document).on("click", "#terms", function () {
-        
+
         $(this).tab("show");
         currentPage = "terms";
         getTableData("terms");
@@ -91,9 +147,9 @@ $(document).on("click","a#schoolExportSelect",function(){
         loadSearch(); // laads serach box data at top
         setTimeout(
             function () {
-            updateSearch();
+                updateSearch();
                 updateSelected('terms');
-              
+
 
             }, 250);
     });
@@ -105,11 +161,11 @@ $(document).on("click","a#schoolExportSelect",function(){
         currentPage = "schools";
         $("#topTable").hide();
         getTableData("schools");
-       
+
         setTimeout(
             function () {
                 updateSelected('schools');
-               
+
             }, 250);
 
     });
@@ -120,11 +176,11 @@ $(document).on("click","a#schoolExportSelect",function(){
         $("#topTable").hide();
         currentPage = "classes";
         getTableData("classes");
-      
+
         setTimeout(
             function () {
                 updateSelected('classes');
-                
+
 
             }, 250);
     });
@@ -148,22 +204,24 @@ $(document).on("click","a#schoolExportSelect",function(){
     });
 
     $('body').on("click", "#save2,#save1", function () {
-
+          
         $("#sure .modal-title").text("Are You Sure You Want To Save?");
         $("#sure .modal-body").text("If you have changed a current Category or Level, all Terms associtated " +
             "with the old Category or Level will match the new altered Category and Level");
+         $("#modalsave").removeClass("delete").addClass("save");
         $("#modalsave").text("Save");
         $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
+        $("#modalsave").show();
         $("#sure").modal('show');
-        $("#modalsave").on("click", function () {
-            saveToDB(currentPage);
-            $("#sure").modal('hide');
-        });
-        $("#modalclose").on("click", function () {
-            $("#sure").modal('hide');
-        });
     });
-
+ // when modal is on save
+    $("body").on("click",'.save',function (e) {
+        saveToDB(currentPage);
+        $("#sure").modal('hide');
+    });
+    $("#modalclose").on("click", function () {
+        $("#sure").modal('hide');
+    });
 
 
     //This fucntion causes a blur when the Enter Key is hit 
@@ -187,19 +245,19 @@ $(document).on("click","a#schoolExportSelect",function(){
         });
     });
 
-      // this is hwat happens when blured
-      $(document).on("blur", '[contenteditable="true"]', function () {
+    // this is hwat happens when blured
+    $(document).on("blur", '[contenteditable="true"]', function () {
         count++;
-        if(count%7 == 1){
+        if (count % 7 == 1) {
             $("#changes").fadeIn(200);
-        $('#changes strong').text("Click \"Save\" to Store Changes");
-        setTimeout(
-            function () {
-                $('#changes').fadeOut();
-            }, 3000);
+            $('#changes strong').text("Click \"Save\" to Store Changes");
+            setTimeout(
+                function () {
+                    $('#changes').fadeOut();
+                }, 3000);
         }
         return false;
-});
+    });
 
 
     // this is for the close button on alerts
@@ -208,23 +266,26 @@ $(document).on("click","a#schoolExportSelect",function(){
     });
 
     $(document).on("click", ".deleteRow", function () {
-        var tabID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
+        tabID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
         if (currentPage == "terms") {
             items = $(this).parent().siblings("td:eq(2)").text().trim();
         } else items = $(this).parent().siblings("td:eq(1)").text().trim();
         $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + items + "\" From Database?");
         $("#sure .modal-body").text("You will not be able to undo this action.");
+        $("#modalsave").removeClass("save").addClass("delete");
         $("#modalsave").text("Delete");
         $('#modalsave').removeClass('btn-warning').addClass('btn-danger');
+        $("#modalsave").show();
         $("#sure").modal('show');
-        $("#modalsave").on("click", function () {
-            deleteRows(tabID, currentPage);
-            $($(this).parents('tr')).remove(); // remove row
-            $("#sure").modal('hide');
-        });
-        $("#modalclose").on("click", function () {
-            $("#sure").modal('hide');
-        });
+    });
+
+    //when modal is ready on delete
+    $("body").on("click",".delete", function () {
+        deleteRows(tabID, currentPage);
+        $("#sure").modal('hide');
+    });
+    $("#modalclose").on("click", function () {
+        $("#sure").modal('hide');
     });
 
 
@@ -243,33 +304,33 @@ $(document).on("click","a#schoolExportSelect",function(){
     function getTableData(type) {
 
         // terms has search variable
-        if(type =='terms'){
-        var choice = $("#sort_body").find('td:eq(1)').find('select').val();
-        lastSort =choice;
-        $.ajax({ // delete from database
-            type: "POST",
-            url: "/php/inc-admin-data.php",
-            data: {
-                type: type,
-                choice: choice
-            },
-            success: function (data) {
-                $('#steve').html(data);
-            }
-        });
-    }
-    else {  
-        lastSort = "All";
-        $.ajax({ // delete from database
-        type: "POST",
-        url: "/php/inc-admin-data.php",
-        data: {
-            type: type
-        },
-        success: function (data) {
-            $('#steve').html(data);
+        if (type == 'terms') {
+            var choice = $("#sort_body").find('td:eq(1)').find('select').val();
+            lastSort = choice;
+            $.ajax({ // delete from database
+                type: "POST",
+                url: "/php/inc-admin-data.php",
+                data: {
+                    type: type,
+                    choice: choice
+                },
+                success: function (data) {
+                    $('#steve').html(data);
+                }
+            });
         }
-    });
+        else {
+            lastSort = "All";
+            $.ajax({ // delete from database
+                type: "POST",
+                url: "/php/inc-admin-data.php",
+                data: {
+                    type: type
+                },
+                success: function (data) {
+                    $('#steve').html(data);
+                }
+            });
         }
     }
     // alters confirmatrion modal to alert what has taken place.
@@ -283,27 +344,42 @@ $(document).on("click","a#schoolExportSelect",function(){
 
     }
 
+    // alters confirmatrion modal to alert what has taken place.
+    function importSuccessModal(message1,message2) {
+        $("#sure .modal-title").text(message1);
+        $("#sure .modal-body").html(message2);
+        $("#modalsave").hide();
+        $("#sure").modal('show');
+        $("#sure").modal('handleUpdate');
+        $("#modalclose").on("click", function () {
+            $("#modalsave").show();
+            $("#save").modal('hide');
+            
+      });
 
-    function loadSearch(){
+    }
+
+
+    function loadSearch() {
         $.ajax({ // delete from database
             type: "POST",
             url: "/php/inc-admin-db.php",
             data: {
                 categoriesSel: ""
-            },  
+            },
             success: function (data) {
-            var rows = "<td> View Words By Category:</td>" + data;
-            $("#sort_body").html(rows);
+                var rows = "<td> View Words By Category:</td>" + data;
+                $("#sort_body").html(rows);
             }
         });
-       
+
     }
 
-    function updateSearch(){
-        if (index == 0){ 
-            index ++
+    function updateSearch() {
+        if (index == 0) {
+            index++
             $("#sort_body").find('td:eq(1)').find('select').val("All");
-        }else $("#sort_body").find('td:eq(1)').find('select').val(lastSort); // make sure retuns to last sort when clicke
+        } else $("#sort_body").find('td:eq(1)').find('select').val(lastSort); // make sure retuns to last sort when clicke
     }
 
 
@@ -398,7 +474,7 @@ $(document).on("click","a#schoolExportSelect",function(){
             },
             success: function (data) {
                 confirmModal(data);
-                var currentPage = type;
+                currentPage = type;
                 // start out with categories
                 getTableData(type);
                 $("#".type).tab("show");
@@ -439,10 +515,10 @@ $(document).on("click","a#schoolExportSelect",function(){
                 }
 
                 if (when == 'pre') {
-                    $('#word_table').prepend(rows);
+                    $('table#word_table').prepend(rows);
                 } else {
 
-                    $('#word_table').append(rows);
+                    $('table#word_table').append(rows);
                 }
 
 
@@ -541,12 +617,12 @@ $(document).on("click","a#schoolExportSelect",function(){
             }
             count++;
         });
-
         return TableData;
 
     }
 
     function saveToDB(type) {
+        console.log("test");
         var save = true;
         TableData = retrieveCurrentData(type);
         ///  if blank fields havent occurred
@@ -562,7 +638,7 @@ $(document).on("click","a#schoolExportSelect",function(){
                 },
                 success: function (data) {
                     confirmModal(data);
-                    var currentPage = type;
+                   currentPage = type;
                     // start out with categories
                     getTableData(type);
                     $("#" + type).tab("show");
@@ -580,6 +656,6 @@ $(document).on("click","a#schoolExportSelect",function(){
         }
     }
 
-    
+
 
 });

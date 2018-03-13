@@ -25,7 +25,7 @@ session_start();
 <?php 
 
 include  __DIR__ ."/../topbar-header.php"; 
-include __DIR__ ."/../sidebar-header.php"
+include  __DIR__ ."/../sidebar-header.php"
 
 ?>
 
@@ -33,7 +33,7 @@ include __DIR__ ."/../sidebar-header.php"
 
 
 <!-- Start main html-->
-      <main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
+<main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
          <!-- Icon Cards examples-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -42,7 +42,7 @@ include __DIR__ ."/../sidebar-header.php"
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-comments"></i>
               </div>
-              <div id ="completed" class="mr-5">2 Completed Assesments</div>
+              <div id ="completed" class="mr-5">- Completed Assesments</div>
             </div>
           </div>
         </div>
@@ -52,32 +52,20 @@ include __DIR__ ."/../sidebar-header.php"
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-list"></i>
               </div>
-              <div id='available' class="mr-5">2 Assessments Incomplete</div>
+              <div id='available' class="mr-5">- Assessments Incomplete</div>
             </div>
           </div>
         </div>
-
-              <div class="row">
-        <div class="col-lg-16">
-        <div class="card text-center">
-    <div class="card-header">
-      <h5>Assign Assessments</h5>
-         </div>
-           <div class="card-block">
-            <h4 class="card-title"><br></h4>
-          <p class="card-text">Assign an adaptive assessment to a student or students.</p>
-          <a href="assignAssessment.php" class="btn btn-primary">Assign</a>
-            </div> <br>
-                    </div>
 <br>
       
 <div class="card mb-10">
-        <div class="card-header">
-        <h5 class="card-title">Available Assessments</h5></div>
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white">Available Assessments</h5></div>
         <div class="card-body">
-        <div id = "topTable" class="table-responsive">
+        <div id = "topTable">
      </div>
         <div class="table-responsive">
+        <small class='text-muted'>Click on row to view assessment.</small>
             <table class="table table-bordered" id="assessTableTeach" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -93,19 +81,20 @@ include __DIR__ ."/../sidebar-header.php"
           </div>
         </div>
       </div>
-    
+      <br>
           <!-- Example  Card-->
       <div class="card mb-6">
-        <div class="card-header">
-        <h5 class="card-title">Class Stats</h5></div>
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white">Class Table Stats</h5></div>
         <div class="card-body">
-        <div id = "topTable" class="table-responsive">
-       <table id="sort_table" class="table table-bordered">
-         <tbody id = "sort_body"></tbody>
-       </table>
+        <div id = "topTable">
+       <small class='text-muted'>Select Options to View Graph.</small>
+        <span id='schoolOptions'></span>
+        <span id='classOptions'></span>
      </div>
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">
+        <small class='text-muted'>Click on row to view student data.</small>
+            <table class="table table-bordered" id="dataTableAdmin" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -120,10 +109,21 @@ include __DIR__ ."/../sidebar-header.php"
                 </tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </div><br>
       
-        
+  <!-- graph stuff -->
+       <div class="row">
+        <div class="col-lg-10">
+        <div class="card text-center">
+    <div class="card-header boardModule">
+      <h5 class= "text-white">Graphs of Student Scores</h5>
+         </div>
+         </div><small class='text-muted'>Select Options to View Graph.</small><br><span id='graphschooloption'></span>
+          <span id='graphclassoption'></span>
+          <span id='graphstudentoption'></span><br>
+         <canvas id="dashboardChart" width="200" height="100"></canvas>
+          </div>
+          </div>
       </main>
     
   <!-- Optional JavaScript -->
@@ -135,6 +135,7 @@ include __DIR__ ."/../sidebar-header.php"
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
     crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/qunit/qunit-2.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
   <script src="/tests/tests.js"></script>
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
@@ -153,6 +154,7 @@ include __DIR__ ."/../sidebar-header.php"
     });
   </script>
   <script src="/js/dashboard.js"></script>
+ <script src="/js/studentData.js"></script>
 </body>
 
 </html>

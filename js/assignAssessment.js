@@ -60,6 +60,12 @@ $(document).ready(function () {
 
     });
 
+    $("#sure").on("hidden.bs.modal", function () {
+        initData();
+        location.href = "#top";
+       
+    });
+
 
     function updateToWholeClass() {
 
@@ -122,28 +128,7 @@ $(document).ready(function () {
                     studentChoice: studentChoice, assessmentChoice: assessmentChoice
                 },
                 success: function (data) {
-                    if (data == 1) { // this is for if successful query.
-                        $('#success').show(); //show success message
-                        $('#success strong').html("<h5>Assessment Assigned<h5><h6><\h6>");
-                        setTimeout(
-                            function () {
-                                $('#success').fadeOut(); // hide success messsage after 8 seconds
-                            }, 5000);
-
-
-                        setTimeout(function () {// wait for 5 secs(2)
-                            location.reload(); // then reload the page.(3)
-                        }, 6000);
-
-                    } else {
-
-                        $('#warning').show(); // show warning messagees
-                        $('#warning strong').text(data); // add that message to html
-                        setTimeout(
-                            function () {
-                                $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                            }, 7000);
-                    }
+                    successModal("Result",data);
 
                 }
             });
@@ -163,31 +148,19 @@ $(document).ready(function () {
                 classChoice: classChoice, assessmentChoice: assessmentChoice
             },
             success: function (data) {
-                if (data == 1) { // this is for if successful query.
-                    $('#success').show(); //show success message
-                    $('#success strong').html("<h5>Assessment Assigned<h5><h6><\h6>");
-                    setTimeout(
-                        function () {
-                            $('#success').fadeOut(); // hide success messsage after 8 seconds
-                        }, 5000);
-
-
-                    setTimeout(function () {// wait for 5 secs(2)
-                        location.reload(); // then reload the page.(3)
-                    }, 6000);
-
-                } else {
-
-                    $('#warning').show(); // show warning messagees
-                    $('#warning strong').text(data); // add that message to html
-                    setTimeout(
-                        function () {
-                            $('#warning').fadeOut(); //hide woarning mesage after 7 seconds
-                        }, 7000);
-                }
+                successModal("Result",data);
 
             }
         });
+    }
+
+     // alters confirmatrion modal to alert what has taken place.
+     function successModal(message1,message2) {
+        $("#modalsave").hide();
+        $("#sure .modal-title").text(message1);
+        $("#sure .modal-body").html(message2);
+        $("#sure").modal('show');
+        $("#sure").modal('handleUpdate');  
     }
 
     function validateEmail($email) {

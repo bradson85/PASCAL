@@ -12,6 +12,20 @@ body {
   padding-top: 3.5rem;
 }
 
+.boardModule {
+
+  background-color:  #033e79;
+}
+#sure{
+  overflow-y: initial !important
+}
+#sure{
+  height: 80vh;
+  width: 100vw;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 /* Navbar*/
 
 .navbar-dark .navbar-nav .nav-link  {

@@ -40,13 +40,8 @@ function pdo_query($pdo, $query)
 function pdo_error($message){
 
     $error =  $message->getCode();
-    if($error == 23000){
-      return "Cannot delete Category. Terms Exist in the database 
-      that depend on this category. Delete all the Terms associated with
-      this category first. ";
-  
-    }else {return "Error". $message;}
-      }
+    return "Error". $message;}
+      
 
 
 
@@ -54,7 +49,7 @@ function pdo_error($message){
 function deleteFromTable($table, $where,$data){
     try {
        $pdo = newPDO();
-       $query = ("DELETE FROM $table WHERE $where = :$where");
+     $query= ("DELETE FROM $table WHERE $where = :$where");
         $list = array(0 => ":$where");
         $newdata = array(0 => $data); 
        $success = pdo_preparedStmt($pdo,$query,$list,$newdata);

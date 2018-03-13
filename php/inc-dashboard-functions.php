@@ -2,15 +2,43 @@
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
-
 if(isset($_POST['classSelect'])){
     $option = $_POST['classSelect']; 
          echo assembleClassSelect($option);
 }
 
+if(isset($_POST['schoolSelect'])){ 
+         echo assembleSchoolSelect();  
+}
+
+if(isset($_POST['graphSchoolSelect'])){ 
+    echo assembleGraphSchoolSelect();  
+}
+
+
+if(isset($_POST['graphClassChoice'])){ 
+    $class = $_POST['graphClassChoice'];
+    echo assembleStudentSelect($class) ;
+}
+
+if(isset($_POST['graphTeahClass'])){ 
+    $school = getSchoolID();
+         echo assembleGraphClassSelect($school);
+}
+
 if(isset($_POST['classChoice'])){
     $class = $_POST['classChoice']; 
          echo assembleInfoTable($class);
+}
+
+if(isset($_POST['schoolChoice'])){
+    $school = $_POST['schoolChoice']; 
+         echo assembleAdminClassSelect($school);
+}
+
+if(isset($_POST['graphSchoolChoice'])){
+    $school = $_POST['graphSchoolChoice']; 
+         echo assembleGraphClassSelect($school);
 }
 
 if(isset($_POST['assessment'])){
@@ -28,9 +56,22 @@ if(isset($_POST['numAvailable'])){
           echo getAvailableAssessments();
  }
 
+ // for class list page 
  if(isset($_POST['listChoice'])){
     $class = $_POST['listChoice']; 
          echo assembleClassListTable($class);
+}
+
+if(isset($_POST['name'])){
+    $name = $_POST['name']; 
+    $email = $_POST['email'];
+    $classID = $_POST['classID'];
+    $accountID = getAccountID($name,$email);
+    $results = checkResults($accountID); 
+    if($results){
+       echo deleteFromTable($accountID,$classID);
+    } else echo "Assessment results exist. Cannot delete student.";
+       
 }
 
  
@@ -69,9 +110,7 @@ function pdo_error($message){
 
     $error =  $message->getCode();
     if($error == 23000){
-      return "Cannot delete Category. Terms Exist in the database 
-      that depend on this category. Delete all the Terms associated with
-      this category first. ";
+      return "Cannot delete. Other data depends on this Data. ";
   
     }else {return "Error". $message;}
       }
@@ -84,6 +123,22 @@ function getTeacherClassIDs(){
 function getSchoolID(){
     return $_SESSION['school'];
 }
+function getSchoolList(){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT * FROM schools");
+        $result = pdo_query($pdo,$query);;
+         
+        $row = $result->fetchAll(PDO::FETCH_ASSOC);
+         
+          }
+      catch(PDOException $e)
+          {
+          echo pdo_error($e);
+          }
+      $pdo = null;
+ return $row;
+ }     
 
 function getSchoolName($schoolID){
 
@@ -160,6 +215,8 @@ function getAssessmentCategoryName($assessmentID){
         return $catName;
 }
 
+
+
 function getStudentName($accountID){
 
     try {
@@ -179,10 +236,31 @@ function getStudentName($accountID){
 
 } 
 
+
+
+function getStudentInfo($accountID){
+    $info = array();
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name, password, email FROM accounts WHERE ID = '$accountID'");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $info = array("name"=>$row['name'],"pwd"=>$row['password'],"email"=> $row["email"]);
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $info;
+
+} 
+
 function getClassInfoFromSchool($schoolID){
     try {
         $pdo = newPDO();
-        $query = ("SELECT name, gradeLevel FROM classes WHERE schoolID = \"$schoolID\"");
+        $query = ("SELECT ID, name, gradeLevel FROM classes WHERE schoolID = \"$schoolID\"");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -327,7 +405,7 @@ function assessmentsFinished(){
     try {
         $pdo = newPDO();
         $query = ("SELECT Count(*) as total
-        FROM (SELECT DISTINCT assessmentID FROM results) AS T");
+        FROM (SELECT DISTINCT assessmentID, studentID FROM results) AS T");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -342,6 +420,43 @@ function assessmentsFinished(){
 
 }
 
+function getAccountID($name,$email){
+   try {
+    $pdo = newPDO();
+    $query = ("SELECT ID FROM accounts WHERE name='$name' and email ='$email'");
+    $result = pdo_query($pdo,$query);
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    $info = $row['ID']; 
+      }  catch(PDOException $e)
+         {
+          echo pdo_error($e);
+         }
+      $pdo = null;
+      return $info;
+}
+
+// delete item from table
+function deleteFromTable($accountID,$classID){
+    try {
+       $pdo = newPDO();
+       $query= ("DELETE FROM classlist WHERE accountID = :accountID AND classID = :classID" );
+        $list = array(0 => ":accountID",1=>":classID");
+        $newdata = array(0 => $accountID,1 => $classID); 
+       $success = pdo_preparedStmt($pdo,$query,$list,$newdata);
+         if($success){
+         echo "Deleted Item Successfully";
+         }
+         else{ echo "Deletion of Data ID:$data Failed";}
+         }
+     catch(PDOException $e)
+         {
+         echo pdo_error($e);
+         }
+     $pdo = null;
+
+}
+
+
 
  // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
 function assembleInfoTable($classID){
@@ -349,11 +464,13 @@ function assembleInfoTable($classID){
   $string="";
     foreach ($studentList as $value) {
         if (!checkForTeacher($value["accountID"])){
+        $info = getStudentInfo($value["accountID"]);
+        $email= $info['email'];
         $studentName = getStudentName($value["accountID"]);
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
         
-  $string .= "<tr><td>$studentName</td>
+  $string .= "<tr class='studentLink' id='$email'><td>$studentName</td>
    <td>$gradeLevel</td>
    <td>$className</td> 
          <td> Assessment 38 </td>  
@@ -365,6 +482,29 @@ function assembleInfoTable($classID){
 
     return $string;
 }
+
+ // Name, Grade ,Class ,Assessment Name ,assess level, Date Completed
+ function assembleStudentSelect($classID){
+    $studentList = studentListTable($classID);  // all the acount ID's from of student in this calss
+    $selectString = "<td><select class='form-control' id='studentSelect'><option disabled selected value = \"0\"> Select A Student</option>";
+
+    foreach ($studentList as $value) {
+        if (!checkForTeacher($value["accountID"])){
+            $info = getStudentInfo($value["accountID"]);
+            $email= $info['email'];
+            $studentName = getStudentName($value["accountID"]);
+            
+            $selectString.= "<option value = '$email'> $studentName</option>";
+            }
+    
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+  }
  //ID , Start Date End Date Category and Grade Level
 function assembleAssessmentTable(){
    $assessmentList = getAsessmentData();
@@ -380,7 +520,7 @@ function assembleAssessmentTable(){
     $enddate = date("m-d-Y", $timestamp);
     $id = $value["ID"];
     
-$string .= "<tr><td>$id</td>
+$string .= "<tr class='assessmentLink' id='$id'><td>$id</td>
 <td>$startdate</td>
 <td>$enddate</td> 
 <td>$catName - $catLev</td></tr>" ; // html stuff
@@ -409,6 +549,78 @@ $selectString.= "</select></td>";
 return $selectString;
 
 }
+// for admin dashboard
+function assembleAdminClassSelect($school){
+
+   $schoolinfo = getClassInfoFromSchool($school);
+    $selectString = "<td><select class='form-control' id='adminClassList'><option disabled selected value = \"0\"> Select A Class</option>";
+    
+    foreach ($schoolinfo as $value) {
+        $classname = $value["name"];
+        $selectString.= "<option value = \"".$value["ID"]."\"> $classname</option>";
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+    
+    }
+ // graph choices
+    function assembleGraphClassSelect($school){
+
+        $schoolinfo = getClassInfoFromSchool($school);
+         $selectString = "<td><select class='form-control' id='graphClassList'><option disabled selected value = \"0\"> Select A Class</option>";
+         
+         foreach ($schoolinfo as $value) {
+             $classname = $value["name"];
+             $selectString.= "<option value = \"".$value["ID"]."\"> $classname</option>";
+         }
+         unset($value); //php manuel says do this after for each
+         
+         $selectString.= "</select></td>";
+         
+         
+         return $selectString;
+         
+         }
+
+function assembleSchoolSelect(){
+
+    
+    $selectString = "<td><select class='form-control' id='schoolSelect'><option disabled selected value = \"0\"> Select A School</option>";
+    $school = getSchoolList();
+    foreach ($school as $value) {
+        $schoolname = $value["name"];
+        $selectString.= "<option value = \"".$value["ID"]."\"> $schoolname</option>";
+    }
+    unset($value); //php manuel says do this after for each
+    
+    $selectString.= "</select></td>";
+    
+    
+    return $selectString;
+    
+    }
+
+    function assembleGraphSchoolSelect(){
+
+    
+        $selectString = "<td><select class='form-control' id='graphSchoolSelect'><option disabled selected value = \"0\"> Select A School</option>";
+        $school = getSchoolList();
+        foreach ($school as $value) {
+            $schoolname = $value["name"];
+            $selectString.= "<option value = \"".$value["ID"]."\"> $schoolname</option>";
+        }
+        unset($value); //php manuel says do this after for each
+        
+        $selectString.= "</select></td>";
+        
+        
+        return $selectString;
+        
+        }
 
 
 
@@ -417,23 +629,48 @@ function assembleClassListTable($classID){
     $string="";
       foreach ($studentList as $value) {
           if (!checkForTeacher($value["accountID"])){
-          $studentName = getStudentName($value["accountID"]);
+          $info = getStudentInfo($value["accountID"]);
+          if(!empty(trim($info['pwd']," "))){
+            $password = "&#10003";
+        } else $password = "No Password";
+          $studentName = $info['name'];
+          $email= $info['email'];
           $className = getClassName($classID);
           $gradeLevel = getClassGradeLevel($classID);
           $schoolID =   getSchoolID();
           $schoolName = getSchoolName($schoolID);
 
     $string .= "<tr><td>$studentName</td>
+    <td>$email</td>
+    <td>$password</td>
      <td>$gradeLevel</td>
      <td>$className</td> 
-           <td> $schoolName </td></tr>" ; // html stuff
+           <td> $schoolName </td>
+           <td id='hiddenbutton' hidden> <a class='btn btn-danger btn-sm'  id='deleteChoice' href='#'>Delete Student</a> </td></tr>" ; // html stuff
           }
       }
       unset($value); //php manual says do this after for each
   
       return $string;
   }
-
-
+//returns true if results don't exist.
+  function checkResults($accountID){
+      $exists =false;
+    try {
+     $pdo = newPDO();
+     $query = ("SELECT * FROM results WHERE studentID='$accountID'");
+     $result = pdo_query($pdo,$query);
+     $row = $result->fetch(PDO::FETCH_ASSOC);
+    if(!$row){
+            $exists =true;
+    }
+       }  catch(PDOException $e)
+          {
+           echo pdo_error($e);
+          }
+       $pdo = null;
+       return $exists;
+ }
+ 
 
 ?>

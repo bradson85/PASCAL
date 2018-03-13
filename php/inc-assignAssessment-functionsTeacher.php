@@ -135,7 +135,7 @@ function dbGetAssessments(){
         echo "Error: " . $e->getMessage();
         }
     $pdo = null;
-    return $selectString.= "</select> <p class='text-sm-right'><a class='text-muted' href='createAssessment.php'>Create New Assessment</a></p>";
+    return $selectString.= "</select>";
 }
 
 
@@ -355,8 +355,9 @@ function dbGetAssessments(){
     }
 
 function assignToStudents($studentID, $assessmentID){
+    $name = dbGetStudentNames($studentID);
 if(checkIfAssignedExists($studentID, $assessmentID)){
-  echo "Cannot Assign Another Assessment \n Student $studentID Is Already Assigned Assessment";
+  echo "Cannot Assign Another Assessment <br> $name Is Already Assigned Assessment $assessmentID <br>";
 }else {
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -366,14 +367,19 @@ if(checkIfAssignedExists($studentID, $assessmentID)){
         $sql = $pdo->prepare("INSERT INTO assessmentassignments (assessmentID, studentID) VALUES (:assessmentID,:studentID)");
          $sql->bindParam(':studentID', $studentID);
          $sql->bindParam(':assessmentID', $assessmentID);
-         $sql->execute();
+         $success = $sql->execute();
+         if($success){
+            echo "Assigned Item Assessment $assessmentID to $name Successfully<br>";
+            }
+            else{ echo "Assignment of Assessment $assessmentID Failed<br>";}
+            
     }
     catch(PDOException $e)
     {
     echo "Error: " . $e->getMessage();
     }
 $pdo = null;
-    echo 1;
+   
 }
 }
 
@@ -405,7 +411,6 @@ $pdo = null;
 }
 
 function assignToClass($classID,$assessmentID){
-
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
         DB_USER, DB_PWD);
@@ -417,9 +422,9 @@ function assignToClass($classID,$assessmentID){
          $sql->execute();
          while(  $row = $sql->fetch(PDO::FETCH_ASSOC)){
              $studentID = $row['accountID'];
-
+           if(!checkForTeacher($studentID)){
             assignToStudents($studentID,$assessmentID);
-           
+           }
          }
     }
     catch(PDOException $e)
@@ -429,7 +434,6 @@ function assignToClass($classID,$assessmentID){
 $pdo = null;
     
 }
-
 
 function checkForTeacher($ID){
 

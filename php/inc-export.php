@@ -11,8 +11,10 @@ header('Pragma: private');
 
 // create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
+// save the column headers
+fputcsv($output, array('Term', 'Definition','Origin', 'Category', 'Grade Level'));
 // run query that exports in the format     word , definition , category grade level , category grade.
- try {
+ try { 
     $pdo = new PDO(DB_CONNECTION_STRING,
     DB_USER, DB_PWD);
     $pdo->setAttribute(PDO::ATTR_ERRMODE,
@@ -24,7 +26,8 @@ $output = fopen('php://output', 'w');
     
     $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        fputcsv($output, $row); // phph function that saves to csv
+         $arr = array($row["Key Term"], $row['Definition'],'n/A', $row['Category'], $row['Gradelevel']);
+        fputcsv($output, $arr); // phph function that saves to csv
      
     }
     fclose($output);

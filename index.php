@@ -45,10 +45,9 @@
       </div>
     </header>
     <section class="bg-white mb-0">
-    <div class="overlay"></div>
       <div class="container">
         <div class="row">
-          <div class="col">
+          <div class="col"><br><br>
           <h3 class="mb-5 text-center">About</h3>
            <p><h4 class="mb-5">PASCAL is a tool to assist teachers in monitoring student performance in science and
                 academic language. This formative assessment tool will allow a teacher to weekly assess a student's
@@ -58,11 +57,17 @@
           </div>
         </div>
       </div>
+      <div class="overlay about"></div>
       </div>
         </section>
-        <section class="text-white mb-0" id="about">
+        <section class="text-white mb-0" id="how">
       <div class="container">
-        <h2 class="text-center text-uppercase text-white">How It Works</h2><br>
+      <div class="row">
+      <div class="col">
+        <h2 class="text-center text-uppercase text-white">How It Works</h2></div><div>
+        <div class="row">
+           <div class="col-sm-6"><img class="img-responsive" style="width: 100%" src="img/dashboard.png"></div>
+        <div class="col-sm-6">
         <ul><p>1. Teachers can select key discipline for the assessment (i.e. Life Science,
                 Physical Science, Earth Science, and Engineering, Technology, and Applications)</p></ul>
          <ul><p>2. The computer-generated assessments allow students to match as many science concepts/words 
@@ -71,6 +76,8 @@
         <ul><p>3. Students are presented with grade level words and able to utilize text to speech
                 software to to assist with the reading if the text</p></ul>
                 <ul><p>4. Reports are self-generated to assist the teacher in tracking student progress.</p></ul>
+                </div>
+                </div>
       </div>
     </section>
 
