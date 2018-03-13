@@ -10,8 +10,12 @@
         $catID = $_POST['catID'];
         $startDate = $_POST['startDate'];
         $classID = $_POST['classID'];
+        $endDate = (strtotime($startDate));
+        $endDate = strtotime("+7 day", $endDate);
+        $endDate = date('Y-m-d H:i:s', $endDate);
 
-        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ('$startDate', $catID, $classID)";
+
+        $sql = "INSERT INTO assessments (start_date, end_date, catID, classID) VALUES ('$startDate', '$endDate', $catID, $classID)";
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
 
