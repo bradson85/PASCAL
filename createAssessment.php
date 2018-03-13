@@ -23,7 +23,13 @@ include "sidebar-header.php"
 
 <!-- Start main html-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main" id="createAssessment">
+
       <H2> Create New Assessment</H2>
+
+      <div class="alert alert-success" role="alert" id="alertSuccess">
+          <span>Successfully created account</span>
+      </div>
+
       <div class="row">
         <div class="col-sm-4" id="categorychoice">
           Category:

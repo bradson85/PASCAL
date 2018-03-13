@@ -1,3 +1,5 @@
+$('#alertSuccess').hide();
+
 $(document).ready(function(){
     
     $('.messages').hide();
@@ -23,9 +25,7 @@ $(document).ready(function(){
 
     $('#random').click(function() {
         $('#terms').hide();
-    });
-
-    
+    });  
 
 
     $(document).on("click", "#selectAll", function() {
@@ -203,6 +203,11 @@ $(document).ready(function(){
                     },
                     success: function(response) {
                         console.log(response);
+                        if(response === "Success") {
+                            $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
+                                $("#alertSuccess").slideUp(500);
+                            });
+                        }
                     }
                 });
                 submitStudents(assessmentID);
@@ -300,6 +305,11 @@ $(document).ready(function(){
                 },
                 success: function(response) {
                     console.log(response);
+                    if(response === "Success") {
+                        $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
+                            $("#alertSuccess").slideUp(500);
+                        });
+                    }
                 }
             });
         }
