@@ -11,7 +11,7 @@
         $startDate = $_POST['startDate'];
         $classID = $_POST['classID'];
 
-        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ($startDate, $catID, $classID)";
+        $sql = "INSERT INTO assessments (start_date, catID, classID) VALUES ('$startDate', $catID, $classID)";
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
 
@@ -36,7 +36,7 @@
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $array = json_decode($_POST['assessData'], true);
-        echo ($array[0]['termID']);
+        //echo ($array[0]['termID']);
         $sql = "INSERT INTO assessmentquestions (termID, assessmentID, isMatch) VALUES";
         $termID = $isMatch = $assessmentID = "";
         foreach($array as $value){
@@ -47,8 +47,8 @@
         }
         $sql = substr($sql, 0, -2);
         $sql .= ";";
-        echo $sql;
-        $pdo->exec($sql);
+        
+        if($pdo->exec($sql)) echo "Success";
 
 
     }

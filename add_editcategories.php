@@ -10,7 +10,7 @@
    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link rel="stylesheet" href="/css/cssAddWords.css" />
+  <link rel="stylesheet" href="css/cssAddWords.css" />
 </head>
 
 <body>
@@ -125,21 +125,21 @@ include "sidebar-header.php"
   <script src="/tests/tests.js"></script>
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
-      document.write('<script src="/js/bootstrap.min.js"><\/script>')
+      document.write('<script src="js/bootstrap.min.js"><\/script>')
     }
   </script>
   <script>
-    window.jQuery || document.write('<script src="/js/jquery-3.2.1.min.js"><\/script>');
+    window.jQuery || document.write('<script src="js/jquery-3.2.1.min.js"><\/script>');
   </script>
   <div id="bootstrapCssTest" class="hidden"></div>
   <script>
     $(function () {
       if ($('#bootstrapCssTest').is(':visible')) {
-        $("head").prepend('<link rel="stylesheet" href="/css/bootstrap.min.css">');
+        $("head").prepend('<link rel="stylesheet" href="css/bootstrap.min.css">');
       }
     });
   </script>
-  <script src="/js/Addcategories.js"></script>
+  <script src="js/Addcategories.js"></script>
 </body>
 
 </html>

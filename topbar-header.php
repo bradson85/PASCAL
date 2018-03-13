@@ -1,6 +1,7 @@
 <?php
-// Start the session
-session_start();
+  // Start the session
+  if(!isset($_SESSION['user']))
+    session_start();
 ?>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="#">PASCAL</a>

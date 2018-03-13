@@ -1,4 +1,4 @@
-<?php session_start()?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 
@@ -10,7 +10,7 @@
     crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link rel="stylesheet" href="/css/createAssessment.css" />
+  <link rel="stylesheet" href="css/main.css" />
 </head>
 
 <body>
@@ -22,14 +22,58 @@ include "sidebar-header.php"
 
 
 <!-- Start main html-->
-      <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+      <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main" id="createAssessment">
+
       <H2> Create New Assessment</H2>
+
+      <div class="alert alert-success" role="alert" id="alertSuccess">
+          <span>Successfully created account</span>
+      </div>
+
       <div class="row">
-        <div class="col" id="categorychoice">
-          Choose the category of words to be choosen for a assessment.  
+        <div class="col-sm-4" id="categorychoice">
+          Category:
         </div>
+        <div class="col-sm-4">
+          <label for="date">Date:</label>
+          <input type="date" id="startDate">
+        </div>
+        <div class="col-sm-4">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary active" id="random">
+              <input type="radio" name="options" id="randomInput" autocomplete="off" checked> Random
+            </label>
+            <label class="btn btn-secondary" id="selfSelect">
+              <input type="radio" name="options" id="selfInput" autocomplete="off"> Self Select
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-10">
+          <div id="terms">
+            
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="card" id="studentAssignments" style="display: none">
+            <div class="card-header">
+              Student Assignments
+            </div>
+            <div class="card-body">
+              <table class="table table-striped" id="studentTable">
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        
         <div class="col">
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" id="submit">Create</button>
         </div>
       </div>
       <!--  Table Part-->
@@ -94,21 +138,21 @@ include "sidebar-header.php"
   
   <script>
     if (typeof ($.fn.modal) === 'undefined') {
-      document.write('<script src="/js/bootstrap.min.js"><\/script>')
+      document.write('<script src="js/bootstrap.min.js"><\/script>')
     }
   </script>
   <script>
-    window.jQuery || document.write('<script src="/js/jquery-3.2.1.min.js"><\/script>');
+    window.jQuery || document.write('<script src="js/jquery-3.2.1.min.js"><\/script>');
   </script>
   <div id="bootstrapCssTest" class="hidden"></div>
   <script>
     $(function () {
       if ($('#bootstrapCssTest').is(':visible')) {
-        $("head").prepend('<link rel="stylesheet" href="/css/bootstrap.min.css">');
+        $("head").prepend('<link rel="stylesheet" href="css/bootstrap.min.css">');
       }
     });
   </script>
-  <script src="/js/createAssessment.js"></script>
+  <script src="js/createAssessment.js"></script>
 </body>
 
 </html>

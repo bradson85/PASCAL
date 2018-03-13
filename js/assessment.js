@@ -1,13 +1,18 @@
+var complete = false;
+$('.quizCard').hide();
+$('#next').hide();
+
 $(document).ready(function() {
     $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
     $('.canDrop').droppable();
     $('.countdown').hide();    
 
+    $(window).on('beforeunload', function(){
+        if(!complete) return("Are you sure?");
+    });
     // Hide timer (not visible)
     // San serif font ( Arial 16pt)
     // Button color and clickability should change when all terms have been matched
-
-    $('#directions').modal('show');
 
     // Set up global variables
     terms = [];
@@ -76,6 +81,16 @@ $(document).ready(function() {
         speechSynthesis.speak(msg);
     });
 
+    $('#startButton').click(function() {
+        $('#directions').hide();
+        $('#startButton').hide();
+        $('.quizCard').show();
+        $('#next').show();
+    });
+
+    $(document).on('click', '#returnButton', function() {
+        window.location.replace('student-landing.php');
+    });
 
     $('#next').click(function() {
         console.log("Number of terms: " + termCount);
@@ -114,35 +129,43 @@ $(document).ready(function() {
         
     });
     
-    $.ajax({
+    setTimeout(100, ($.ajax({
         type: "POST",
         url: "php/inc.assessment.php",
         dataType: "json",
         data: { 
-            id: assessmentID
+            id: assessmentID,
+            date: new Date().toLocaleString()
         },
         success: function(response){
             console.log(response);
-            console.log(response[0]['name']);
-            console.log("curr level: " + currLevel); 
-            getTerms(response);
-            console.log(terms);
-            //randomize(terms);
-            getDefs(response);
-            //randomize(defs);
-            displayItems(page);
+            console.log(new Date().toLocaleString('en-US'));
+            if(response.length > 0) {
+                getTerms(response);
+                console.log(terms);
+                //randomize(terms);
+                getDefs(response);
+                //randomize(defs);
+                displayItems(page);
+                setHeight();
+            }
+            else {
+                console.log(response);
+                alert("Oops! Error loading assessment");
+            }
+            
              
         },
-        error: function(){
+        error: function(response){
             console.log("Error!");
+            console.log(response);
         }
-    });
+    })));
 
     function count(num) {
         termCount += num;
         if(termCount === requiredTerms) {
             // update button color and clickability
-            console.log("I should update button now.");
             $('#next').attr('disabled', false);
         }
 
@@ -173,13 +196,30 @@ $(document).ready(function() {
         }, 1000);
     }
 
+    function pageTimer() {
+        var pageTimer2 = "1:01";
+        var pageInterval = setInterval(function() {
+            var pageTimer = pageTimer2.split(':');
+
+            var pageMinutes = parseInt(pageTimer[0], 10);
+            var pageSeconds = parseInt(pageTimer[1], 10);
+            --pageSeconds;
+            pageMinutes = (pageSeconds < 0) ? --pageMinutes : pageMinutes;
+            if (pageMinutes < 1 && pageSeconds == 0) {
+                clearInterval(pageInterval);
+            }
+
+            pageSeconds = (pageSeconds < 0) ? 59 : pageSeconds;
+            pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
+
+            pageTimer2 = pageMinutes + ':' + pageSeconds;
+        }, 1000);
+    }
+
     function checkDrop(i, tID) {
         let drop = "drop" + i;
         results[i].dropID = drop;
         results[i].termID = tID;
-        console.log("substr " + results[i].termID.substring(4,5));
-        console.log(placement);
-        console.log(results);
         if(placement[results[i].termID.substring(4,5)] !== "" && placement[results[i].termID.substring(4,5)] !== results[i].dropID){
             console.log(results[i].termID.substring(4,5));
             results[placement[results[i].termID.substring(4,5)].substring(4,5)].dropID = "";
@@ -230,10 +270,6 @@ $(document).ready(function() {
     }
     // set terms in the terms array for each level
     function getTerms(array) {
-        console.log("in getTerms\n");
-        // min level not being calculated properly, need to investigate.
-        console.log("min level in getTerms: " + minLevel);
-        console.log("But currLevel - 1 is: " + (currLevel - 1));
         let curr = 0;
         for(let i = 0; i < minLevel; i++) {
             terms[i] = [];
@@ -250,17 +286,19 @@ $(document).ready(function() {
                 }           
             }
         }
-        console.log(terms);
     }
 
     function getLevel() {
         let retVal = 0;
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "php/inc.assessment.php",
             dataType: "json",
+            data: {
+                getLevel: "true"
+            },
             success: function(response) {
-                console.log(response);
+                //console.log(response);
                 currLevel = (parseInt(response[0].gradeLevel));
                 minLevel = currLevel - 1;
                 maxLevel = currLevel + 1;
@@ -290,7 +328,6 @@ $(document).ready(function() {
     }
 
     function randomize(array) {
-        console.log(array);
         // Rearranges terms in a random order
         for (let i = array.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
@@ -303,11 +340,9 @@ $(document).ready(function() {
     // Currently it will only accept the exact number of terms and definitions
     // specified in the project specifcation, though that could be changed.
     function displayItems(n) {
-        console.log(terms);
         let randDefs = [];
         for(let i = 5*(n-1); i < 5*n; i++) {
             termID = 'term' + ((i+1) - (5 * (n - 1)));
-            console.log(termID);
             document.getElementById(termID).innerHTML = terms[currLevel][i]['name'];
 
             randDefs[(i) - (5 * (n - 1))] = defs[currLevel][i]['name'];
@@ -316,10 +351,8 @@ $(document).ready(function() {
         randDefs[5] = defs[currLevel][20 + ((n*2) - 2)]['name'];
         randDefs[6] = defs[currLevel][20 + (n*2) - 1]['name'];
         randDefs = randomize(randDefs);
-        console.log("rand defs: " + randDefs);
         for(let i = 0; i < 7; i++) {
             defID = 'def' + (i+1);
-            console.log(defID);
             document.getElementById(defID).innerHTML = randDefs[i];
         }
 
@@ -328,7 +361,6 @@ $(document).ready(function() {
     // Checks the results array and adds each item to the correct array
     function checkResults() {
         let numCorrect = 0;
-
         for(let i = 1; i <= 7; i++) {
             if(results[i].termID !== ""){
                 // find the term in the array that matches the term placed in the drop area
@@ -343,19 +375,16 @@ $(document).ready(function() {
                     return e.name === defName;
                 });
                 if(filterTerm[0].id === filterDef[0].id) {
-                    console.log("Correct!");
                     numCorrect++;
-                    correct.push({id: filterTerm[0].id, correct: 1});
+                    correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 1});
                 }
                 else {
-                    correct.push({id: filterTerm[0].id, correct: 0});
+                    correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 0});
                 }
                     
             }
             
         }
-        console.log(correct);
-        console.log("Got " + numCorrect + " correct");
         return numCorrect;
     }
     
@@ -370,12 +399,12 @@ $(document).ready(function() {
             if(correct[i].correct === 1)
                 numCorrect++;
         }   
-
-        $('.container-fluid').append("<h2 class='text-center'>Chart placeholder. You got " + numCorrect + " correct.</h2>");
+        complete = true;
+        $('.container-fluid').append("<h2 class='text-center'>You have successfully completed the assessment.</h2>");
+        $('.container-fluid').append("<button class='btn btn-primary' id='returnButton'>Return</button>");
     }
 
     function submitResults(){
-        console.log(correct);
         $.ajax({
             type: "POST",
             url: "php/inc.assessment.php",
@@ -388,5 +417,19 @@ $(document).ready(function() {
             }
         });
     }
+
+    function setHeight(){
+        // Thanks to ghayes for detecting max height: https://stackoverflow.com/questions/6781031/use-jquery-css-to-find-the-tallest-of-all-elements
+        // Get an array of all element heights
+        var elementHeights = $('.quizCard').map(function() {
+            return $(this).height();
+        }).get();
+        // Math.max takes a variable number of arguments
+        // `apply` is equivalent to passing each height as an argument
+        var maxHeight = Math.max.apply(null, elementHeights);
+        // Set each height to the max height
+        $('.quizCard').height(maxHeight);
+    }
+  
 
 });

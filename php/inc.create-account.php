@@ -32,13 +32,13 @@
     // inserts items to database
     function insert_to_db($name, $email, $accountType, $school, $class)
     {
+        $type = -1;
         // do db processing
-        if($name == "" || $name == null || ($email == "" && !strcmp($accountType, "Student")) || ($email == null && !strcmp($accountType, "Student")) || $accountType == "")
+        if($name == "" || $name == null || ($email == "") || ($email == null) || $accountType == "")
            return false;
-        // for anything other than student accounts, validate email using php validation
-        if(!strcmp($accountType, "Student"))
-            if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-                return false;
+        // validate email using php validation
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+            return false;
         // gets the class ID
         $pdo = pdo_construct();
         $sql = "SELECT classes.ID FROM classes, schools WHERE classes.name = '$class' AND schools.ID = classes.schoolID AND schools.name = '$school'";
@@ -51,27 +51,36 @@
         $pdo = pdo_construct();
 
         //Compare strings because each account type has a separate table
+        
         if(strcmp($accountType, "Administrator") == 0)
         {
-            $sql = "INSERT INTO admins (name, email) VALUES ('$name', '$email')";
+            $type = 0;
+            $sql = "INSERT INTO accounts (name, email, type) VALUES ('$name', '$email', $type)";
             //echo 'Ready to insert into admins';
         }
         elseif(strcmp($accountType, "Teacher") == 0)
         {
-            $sql = "INSERT INTO teachers (name, email, classID) VALUES ('$name', '$email', $classID)";
+            $type = 1;
+            $sql = "INSERT INTO accounts (name, email, type) VALUES ('$name', '$email', $type)";
         }   
         elseif(strcmp($accountType, "Student") == 0) 
         {
-            $sql = "INSERT INTO students (classID) VALUES ($classID)";
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $type = 2;
+            $sql = "INSERT INTO accounts (name, email, password, type) VALUES ('$name', '$email', '$password', $type)"; 
         }
-            
+        
         $pdo->exec($sql);
+        $accountID = $pdo->lastInsertId();
         $pdo = null;
+
+        $pdo = pdo_construct();
+        $sql = "INSERT INTO classlist (classID, accountID) VALUES ($classID, $accountID)";
 
         // set up the email and database insertion to create a password.
         // once an account is created, a unique random ID is generated
         // and stored in database. when user clicks link in email, they can set up password
-        if($email != "" && $email != null)
+        if($type < 2 || ($email != "" || $email != null))
         {
             $guid = uniqid();
             $guid = hash("md5", $guid);
