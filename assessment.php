@@ -1,7 +1,7 @@
 <?php
     session_start();
-    $_SESSION['email'] = "student@test.com";
-    $_SESSION['type'] = 2;
+    //$_SESSION['email'] = "student@test.com";
+    //$_SESSION['type'] = 2;
 
     $page_title = "Assessment";
     $css_path = "css/main.css";
