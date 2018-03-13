@@ -1,10 +1,13 @@
 
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
+
+
 if(isset($_SESSION['ID'])){
 $id = $_SESSION['ID'];
 $assignmentID = assignedAssessments($id);
-if($assessmentID !=0){
+if($assignmentID !=0){
+    
 $infoarray = getAssessmentData($assignmentID);
 echo "<tr><td>" .$infoarray["category"]. "</td><td>". $infoarray["start"]."</td>   
 <td>". $infoarray["end"]."</td>
@@ -16,7 +19,7 @@ function getButton(){
     if(isset($_SESSION['ID'])){
     $id = $_SESSION['ID'];
 $assignmentID = assignedAssessments($id);
-if(checkIfTaken($assignmentID,$id)){
+if(!checkIfTaken($assignmentID,$id)){
     echo "<form action='../assessment.php' method='GET'>
       <input type='hidden' name='id' value=$assignmentID /> 
       <input type='hidden' name='student' value=$id />
@@ -25,7 +28,6 @@ if(checkIfTaken($assignmentID,$id)){
 } else echo  "<div><h5>No Assigned Assessments</h5></div><a href='php/logout.php' class='btn btn-primary btn-lg' role='button'>Exit</a>";
     }}
 function assignedAssessments($id){
-    
     $assessmentID = 0;
     $date = strtotime("now");
     $finalID = 0;
@@ -39,8 +41,10 @@ function assignedAssessments($id){
         $result = $pdo->query($sql);
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             $assessmentID = $row["assessmentID"]; 
+    
             if(!checkIfTaken($assessmentID,$id)){
-            $date1 = getAssessmentDate($assessmentID);
+            $d = getAssessmentDate($assessmentID);
+            $date1 =strtotime($d);
             if ($date1 < $date){
                 $date = $date1;
                 $finalID = $assessmentID;
@@ -54,6 +58,7 @@ function assignedAssessments($id){
     return $finalID;
 }
 
+// returns true if results exists
 function checkIfTaken($assessID,$id){
     $taken = false;
     try {

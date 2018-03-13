@@ -18,7 +18,7 @@ if(!isset($_SESSION['type'])){
     if($_SESSION['type'] == 1){
         include('teacher-topbar-header.php');
         include('teacher-sidebar-header.php'); 
-    }else if($_SESSION['type'] == 2){
+    }else if($_SESSION['type'] == 0){
         include('topbar-header.php');
         include('sidebar-header.php'); 
     }
