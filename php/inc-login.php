@@ -31,6 +31,8 @@ session_start();
           $stringLink = "../teacher-dashboard.php"; //to redirect back to "teacher-dashboard.php"
             break;
           case "0":
+          $_SESSION["class"] = 999;
+          $_SESSION['school'] = 999;
           $stringLink ="../dashboard.php"; //to redirect back to "dashboard.php"
             break;
    
