@@ -18,6 +18,11 @@
     text-align: center;
 }
 
+.right {
+    text-align: right;
+    float: right;
+}
+
 #createAssessment {
     margin-top: 3%;
 }
@@ -133,7 +138,6 @@
     margin-top: 5%;
 }
 
-<<<<<<< HEAD
 /* Bradley Peradotto
 css doc for addwords.html 
  could be added to a larger css doc.
@@ -293,5 +297,3 @@ css doc for addwords.html
    
    
   
-=======
->>>>>>> chartsDashboard

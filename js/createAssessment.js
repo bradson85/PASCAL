@@ -1,5 +1,5 @@
 $('#alertSuccess').hide();
-
+// TODO: Automatically assign assessment for the admin "class"
 $(document).ready(function(){
     
     $('.messages').hide();
@@ -34,10 +34,9 @@ $(document).ready(function(){
     });
     
     $(document).on('change', '.check', function() {
-        if(this.checked)
-            checkedNum++;
-        else
-            checkedNum--;
+        let checkedNum = $(this).closest('table').find('td input[type="checkbox"]:checked').length;
+        $(this).closest('.card').find('span').text(checkedNum+"/20");
+        console.log(checkedNum + "/20");
         console.log(checkedNum);
     });
 
@@ -114,7 +113,7 @@ $(document).ready(function(){
 
     function showTerms(obj) {
         let preTitle = "<div class=\"card\" style=\"height: 10%\"> <div class=\"card-header\" id=\"heading" + obj.ID + "\"> <h5 class=\"mb-0\"><button class=\"btn btn-link collapsed\" data-toggle=\"collapse\" data-target=\"#collapse" + obj.ID + "\" aria-controls=\"collapse" + obj.ID + "\">";
-        let postTitle = "</button> </h5> </div>";
+        let postTitle = "</button> <span class=\"right\">0/20</span></h5> </div>";
         let preBody = "<div id=\"collapse" + obj.ID + "\" class=\"collapse\" aria-labelledby=\"heading" + obj.ID + "\" data-parent=\"#terms\"> <div class=\"card-body\" style=\"overflow-y: auto\"> <table class=\"table table-striped termTable\"> <thead><tr><th></th><th>Term</th><th>Definition</th></tr></thead><tbody>";
         let postBody = "</tbody></table></div></div>";
         let html = "";
