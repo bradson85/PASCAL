@@ -1,15 +1,16 @@
 <?php
+    $_SESSION['class'] = 1;
     include('inc-createassessment-getTerms.php');
     require_once('../dbconfig.php');
 
-    if(isset($_POST['catID']) && isset($_POST['classID']) && isset($_POST['startDate']))
+    if(isset($_POST['catID']) && isset($_POST['startDate']))
     {
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $catID = $_POST['catID'];
         $startDate = $_POST['startDate'];
-        $classID = $_POST['classID'];
+        $classID = $_SESSION['class'];
         $endDate = (strtotime($startDate));
         $endDate = strtotime("+7 day", $endDate);
         $endDate = date('Y-m-d H:i:s', $endDate);

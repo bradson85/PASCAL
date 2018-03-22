@@ -1,9 +1,9 @@
 <?php
     include 'inc.functions.php';
 
-    if(isset($_POST['classID']))
+    if(isset($_SESSION['class']))
     {
-        getStudents($_POST['classID']);
+        getStudents($_SESSION['class']);
     }
     else if(isset($_POST['catID']))
     {

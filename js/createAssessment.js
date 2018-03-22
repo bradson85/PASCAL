@@ -35,7 +35,12 @@ $(document).ready(function(){
     
     $(document).on('change', '.check', function() {
         let checkedNum = $(this).closest('table').find('td input[type="checkbox"]:checked').length;
-        $(this).closest('.card').find('span').text(checkedNum+"/20");
+        if(checkedNum < 21)
+            $(this).closest('.card').find('span').text(checkedNum+"/20");
+        else {
+            $(this).prop('checked', false);
+            // error message about too many checked items
+        }
         console.log(checkedNum + "/20");
         console.log(checkedNum);
     });
@@ -151,7 +156,6 @@ $(document).ready(function(){
                 url: "php/inc-createassessment-saveAssessment.php",
                 data: {
                     catID: $('#categorySelect').val(),
-                    classID: 1,
                     startDate: $('#startDate').val()
                 },
                 success: function(response) {
@@ -169,30 +173,54 @@ $(document).ready(function(){
 
     function processChecks(){
         let terms = [];
+        let extra = [];
         let assessmentID = 0;
         $.ajax({
             type: "POST",
             url: "php/inc-createassessment-saveAssessment.php",
             data: {
                 catID: $('#categorySelect').val(),
-                classID: 1,
                 startDate: $('#startDate').val()
             },
             success: function(response) {
                 console.log(response);
                 $('#terms tr').each(function() {
-                    $(this).find('td:eq(0) input:checked').each(function () {
-                        if($(this).closest('tr').find('td:eq(3) input:checked').length > 0){
-                            console.log($(this).val());
-                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 1});
-                        }
-                            
-                        else {
-                            console.log($(this).val());
-                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 0});
-                        }
-                    });
+                    //console.log($(this).find('td input[type="checkbox"]').val());
+                    let termID = $(this).find('td input[type="checkbox"]').val();
+                    assessmentID = response;
+                    if($(this).find('td input[type="checkbox"]').is(':checked')) {
+                        console.log('Item is checked: ' + termID);
+                        terms.push({termID: termID, assessmentID: assessmentID, isMatch: 1});
+                    }
+                    else {
+                        console.log('pushed term extra is now (+1): ' + extra.length);
+                        let ID = $(this).closest('.card').find('.card-header').attr('id');
+                        ID = ID.substr(ID.length - 1, ID.length);
+                        console.log(ID);
+                        if(typeof extra[ID] == 'undefined')
+                            extra[ID] = [];
+                        if(typeof termID !== 'undefined')
+                            extra[ID].push({termID: termID, assessmentID: assessmentID, isMatch: 0});
+                    }
+                    
                 });
+                console.log(terms);
+                console.log(extra);
+                for(let i = 0; i < extra.length; i++) {
+                    if(typeof extra[i] !== 'undefined')
+                        extra[i] = randomize(extra[i]);
+                }
+                
+                for(let i = 0; i < extra.length; i++)
+                {
+                    if(typeof extra[i] !== 'undefined') {
+                        for(let j = 0; j < 8; j++) {
+                            terms.push(extra[i][j]);
+                        }
+                    }
+                    
+                }
+
 
                 $.ajax({
                     type: "POST",
@@ -347,3 +375,16 @@ $(document).ready(function(){
         return result;
     }
 });
+
+function randomize(array) {
+    // Rearranges terms in a random order
+    if(typeof array[0] == 'undefined') {
+        return array;
+    }
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array;
+}
