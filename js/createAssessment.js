@@ -59,10 +59,18 @@ $(document).ready(function(){
             success: function(response) {
                 console.log(response);
                 cats = response;
-                for(let i = 0; i < response.length; i++) {
-                    setTimeout(2500,showTerms(response[i]));
+                let i = 0;
+
+                showTermsHelper(i, response);
+
+                // setTimeout(function() {
+                //     showTerms(response[i]);
+                //     i++;
+                // }, 50);
+                // for(let i = 0; i < response.length; i++) {
+                //     setTimeout((showTerms(response[i]), 5000));
                     
-                }
+                // }
             }
         });
     });
@@ -70,7 +78,15 @@ $(document).ready(function(){
                 loadCategorySelect();
     //this calls loading existing assessments to open
                 loadAssessments();
-    
+    function showTermsHelper(i, array) {
+        if(i < array.length) {
+            setTimeout(function() {
+                showTerms(array[i]);
+                showTermsHelper(i+1, array);
+            }, 10);
+        }
+        else return;
+    }    
     
         function loadCategorySelect(){
               $.ajax({
