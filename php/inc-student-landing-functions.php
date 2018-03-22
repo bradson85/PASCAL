@@ -22,7 +22,6 @@ $assignmentID = assignedAssessments($id);
 if(!checkIfTaken($assignmentID,$id)){
     echo "<form action='../assessment.php' method='GET'>
       <input type='hidden' name='id' value=$assignmentID /> 
-      <input type='hidden' name='student' value=$id />
         <input type='submit' class='btn btn-primary btn-lg' value='Take Assessment' />
     </form>" ;
 } else echo  "<div><h5>No Assigned Assessments</h5></div><a href='php/logout.php' class='btn btn-primary btn-lg' role='button'>Exit</a>";
