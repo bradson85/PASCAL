@@ -62,15 +62,6 @@ $(document).ready(function(){
                 let i = 0;
 
                 showTermsHelper(i, response);
-
-                // setTimeout(function() {
-                //     showTerms(response[i]);
-                //     i++;
-                // }, 50);
-                // for(let i = 0; i < response.length; i++) {
-                //     setTimeout((showTerms(response[i]), 5000));
-                    
-                // }
             }
         });
     });
@@ -349,6 +340,7 @@ $(document).ready(function(){
                 success: function(response) {
                     console.log(response);
                     if(response === "Success") {
+                        loadAssessments();
                         $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
                             $("#alertSuccess").slideUp(500);
                         });
