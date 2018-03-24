@@ -60,7 +60,7 @@
         }
             
 
-        $sql = "UPDATE $type SET password='$pwd' WHERE email='$email'";
+        $sql = "UPDATE accounts SET password='$pwd' WHERE email='$email'";
         $pdo = pdo_construct();        
         if(pdo_exec($pdo, $sql))
             $msg = "Successfully updated password";

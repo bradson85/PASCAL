@@ -22,7 +22,7 @@ session_start();
 		if(!empty($_POST["email"])&& !empty($_POST["psw"]) && ($success)){
        
         $_SESSION["type"] = $accounttype;
-      
+        $_SESSION['ID'] = $id;
         $stringLink ="";
         switch($accounttype){
           case "1": 
@@ -38,7 +38,6 @@ session_start();
    
           case "2":
           $_SESSION["class"] = getClassID($id);
-          $_SESSION["ID"] = $id;
           $_SESSION['school'] =getSchoolID($id);
           $stringLink ="../student-landing.php"; //to redirect back to "studentlanding.php"
             break;
