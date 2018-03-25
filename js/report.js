@@ -1,173 +1,114 @@
 $(document).ready(function () {
-    //get class of currently logged in user (if admin no class will be found)
+    loadSchoolListSearch();
 
-    //populate the table based on the class, show hidden options if admin
+    $(document).on("change", "#school", function () {
+        loadClassListSearch();
+    });
 
-    var classID = 1;
-    var pages = 1;
-    var currPage = pages;
-    var headers = [];
-    var retData = [];
-  
-    $.ajax({
-        url: "php/inc.report.php",
-        type: "GET",
-        dataType: "json",
-        success: function(response){
-            console.log(response);
-            showSchools(response)
+    $(document).on("change", "#class", function () {
+        loadStudentListSearch();
+    });
+
+    $(document).on("change", "#student", function () {
+        unlockChoices(); 
+    });
+
+    $("#checkBoxes").on("change", function () {
+        if ($('.form-check-input').is(':checked')) {  // if atleas one box is chekced
+
+            $("#genReport").prop("disabled", false); // Activate Button
+        }
+        if (!$('.form-check-input').is(':checked')) {  //if no box is checked
+
+            $("#genReport").prop("disabled", true); // De-Activate Button
         }
     });
 
-    $('#back').click(function() {
-        if(currPage > 1){
-            currPage--;
-            addTableHead(headers);
-            buildTable(retData);
-        }
+    $(document).on("click", "#genReport", function () {
+       outputStudentData(); 
     });
 
-    $('#forward').click(function() {
-        if(currPage < pages){
-            currPage++;
-            addTableHead(headers);
-            buildTable(retData);
-        }
-            
+    function loadSchoolListSearch() {
 
-    });
-
-    $('#school').change(function () {
-        console.log(document.getElementById('school').value);
-        $.ajax({
+        $.ajax({ 
+            type: "POST",
             url: "php/inc.report.php",
-            type: "GET",
-            dataType: "json",
             data: {
-                school: document.getElementById('school').value
+                schoolSelect: "selectSchool"
             },
-            success: function(response){
-                showClasses(response)
-            }
-        });
-    });
-
-    $('#class').change(function() {
-        $.ajax({
-            url: "php/inc.report.php",
-            type: "GET",
-            dataType: "json",
-            data: {
-                class: document.getElementById('class').value,
-                header: "true"
-            },
-            success: function(response){
-                // set the number of pages for breaking up the table content.
-                // Shows 4 assessment results per page for mobile, 6 for everything else.
-                if(mobile)
-                    pages = Math.ceil(response.length / 4);
-                else
-                    pages = Math.ceil(response.length / 6);
-                console.log(response[0]);
-                headers = response;
-                addTableHead(response);
+            success: function (data) {
+                $("#school").html(data);
             }
         });
 
-        $.ajax({
+    }
+
+    function loadClassListSearch() {
+        var schoolChoice = $('#school :selected').val();
+        $.ajax({ 
+            type: "POST",
             url: "php/inc.report.php",
-            type: "GET",
-            dataType: "json",
             data: {
-                class: document.getElementById('class').value,
-                school: document.getElementById('school').value
+                classSelect: schoolChoice
             },
-            success: function(response){
-                console.log(response[0]);
-                retData = response;
-                buildTable(response);
+            success: function (data) {
+                $("#class").html(data);
             }
         });
-    });
-    
 
-    function showClasses(result) {
-        $("#class").empty();
-        console.log(result);
-        var obj = result;
-        $('#class').removeAttr('disabled');
-        $('#class').append(new Option("Select a Class", "None"));
-        obj.forEach(function(element) {
-            $('#class').append(new Option(element.name, element.name));
-        }, this);
     }
 
-    function showSchools(result) {
-        var obj = result;
-        $('#school').append(new Option("Select a School", "None"));
-        obj.forEach(function(element) {
-            $('#school').append(new Option(element.name, element.name));
-        }, this);
-    }
 
-    function addTableHead(arr) {
-        $("results-head").empty();
-        console.log(arr);
-        let tempStr = "<td>Student ID</td>";
-        let num = 0;
-        if(mobile)
-            num = 4;
-        else
-            num = 6;
-        let end = arr.length;
-        if(num * currPage < arr.length)
-            end = (num * currPage);
-        console.log("end: " + end);
-        for(let i = num * (currPage-1); i < end; i++) {
-            tempStr += "<td>" + arr[i].start + "</td>";
-        }
-
-        
-        console.log(tempStr);
-        $("#results-head").html(tempStr);
-    }
-
-    function buildTable(result) {
-        $("#results").empty();
-        console.log(result);
-        let tempID = -1;
-        let tempStr = "";
-
-        let num = 0;
-        if(mobile)
-            num = 4;
-        else
-            num = 6;
-        let end = result.length - 1;
-        if(num * currPage < result.length - 1)
-            end = (num * currPage);
-
-        result.push({ID: -1});
-        for(let i = num * (currPage - 1); i < end; i++) {
-            console.log(i);
-            if(i === 0){
-                tempID = result[i].ID;
-                tempStr = "<tr><td>" + result[i].ID + "</td>";
+    function loadStudentListSearch() {
+        var classChoice = $('#class :selected').val();
+        $.ajax({ 
+            type: "POST",
+            url: "php/inc.report.php",
+            data: {
+                studentSelect: classChoice
+            },
+            success: function (data) {
+                $("#student").html(data);
             }
+        });
 
-            if(result[i].ID === tempID){ 
-                tempStr += "<td>" + ((result[i].correct / 20) * 100) + "%</td>";
+    }
+
+
+    function outputStudentData() {
+
+        var studentChoice = $('#student :selected').val();
+        var formatChoice =$('#format :selected').val();
+        var classNumber =  $('#class :selected').val();
+        var checkValues = [];
+        $('#checkBoxes :checked').each(function() {
+            checkValues.push($(this).val());
+        });
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc.report.php",
+            data: {
+                scoreChoice: studentChoice,
+                classNumber: classNumber,
+                checkValues: checkValues,
+                format: formatChoice
+            },
+            success: function (data) {
+                console.log(data);
+               // var json = $.parseJSON(data);
                 
-            }
-            console.log(i === result.length - 1);
-            if(result[i+1].ID !== tempID || i === (result.length - 1)){
-                tempStr += "</tr>";
-                $("#results").append(tempStr);
-                tempID = result[i+1].ID;
-                tempStr = "<tr><td>" + result[i+1].ID + "</td>";
-            }
-            
-        }
+    
+    }
+
+});
+    }
+
+
+    function unlockChoices(){
+for (let index = 1; index < 5; index++) {
+    $("#inlineCheckbox"+index).prop("disabled", false); // Element(s) are now enabled.
+}
+        
     }
 
 });
