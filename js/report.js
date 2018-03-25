@@ -8,9 +8,7 @@ $(document).ready(function () {
     var currPage = pages;
     var headers = [];
     var retData = [];
-    // Special thanks to arminrosu for this code from StackOverflow.
-    // https://stackoverflow.com/questions/3514784/what-is-the-best-way-to-detect-a-mobile-device-in-jquery
-    var mobile = /Mobi/i.test(navigator.userAgent);
+  
     $.ajax({
         url: "php/inc.report.php",
         type: "GET",

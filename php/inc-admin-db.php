@@ -2,7 +2,6 @@
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
 
-
 if(isset($_POST['categoriesSel'])){ // get sorting box for terms
     getSearchBox();
 }
@@ -419,10 +418,12 @@ function retrieveSelectedCategory($id){
 
 
 // returns associatve array list of categories
-function  getCategoriesData(){
+function  getCategoriesData($sortBy){
+    if ( !protectOrderStrings($sortBy)){
+        $query = ("SELECT * FROM categories");
+       } else   $query = ("SELECT * FROM categories ORDER BY $sortBy");
  try {
        $pdo = newPDO();
-       $query = ("SELECT * FROM categories");
        $result = pdo_query($pdo,$query);
         
        $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -435,11 +436,14 @@ function  getCategoriesData(){
 return $row;
 }
 
-function getTermsData(){
+function getTermsData($sortBy){
+    if ( !protectOrderStrings($sortBy)){
+        $query = ("SELECT * FROM terms");
+       } else   $query = ("SELECT terms.ID, terms.name, terms.definition, categories.name as category 
+                            FROM terms, categories Where terms.catID = categories.ID  ORDER BY $sortBy");
 
     try {
         $pdo = newPDO();
-        $query = ("SELECT * FROM terms");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -452,11 +456,14 @@ function getTermsData(){
  return $row;
  }
 
- function getTermsDataSpecial($categoryID){
+ function getTermsDataSpecial($categoryID,$sortBy){
 
+    if ( !protectOrderStrings($sortBy)){
+        $query = ("SELECT * FROM terms  WHERE catID = \"$categoryID\"");
+       } else   $query = ("SELECT terms.ID, terms.name, terms.definition, categories.name as category 
+                            FROM terms, categories Where terms.catID = \"$categoryID\"   ORDER BY $sortBy");
     try {
         $pdo = newPDO();
-        $query = ("SELECT * FROM terms WHERE catID = \"$categoryID\"");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -489,11 +496,12 @@ function getTermsData(){
  }
 
 
- function getSchoolData(){
-
+ function getSchoolData($sortBy){
+    if ( !protectOrderStrings($sortBy)){
+        $query = ("SELECT *  FROM schools");
+       } else   $query = ("SELECT * FROM schools ORDER BY $sortBy");
     try {
         $pdo = newPDO();
-        $query = ("SELECT * FROM schools");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -506,11 +514,14 @@ function getTermsData(){
  return $row;
  }
 
- function getClassData(){
+ function getClassData($sortBy){
+    if ( !protectOrderStrings($sortBy)){
+        $query = ("SELECT * FROM classes");
+       } else  $query = ("SELECT classes.ID, classes.name, classes.gradeLevel, schools.name as school 
+                            FROM classes, schools Where classes.schoolID = schools.ID ORDER BY $sortBy");
 
     try {
         $pdo = newPDO();
-        $query = ("SELECT * FROM classes");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -605,5 +616,16 @@ function matchSchoolName($name){
         echo $selectString; // return string.
         }
 
+        // prevent sql injection in my order by string
+  function protectOrderStrings($string){
+        $pieces = explode(" ",$string);
+        if(str_word_count($string) > 2){
+                           return false;           
+        } else if (strcmp($pieces[1], "ASC") ==0 || strcmp($pieces[1], "DESC") ==0){
+            return true;
+        } else return false;
+
+
+  }
 
 ?>

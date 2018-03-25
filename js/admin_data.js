@@ -8,29 +8,122 @@ $(document).ready(function () {
     var index = 0;
     var currentPage = "categories";
     var lastSort = "All";
+    var sortNumber =10;
+    var curPageNum = 1;   // current selected page
+    var totalNumOfPages = 1;   // total pages
+    var sortBy = 0;  // assennding items =  1, 2 is table head 2 3 is table head 3, 0 is default sort 
+    // descending item =  4 is table head 1, 5 is table head 2, etc.
+    // there are at most 3 tables headers to be sorted.
     // start out with categories
     getTableData("categories");
     $("#categories").tab("show");
     $("#topTable").hide();
 
 
+
+    // loading selected on start
     setTimeout(
         function () {
             updateSelected('categories');
         }, 350);
 
 
+    /// for clicking the next page
+    $(document).on("click", "#pageNext", function (e) {
+        e.preventDefault();
+        if (curPageNum < totalNumOfPages) {
+            curPageNum++;
+            tableSorting();
+            setTimeout(
+                function () {
+                    updateSelected(currentPage);
+                }, 50);
+        }
+
+    });
+    // for clicking the previous page
+    $(document).on("click", "#pagePrev", function (e) {
+        e.preventDefault();
+
+        if (curPageNum > 1) {
+            curPageNum--;
+            tableSorting();
+            setTimeout(
+                function () {
+                    updateSelected(currentPage);
+
+                }, 50);
+        }
+    });
+
+    $(document).on("change", "#sortSize", function () {
+        sortNumber =  $("#sortSize").val();
+        tableSorting();
+        setTimeout(
+            function () {
+                updateSelected(currentPage);
+            }, 50);
+
+    });
+ 
+    $(document).on("click", ".pagesnumber", function () {
+          curPageNum = parseInt($(this).text());
+          tableSorting();
+            setTimeout(
+                function () {
+                    updateSelected(currentPage);
+                }, 50);
+
+    });
+
+    $(document).on("click", "#sort_1", function (e) {
+        if (sortBy == 1) {
+            sortBy = 4;
+        } else sortBy = 1;
+        getTableData(currentPage);
+        setTimeout(
+            function () {
+                updateSelected(currentPage);
+                markSorted(1);
+            }, 150);
+        
+    });
+    $(document).on("click", "#sort_2", function (e) {
+        if (sortBy == 2) {
+            sortBy = 5;
+        } else sortBy = 2;
+        getTableData(currentPage);
+        setTimeout(
+            function () {
+                updateSelected(currentPage);
+                markSorted(2);
+            }, 150);
+    });
+    $(document).on("click", "#sort_3", function (e) {
+        if (sortBy == 3) {
+            sortBy = 6;
+        } else sortBy = 3;
+        getTableData(currentPage);
+        setTimeout(
+            function () {
+                updateSelected(currentPage);
+                markSorted(3);
+            }, 150);  
+    });
+
+
+
     //for tooltip help
     $('[data-toggle="tooltip"]').tooltip();
 
-    $(document).on("change" ,"input:file", function (){
+    $(document).on("change", "input:file", function () {
         var fileName = $(this).val();
-        if(fileName) { // returns true if the string is not empty
+        if (fileName) { // returns true if the string is not empty
             $('#fileup').removeAttr('disabled');
         } else { // no file was selected
-            
+
         }
-      });
+    });
 
     // when search button changes
     $(document).on("change", "#sort", function () {
@@ -69,13 +162,13 @@ $(document).ready(function () {
                     setTimeout(
                         function () {
                             updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
-    
+
                         }, 300);
-            
+
                 }
             })
         });
-        
+
     });
 
     // for  class export modal
@@ -84,7 +177,7 @@ $(document).ready(function () {
         $('#exportbutton').attr("href", "/php/inc-addclasses-exportFile.php");
         $("#exportModal").modal();
     });
-    
+
     // for school import modal
     $(document).on("click", "a#schoolImportSelect", function () {
         $("#fileHelp").text("Add a list of CSV Info in the FORM OF: Class, Grade Level , School ID");
@@ -149,8 +242,6 @@ $(document).ready(function () {
             function () {
                 updateSearch();
                 updateSelected('terms');
-
-
             }, 250);
     });
 
@@ -204,18 +295,18 @@ $(document).ready(function () {
     });
 
     $('body').on("click", "#save2,#save1", function () {
-          
+
         $("#sure .modal-title").text("Are You Sure You Want To Save?");
         $("#sure .modal-body").text("If you have changed a current Category or Level, all Terms associtated " +
             "with the old Category or Level will match the new altered Category and Level");
-         $("#modalsave").removeClass("delete").addClass("save");
+        $("#modalsave").removeClass("delete").addClass("save");
         $("#modalsave").text("Save");
         $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
         $("#modalsave").show();
         $("#sure").modal('show');
     });
- // when modal is on save
-    $("body").on("click",'.save',function (e) {
+    // when modal is on save
+    $("body").on("click", '.save', function (e) {
         saveToDB(currentPage);
         $("#sure").modal('hide');
     });
@@ -280,14 +371,15 @@ $(document).ready(function () {
     });
 
     //when modal is ready on delete
-    $("body").on("click",".delete", function () {
+    $("body").on("click", ".delete", function () {
         deleteRows(tabID, currentPage);
         $("#sure").modal('hide');
     });
     $("#modalclose").on("click", function () {
         $("#sure").modal('hide');
     });
-
+   
+    
 
     // Special errore messages can be retrieved form the the url GET that alert on load this hides them after 
     // a while from he messages phph section 
@@ -301,21 +393,83 @@ $(document).ready(function () {
 
 
     /// below are fucntions ----------------------------------------------------------------
-    function getTableData(type) {
 
+
+    function tableSorting() {
+        if (item.length < 1) {
+            throw "no table data";
+        }
+        $("#sortSize").val(sortNumber);
+        totalNumOfPages = Math.ceil(parseInt(item.length, 10) / parseInt(sortNumber, 10)); // total pages number of items total divide by items per page is number of pages.
+        var endIndex = curPageNum * sortNumber;  // end index will be currpage multipied by how many per page.
+        var startIndex = endIndex - sortNumber; // start index will be number per page minus end index;
+        if (endIndex > item.length) {
+            endIndex = item.length;
+        }
+        var minPage = parseInt(curPageNum) - 5;
+        var maxPage = parseInt(curPageNum) + 5;
+        if (maxPage > totalNumOfPages) {
+            maxPage = totalNumOfPages;
+            minPage = totalNumOfPages - 10;
+        }
+        if (minPage < 0) {
+            minPage = 0;
+            if (totalNumOfPages < 10) {
+                maxPage = totalNumOfPages;
+            } else maxPage = 10;
+        }
+        $("#pages").empty();  // empyt pagingation box
+        // add previosue to pagination
+        $("#pages").append('<li id="pagePrev" class="page-item"> <a class="page-link" href="#">Previous</a> </li>');
+
+        for (let index = minPage; index < maxPage; index++) {
+            // check fo currentpage and add active class
+            if (index == curPageNum - 1) {
+                $("#pages").append('<li class="page-item active"> <a class="page-link pagesnumber" href="#">' + (index + 1) + '</a> </li>');
+            } else $("#pages").append('<li  class="page-item"> <a class="page-link pagesnumber" href="#">' + (index + 1) + '</a> </li>');
+        }
+        // add next to paginaion
+        $("#pages").append('<li id="pageNext" class="page-item"> <a class="page-link" href="#">Next</a> </li>');
+        $("#t_body_" + currentPage).empty();
+        for (let index = startIndex; index < endIndex; index++) {
+            $("#t_body_" + currentPage).append(item[index]);
+        }
+
+    }
+
+    function getTableData(type) {
+      sortByName = getOrderByName(type);
         // terms has search variable
         if (type == 'terms') {
             var choice = $("#sort_body").find('td:eq(1)').find('select').val();
             lastSort = choice;
+            
             $.ajax({ // delete from database
                 type: "POST",
                 url: "/php/inc-admin-data.php",
                 data: {
                     type: type,
-                    choice: choice
+                    choice: choice,
+                    sortBy: sortByName
                 },
                 success: function (data) {
-                    $('#steve').html(data);
+                    answer = JSON.parse(data);
+                    item = JSON.parse(answer[1]);
+                    $("#steve").html(answer[0]);
+
+                    setTimeout(
+                        function () {
+                          tableSorting();
+
+                        }, 50);
+
+                    setTimeout(
+                        function () {
+                            updateSelected('terms');
+
+                        }, 50);
+
+
                 }
             });
         }
@@ -325,10 +479,26 @@ $(document).ready(function () {
                 type: "POST",
                 url: "/php/inc-admin-data.php",
                 data: {
-                    type: type
+                    type: type,
+                    sortBy: sortByName
                 },
                 success: function (data) {
-                    $('#steve').html(data);
+                    answer = JSON.parse(data);
+                    item = JSON.parse(answer[1]);
+                    $("#steve").html(answer[0]);
+
+                    setTimeout(
+                        function () {
+                            tableSorting();
+
+                        }, 50);
+
+                    setTimeout(
+                        function () {
+                            updateSelected(currentPage);
+
+                        }, 50);
+
                 }
             });
         }
@@ -345,7 +515,7 @@ $(document).ready(function () {
     }
 
     // alters confirmatrion modal to alert what has taken place.
-    function importSuccessModal(message1,message2) {
+    function importSuccessModal(message1, message2) {
         $("#sure .modal-title").text(message1);
         $("#sure .modal-body").html(message2);
         $("#modalsave").hide();
@@ -354,8 +524,8 @@ $(document).ready(function () {
         $("#modalclose").on("click", function () {
             $("#modalsave").show();
             $("#save").modal('hide');
-            
-      });
+
+        });
 
     }
 
@@ -381,7 +551,6 @@ $(document).ready(function () {
             $("#sort_body").find('td:eq(1)').find('select').val("All");
         } else $("#sort_body").find('td:eq(1)').find('select').val(lastSort); // make sure retuns to last sort when clicke
     }
-
 
     // update what select level is chosen when loading the db 
     // options based up on id:
@@ -638,7 +807,7 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     confirmModal(data);
-                   currentPage = type;
+                    currentPage = type;
                     // start out with categories
                     getTableData(type);
                     $("#" + type).tab("show");
@@ -655,7 +824,112 @@ $(document).ready(function () {
 
         }
     }
+    function getOrderByName(type) {
+        orderBy = sortBy;
+        $returnString = "ID";
+        switch (type) {
+            case "terms":
+                switch (orderBy) {
+                    case 1:
+                        $returnString = "category ASC";
+                        break;
+                    case 2:
+                        $returnString = "name ASC";
+                        break;
+                    case 3:
+                        $returnString = "definition ASC";
+                        break;
+                    case 4:
+                        $returnString = "category DESC";
+                        break;
+                     case 5:
+                        $returnString = "name DESC";
+                        break;
+                    case 6:
+                        $returnString = "definition DESC";
+                        break;
+                    default:
+                        $returnString = "ID";
+                }
+                break;
+            case "categories":
+            switch (orderBy) {
+                case 1:
+                    $returnString = "name ASC";
+                    break;
+                case 2:
+                    $returnString = "level ASC";
+                    break;
+                case 4:
+                    $returnString = "name DESC";
+                    break;
+                 case 5:
+                    $returnString = "level DESC";
+                    break;
+                default:
+                    $returnString = "ID";
+            }
+                break;
+            case "schools":
+            switch (orderBy) {
+                case 1:
+                    $returnString = "name ASC";
+                    break;
+                case 4:
+                    $returnString = "name DESC";
+                    break;
+                default:
+                    $returnString = "ID";
+            }
+                break;
+            case "classes":
+            switch (orderBy) {
+                case 1:
+                    $returnString = "name ASC";
+                    break;
+                case 2:
+                    $returnString = "gradeLevel ASC";
+                    break;
+                case 3:
+                    $returnString = "school ASC";
+                    break;
+                case 4:
+                    $returnString = "name DESC";
+                    break;
+                 case 5:
+                    $returnString = "gradeLevel DESC";
+                    break;
+                case 6:
+                    $returnString = "school DESC";
+                    break;
+                default:
+                    $returnString = "ID";
+            }
+                break;
+            default:
 
+
+        }
+        return $returnString;
+    }
+    function markSorted(index) {
+        $(".removeLater").remove();
+        if (index == 1) {
+            if (sortBy == 1) {
+                $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9660</span>');
+        } else if (index == 2) {
+            if (sortBy == 2) {
+                $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9660</span>');
+
+        } else if (index == 3) {
+            if (sortBy == 3) {
+                $("#word_table").find('th:eq(3)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(3)').append('<span class="removeLater">&#9660</span>');
+
+        }
+    }
 
 
 });

@@ -11,7 +11,7 @@ include $_SERVER['DOCUMENT_ROOT']."/php/inc-admin-db.php";
 // -----------------------------check what is postting from ajax____________
 if(isset($_POST['type'])){
       $tableType = $_POST['type'];
-     echo pickTable($tableType);
+     echo json_encode (pickTable($tableType));
 }
 
 if(isset($_POST['get'])){
@@ -82,16 +82,16 @@ if(isset($_POST['currCat'])){
 function pickTable($tableType){
     switch ($tableType) {
         case "terms":
-        return createTable("Terms and Definitions",$tableType,addWordsToTable());
+        return array (0=>createTable("Terms and Definitions",$tableType),1=>addWordsToTable());
             break;
         case "categories":
-        return createTable("Categories and Grade Level",$tableType,addCategoriesToTable());
+        return array(0=>createTable("Categories and Grade Level",$tableType),1=>addCategoriesToTable());
             break;
         case "schools":
-        return createTable("Schools",$tableType,addSchoolsToTable());
+        return array(0=>createTable("Schools",$tableType),1=>addSchoolsToTable());
             break;
         case "classes":
-        return createTable("Classes",$tableType,addClassesToTable());
+        return array(0=>createTable("Classes",$tableType),1=>addClassesToTable());
         break;
         default:
             return "Error: No Table Type Data";
@@ -252,24 +252,25 @@ return $string;
 }
 
 function addWordsToTable(){
-    $string = "";
+   $arr = array();
+   $sortBy = $_POST['sortBy'];
     if(isset($_POST['choice'])&& strcmp($_POST['choice'],"All")!=0){
         $level =  trim(substr($_POST['choice'], -1));                        // category is first of the split string
         $category = trim(substr($_POST['choice'], 0, -2));
         $catID = matchCatID($category, $level);
-        $words =getTermsDataSpecial($catID);
-    } else {$words = getTermsData();}
-    $select = createCatAndLevelSelect();
+        $words =getTermsDataSpecial($catID,$sortBy);
+    } else {$words = getTermsData($sortBy);}
+      $select = createCatAndLevelSelect();
    
     foreach ($words as $index) { 
-        $string.=  "<tr><td style='display:none;'>".$index['ID']."</td>
+        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
          $select
           <td contenteditable= 'true'>".$index['name']." </td>  
            <td contenteditable= 'true'>".$index['definition']."</td>
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>";
+            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
         }
         unset($index);
-  return $string;
+  return json_encode($arr);
 }
 
 function createCatAndLevelSelect(){
@@ -278,7 +279,7 @@ function createCatAndLevelSelect(){
     $selectVal =array();
     $htmlIDName = "selcat";
     $titleOption = "--Select Category/Level--";
-    $categories = getCategoriesData();
+    $categories = getCategoriesData("ID");
     $count = 0;
     foreach ($categories as $value) {
         $selectstring[$count]= "".$value["name"]." - Level ".$value["level"];
@@ -300,9 +301,9 @@ function createLevelSelect(){
 }
 
 function createSchoolsSelect(){
-
+    
     $selectstring = array();
-    $schools = getSchoolData();
+    $schools = getSchoolData("ID");
     $htmlIDNameLev = "sellev";
     $titleOptionLev = "--Select Level--";
     $level =array (3,4,5,6,7);
@@ -323,48 +324,51 @@ function createSchoolsSelect(){
 }
 
 function addCategoriesToTable(){
-    $string = "";
-    $categories = getCategoriesData();
+    $sortBy = $_POST['sortBy'];
+    $arr = array();
+    $categories = getCategoriesData($sortBy);
     $select = createLevelSelect();
 
     foreach ($categories as $index) { 
-        $string.=  "<tr><td style='display:none;'>".$index['ID']."</td>
+       array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
           <td contenteditable= 'true'>".$index['name']." </td>  
            $select
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>";
+            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
         }
         unset($index);
-  return $string;
+  return json_encode($arr);
 
 }
 
 function addSchoolsToTable(){
-    $string = "";
-    $schools= getSchoolData();
+    $sortBy = $_POST['sortBy'];
+    $arr = array();
+    $schools= getSchoolData($sortBy);
     
     foreach ($schools as $index) { 
-        $string.=  "<tr><td style='display:none;'>".$index['ID']."</td>
+        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
           <td contenteditable= 'true'>".$index['name']." </td>  
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>";
+            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
         }
         unset($index);
-  return $string;
+  return json_encode($arr);
 
 }
 
 function addClassesToTable(){
-    $string = "";
-    $classes = getClassData();
+    $sortBy = $_POST['sortBy'];
+    $arr = array();
+    $classes = getClassData($sortBy);
     $select = createSchoolsSelect();
 
     foreach ($classes as $index) { 
-        $string.=  "<tr><td style='display:none;'>".$index['ID']."</td>
+        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
           <td contenteditable= 'true'>".$index['name']." </td>  
          $select
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>";
+            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
         }
         unset($index);
-  return $string;
+  return json_encode($arr);
 
 }
 
@@ -402,9 +406,9 @@ function tableHeadings($choice){
         case "terms":
         return ' <tr>
         <th style="display:none;">ID</th>
-        <th>Category And Grade Level</th>
-        <th>Word</th>
-        <th>Definition</th>
+        <th id="sort_1">Category And Grade Level</th>
+        <th id="sort_2">Word</th>
+        <th id="sort_3">Definition</th>
         <th class="col-sm-auto">
             </th>
             </tr>';
@@ -413,8 +417,8 @@ function tableHeadings($choice){
         case "categories":
         return '  <tr>
         <th style="display:none;">ID</th>
-                <th>Category Name</th>
-                <th> Grade Level</th>
+                <th id="sort_1">Category Name</th>
+                <th id="sort_2"> Grade Level</th>
                 <th class="col-sm-auto"></th>
               </tr>';
             break;
@@ -422,7 +426,7 @@ function tableHeadings($choice){
         case "schools":
             return '<tr>
             <th style="display:none;">ID</th>
-            <th>School Name</th>
+            <th id="sort_1">School Name</th>
             <th class="col-sm-auto"> </th>
             </tr>';
             break;
@@ -430,9 +434,9 @@ function tableHeadings($choice){
         case "classes":
            return  '<tr>
            <th style="display:none;">ID</th>
-           <th>Class Name</th>
-           <th>Grade Level</th>
-           <th>School</th>
+           <th id="sort_1">Class Name</th>
+           <th id="sort_2">Grade Level</th>
+           <th id="sort_3">School</th>
            <th class="col-sm-auto"> </th>
             </tr>';
             break;
@@ -467,7 +471,7 @@ function helpMessage($choice){
 
 
 //Four types categories,terms,schools, and classess
-function createTable($title,$type,$tableData){
+function createTable($title,$type){
 
     
    return  '<div class="table-responsive">
@@ -480,25 +484,43 @@ function createTable($title,$type,$tableData){
       <button type="button" id="help" class="btn btn-sm btn-light" data-container="body" data-trigger="manual" 
       data-placement="right" data-content=\'"Add" button adds a new table row to the top.
        There is also an "Add" button add the bottom of the table that adds a new table row to the bottom.
-      Click "Save" to save all new changes.\'
+      Click "Save" to save all new changes. Saves Current Tab only. Switch Tabs to Save Data under other Tabs\'
       ><img src ="img/helpicon.png" width="25"> </button>
       &nbsp; &nbsp; &nbsp; &nbsp;
     <div class="btn-group" role="group" aria-label="Basic example">' .importExport($type).'</div>
     </span>
-    <small  class="form-text text-muted">Click Table Cells To Edit </small>
+    <div id="sortsearch"> <label>Size:</label> <select class="input-small" id="sortSize">
+    <option value="10">10</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+    <option value="250">250</option>
+  </select>       </div>
+    <small  class="form-text text-muted">Click Table Cells To Edit. Click Titles To Sort </small>
     <table id="word_table" class="table table-striped table-bordered">
       <thead>
        '.tableHeadings($type).'
       </thead>
-      <tbody id ="t_body">
-      '.$tableData.'
+      <tbody id ="t_body_'.$type.'">
       </tbody>
       
     </table>
+    <nav aria-label="...">
+    <ul id="pages" class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" href="#" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+      </li>
+    </ul>
+  </nav>
+  <br>
     <p class="Buttons">
       <button class = " btn btn-primary" id="addRow1">Add '.ucfirst($type).'</button>
       <button class = " btn btn-primary" id="save1">Save Changes</button>
     </p>
+    
   </div>';
 
 
