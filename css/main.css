@@ -5,6 +5,12 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.alert {
+    position: relative;
+    float: right;
+    z-index: 3;
+}
+
 .checkbox {
     display: block;
     margin: 0 auto;
@@ -52,7 +58,7 @@
 }
 
 .canDrag {
-    width: 105%;
+    width: 150%;
     background-color: #92D050 !important;
     cursor: pointer;
     font-size: 16pt;
@@ -66,7 +72,7 @@
 }
 
 #next {
-    margin-left: 80.5%;
+    margin-left: 77%;
     margin-top: 2.5%;
 }
 
@@ -91,6 +97,7 @@
 .speak {
     background: none;
     border: none;
+    text-align: absolute;
     float: right;
     cursor: pointer;
     font-size: 12pt;
@@ -115,7 +122,7 @@
     }
 
     #next {
-        margin-left: 79%;
+        float: right;
         margin-top: 2.5%;
     }
 }

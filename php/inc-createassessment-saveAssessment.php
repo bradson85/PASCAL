@@ -1,7 +1,9 @@
 <?php
+    //testing variables
     $_SESSION['class'] = 1;
     $_SESSION['ID'] = 31;
     $_SESSION['type'] = 0;
+    
     include('inc-createassessment-getTerms.php');
     require_once('../dbconfig.php');
 

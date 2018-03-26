@@ -3,15 +3,14 @@ $('.quizCard').hide();
 $('#next').hide();
 
 $(document).ready(function() {
-    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
+    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner", snapTolerance: 100, grid: [5, 5]});
     $('.canDrop').droppable();
     $('.countdown').hide();    
 
     $(window).on('beforeunload', function(){
         if(!complete) return("Are you sure?");
     });
-    // Hide timer (not visible)
-    // San serif font ( Arial 16pt)
+
     // Button color and clickability should change when all terms have been matched
 
     // Set up global variables
@@ -73,6 +72,7 @@ $(document).ready(function() {
 
     $('#closeDirections').click(function() {
         timer();
+        pageTimer();
     });
 
     $('.speak').click(function() {
@@ -86,6 +86,9 @@ $(document).ready(function() {
         $('#startButton').hide();
         $('.quizCard').show();
         $('#next').show();
+
+        timer();
+        pageTimer();
     });
 
     $(document).on('click', '#returnButton', function() {
@@ -120,6 +123,7 @@ $(document).ready(function() {
             $('.canDrag').css({'top':'', 'left':''});
             setResults();
             $('#next').attr('disabled', true);
+            pageTimer();
         }
         else {
             // Go to results page
@@ -187,6 +191,8 @@ $(document).ready(function() {
             if (minutes < 1 && seconds == 0) {
                 clearInterval(interval);
                 // end the assessment if time limit is reached
+                showResults();
+                submitResults();
             }
             seconds = (seconds < 0) ? 59 : seconds;
             seconds = (seconds < 10) ? '0' + seconds : seconds;
@@ -197,6 +203,7 @@ $(document).ready(function() {
     }
 
     function pageTimer() {
+        console.log("In pageTimer now.");
         var pageTimer2 = "1:01";
         var pageInterval = setInterval(function() {
             var pageTimer = pageTimer2.split(':');
@@ -206,6 +213,7 @@ $(document).ready(function() {
             --pageSeconds;
             pageMinutes = (pageSeconds < 0) ? --pageMinutes : pageMinutes;
             if (pageMinutes < 1 && pageSeconds == 0) {
+                $('#next').attr('disabled', false);
                 clearInterval(pageInterval);
             }
 
@@ -213,6 +221,7 @@ $(document).ready(function() {
             pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
 
             pageTimer2 = pageMinutes + ':' + pageSeconds;
+            console.log(pageTimer2);
         }, 1000);
     }
 

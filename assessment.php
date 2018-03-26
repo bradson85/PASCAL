@@ -1,7 +1,7 @@
 <?php
     session_start();
-    //$_SESSION['email'] = "student@test.com";
-    //$_SESSION['type'] = 2;
+    $_SESSION['email'] = "student@test.com";
+    $_SESSION['type'] = 2;
 
     $page_title = "Assessment";
     $css_path = "css/main.css";
@@ -37,31 +37,31 @@
             <div class="row">
                 <div class="left col-sm-3">
                     <div class="card canDrag quizCard">
-                        <div class="card-body">
+                        <div class="card-body align-items-center d-flex">
                             <span id="term1">Term 1</span>
                             <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag quizCard">
-                        <div class="card-body">
+                        <div class="card-body align-items-center d-flex">
                             <span id="term2">Term 2</span>
                             <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag quizCard">
-                        <div class="card-body">
+                        <div class="card-body align-items-center d-flex">
                             <span id="term3">Term 3</span>
                             <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag quizCard">
-                        <div class="card-body">
+                        <div class="card-body align-items-center d-flex">
                             <span id="term4">Term 4</span>
                             <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
                     </div>
                     <div class="card canDrag quizCard">
-                        <div class="card-body">
+                        <div class="card-body align-items-center d-flex">
                             <span id="term5">Term 5</span>
                             <button class="speak"><i class="fas fa-volume-up"></i></button>
                         </div>
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def1">Definition 1</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def2">Definition 2</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def3">Definition 3</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def4">Definition 4</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def5">Definition 5</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def6">Definition 6</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
@@ -155,13 +155,15 @@
                             </div>
                         </div>
                         <div class="card definition quizCard">
-                            <div class="card-body">
+                            <div class="card-body align-items-center d-flex">
                                 <span id="def7">Definition 7</span>
                                 <button class="speak white"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" id="next" disabled>Next Page</button>
+                    <div class="row">
+                        <button class="btn btn-primary" id="next" disabled>Next Page</button>
+                    </div>
                 </div> <!-- end col-->
             </div>
         </div>
