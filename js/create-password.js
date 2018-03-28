@@ -6,25 +6,23 @@ $(document).ready(function() {
 
     form.addEventListener('submit', function(e) {
         if(form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+            e.preventDefault();
+            e.stopPropagation();
         }
         else {
             $('.invalid-feedback').hide();
-            event.preventDefault();
-            event.stopPropagation();
+            e.preventDefault();
+            e.stopPropagation();
             $.ajax({
                 type: "POST",
                 url: "php/inc.create-password.php",
+                dataType: "json",
                 data: {
                     email: document.getElementById('email').value,
                     password: document.getElementById('password').value,
                     confirm: document.getElementById('confirm').value
                 },
                 success: function(response){
-                    // Encountered a bug here where an extra space was being added to the return value when returning
-                    // from the PHP function. The problem was an extra space after the ?> at the end of the php code.
-                    // Fixed by removing the extra space and return value returned as expected.
                     if(response === "true"){
                         $('#alertSuccess').show();
                         $('#createPassword')[0].reset();
@@ -35,6 +33,9 @@ $(document).ready(function() {
                         $('#createPassword')[0].reset();
                     }
                         
+                },
+                error: function(response) {
+                    console.log("Error: " + response);
                 }
             });
         }

@@ -10,6 +10,7 @@ $(document).ready(function(){
     cats = [];
     checkedNum = 0;
     matchedNum = 0;
+    submitSuccess = 0;
 
     $('#class').change(function() {
         loadStudents(document.getElementById('#class').value());
@@ -158,22 +159,30 @@ $(document).ready(function(){
         else {
             console.log("Self select wasn't checked on submit!");
             console.log($('#startDate').val());
-            $.ajax({
-                type: "POST",
-                url: "php/inc-createassessment-saveAssessment.php",
-                data: {
-                    catID: $('#categorySelect').val(),
-                    startDate: $('#startDate').val()
-                },
-                success: function(response) {
-                    console.log(response);
-                    asessmentID = response;
-                    for(let i = 0; i < cats.length; i++) {
-                        getTerms(cats[i].ID, response);
+            if($('#startDate').val() !== ""){
+                $.ajax({
+                    type: "POST",
+                    url: "php/inc-createassessment-saveAssessment.php",
+                    data: {
+                        catID: $('#categorySelect').val(),
+                        startDate: $('#startDate').val()
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if(typeof response !== "number")
+                            showAlert("Error creating assessment.", "alert-danger");
+                        asessmentID = response;
+                        for(let i = 0; i < cats.length; i++) {
+                            getTerms(cats[i].ID, response);
+                        }
+                        //submitStudents(response);
                     }
-                    //submitStudents(response);
-                }
-            });
+                });
+            }
+            else {
+                showAlert("Error creating assessment.", "alert-danger");
+            }
+            
         }
         
     });
@@ -304,10 +313,11 @@ $(document).ready(function(){
                 console.log(response);
                 array = pickTerms(response, 20, 8);
                 console.log(array);
-                submit(array, formResponse);
+                submit(array, formResponse)
             },
             error: function(response) {
                 console.log(response);
+                showAlert("Error creating assessment.", "alert-danger");
             }
         });
 
@@ -341,9 +351,12 @@ $(document).ready(function(){
                     console.log(response);
                     if(response === "Success") {
                         loadAssessments();
-                        $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#alertSuccess").slideUp(500);
-                        });
+                        submitSuccess++;
+                        if(submitSuccess == cats.length)
+                            showAlert("Successfully created assessment.", "alert-success");
+                    }
+                    else {
+                        showAlert("Error creating assessment.", "alert-danger");
                     }
                 }
             });
@@ -351,7 +364,6 @@ $(document).ready(function(){
         
     }
 
-    // This should be used when creating the assessment to randomize which words are tested.
     // This function randomizes the set of terms, then chooses the first n terms for matching,
     // with remaining terms used for the extra definitions.
     // Thanks to Laurens Holst for this implementation of Durstenfeld shuffle
@@ -382,6 +394,18 @@ $(document).ready(function(){
         console.log(result);
         return result;
     }
+
+    function showAlert(message,alertType) {
+
+        $('#alertPlaceholder').append('<div id="alertdiv" class="alert ' +  alertType + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+    
+    
+          $("#alertdiv").remove();
+    
+        }, 5000);
+      }
 });
 
 function randomize(array) {

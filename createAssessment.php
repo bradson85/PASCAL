@@ -26,8 +26,7 @@ include "sidebar-header.php"
 
       <H2> Create New Assessment</H2>
 
-      <div class="alert alert-success" role="alert" id="alertSuccess">
-          <span>Successfully created assessment</span>
+      <div id="alertPlaceholder">
       </div>
 
       <div class="row">

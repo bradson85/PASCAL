@@ -19,18 +19,10 @@
         <div class="container createAccount">
             <h1>Create Account</h1>
 
-            <div class="alert alert-success" role="alert" id="alertSuccess">
-                <span>Successfully created account</span>
+            <div id="alertPlaceholder">
             </div>
 
-            <div class="alert alert-danger alert-dismissable" role="alert" id="alertFail">
-                <span>Problem creating account! E-mail may be a duplicate.</span>
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-
-            <form class="form" id="createAccount">
+            <form class="form" id="createAccount" method="POST">
                 <div class="form-group"><label for="accountType">Account Type:</label>
                     <select id="accountType" class="form-control" name="accountType" required>
                         <option>Select Account Type</option>
