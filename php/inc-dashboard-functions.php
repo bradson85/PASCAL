@@ -470,7 +470,7 @@ function assembleInfoTable($classID){
         $className = getClassName($classID);
         $gradeLevel = getClassGradeLevel($classID);
         
-  $string .= "<tr class='studentLink' id='$email'><td>$studentName</td>
+  $string .= "<tr class='studentLink' id='$email'><td><u class='text-success'>$studentName</u></td>
    <td>$gradeLevel</td>
    <td>$className</td> 
          <td> Assessment 38 </td>  

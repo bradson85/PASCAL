@@ -33,7 +33,8 @@ include  __DIR__ ."/../sidebar-header.php"
 
 
 <!-- Start main html-->
-<main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
+<main class="col-sm-9  ml-sm-auto col-md-10 pt-3 " role="main">
+<div class= "container">
          <!-- Icon Cards examples-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -47,7 +48,7 @@ include  __DIR__ ."/../sidebar-header.php"
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-warning o-hidden h-100">
+          <div class="card text-white bg-success o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-list"></i>
@@ -57,32 +58,10 @@ include  __DIR__ ."/../sidebar-header.php"
           </div>
         </div>
 <br>
-      
-<div class="card mb-10">
-        <div class="card-header boardModule">
-        <h5 class="card-title text-white">Available Assessments</h5></div>
-        <div class="card-body">
-        <div id = "topTable">
-     </div>
-        <div class="table-responsive">
-        <small class='text-muted'>Click on row to view assessment.</small>
-            <table class="table table-bordered" id="assessTableTeach" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Category and Grade Level</th>
-                </tr>
-              </thead>
-              <tbody>
-                </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <br>
+    
           <!-- Example  Card-->
+          <div class="row">
+          <br>
       <div class="card mb-6">
         <div class="card-header boardModule">
         <h5 class="card-title text-white">Class Table Stats</h5></div>
@@ -91,7 +70,6 @@ include  __DIR__ ."/../sidebar-header.php"
        <small class='text-muted'>Select Options to View Graph.</small>
         <span id='schoolOptions'></span>
         <span id='classOptions'></span>
-     </div>
         <div class="table-responsive">
         <small class='text-muted'>Click on row to view student data.</small>
             <table class="table table-bordered" id="dataTableAdmin" width="100%" cellspacing="0">
@@ -109,21 +87,32 @@ include  __DIR__ ."/../sidebar-header.php"
                 </tbody>
             </table>
           </div>
-        </div><br>
+        </div> 
+        </div>
+        </div>
+        <br>
+        </div>
+        
+       
+
       
   <!-- graph stuff -->
-       <div class="row">
-        <div class="col-lg-10">
-        <div class="card text-center">
-    <div class="card-header boardModule">
-      <h5 class= "text-white">Graphs of Student Scores</h5>
-         </div>
-         </div><small class='text-muted'>Select Options to View Graph.</small><br><span id='graphschooloption'></span>
+  
+  <div class="row" >
+      <div class="card mb-6">
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white">Graphs of Student Scores</h5></div>
+         <div class="card-body">
+         <small class='text-muted'>Select Options to View Graph.</small><br>
+         <span id='graphschooloption'></span>
           <span id='graphclassoption'></span>
           <span id='graphstudentoption'></span><br>
-         <canvas id="dashboardChart" width="200" height="100"></canvas>
+          
+         <canvas id="dashboardChart" width="600" height="300"></canvas>
           </div>
           </div>
+          </div>
+         </div>
       </main>
     
   <!-- Optional JavaScript -->

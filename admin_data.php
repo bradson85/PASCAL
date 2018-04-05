@@ -211,9 +211,7 @@ return "
       crossorigin='anonymous'></script>
       <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js' 
       integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl' crossorigin='anonymous'></script>
-      <script src= 'https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js'/>
       <script src='https://code.jquery.com/qunit/qunit-2.4.1.js'></script>
-    <script src='/tests/tests.js'></script>
     <script>
       if (typeof ($.fn.modal) === 'undefined') {
         document.write(\"<script src='/js/bootstrap.min.js'><\/script>\")
@@ -231,7 +229,7 @@ return "
       });
     </script>
     <script src='/js/$jsFilename.js'></script>
-    <script src='/js/bootstraptables.js'></script>
+  
   </body>
   
   </html>" ;

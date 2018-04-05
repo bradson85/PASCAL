@@ -21,7 +21,7 @@ session_start();
 
             $classID = $_POST['classNumber'];
            $classList = getClassList($classID);
-           $arr = getClassStudentScores($classList);
+           $arr = getClassStudentScores($classList); // this returns all sutdents average.
            print_r($arr);
          } else {
             $email = $_POST['scoreChoice'];
@@ -29,7 +29,7 @@ session_start();
             $arr[0] = 0;
             foreach ($allAssessments as $value) {
                 if(checkIfResultsExist($email,$value['ID'])){
-               $arr[$value['ID']] = getStudentTestData($email,$value['ID']);
+               $arr[$value['ID']] = getStudentTestData($email,$value['ID']); // this test score for an individual
                 }
             }
         

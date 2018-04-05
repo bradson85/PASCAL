@@ -29,10 +29,13 @@ $_SESSION['currStudentEmail'] = $_POST["email"];
 
 <!-- Add Nav Bar part-->
 <?php 
-
+if($_SESSION['type'] == 1){
 include  "teacher-topbar-header.php"; 
-include  "teacher-sidebar-header.php"
-
+include  "teacher-sidebar-header.php";
+}else if( $_SESSION['type'] == 0){
+  include  "topbar-header.php"; 
+  include  "sidebar-header.php";
+}
 ?>
 
 
