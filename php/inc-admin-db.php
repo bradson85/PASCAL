@@ -23,7 +23,6 @@ $sql = $pdo->prepare($query);
 for ($i=0; $i < count($parmList); $i++) { 
     $sql->bindParam($parmList[$i], $parmData[$i]);
 }
-
 return $sql->execute();
 }
 
@@ -45,17 +44,24 @@ function pdo_error($message){
 
 
 // delete item from table
-function deleteFromTable($table, $where,$data){
+function deleteFromTable($table, $where,$what ,$numItems){
+
+    
+        for ($i=0; $i < $numItems; $i++) { 
+            $list[$i] = ":".$where[$i];
+            $newdata[$i]= $what[$i];
+            if($i == 0){
+                $whereClause .= ("".$where[$i]." = :".  $where[$i]);
+             } else  $whereClause .= ( " AND ".$where[$i]." = :".  $where[$i]);
+        }
     try {
        $pdo = newPDO();
-     $query= ("DELETE FROM $table WHERE $where = :$where");
-        $list = array(0 => ":$where");
-        $newdata = array(0 => $data); 
+     $query= ("DELETE FROM $table WHERE $whereClause");
        $success = pdo_preparedStmt($pdo,$query,$list,$newdata);
          if($success){
          echo "Deleted Item Successfully";
          }
-         else{ echo "Deletion of Data ID:$data Failed";}
+         else{ echo "Deletion of Data Failed";}
          }
      catch(PDOException $e)
          {
@@ -123,11 +129,11 @@ function retrieveSelectedSchool($id){
 }
 
 
-function checkIfIDExists($type,$what){
+function checkIfNameExists($type,$what){
     $exists = false;
     try {
         $pdo = newPDO();
-        $query = ("SELECT * FROM $type WHERE ID = '$what'");
+        $query = ("SELECT * FROM $type WHERE name = '$what'");
         $result = pdo_query($pdo,$query);
          
         $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -167,14 +173,20 @@ function checkIfIDExists($type,$what){
 
     }
 
-    function checkIfInfoExists($type,$where,$what,$id){
+    function checkIfInfoExists($type, $where, $what, $numItems){
         $exists = false;
+        $whereClause = "";
+        for ($i=0; $i < $numItems; $i++) { 
+            if($i == 0){
+               $whereClause .= ("".$where[$i]." = \"".  $what[$i]."\"");
+            } else  $whereClause .= ( " AND ".$where[$i]." = \"".  $what[$i]."\"");
+        }
         try {
             $pdo = newPDO();
-            $query = ("SELECT * FROM $type WHERE $where =\"$what\" AND ID ='$id'");
-            $result = pdo_query($pdo,$query);
+            $query = ("SELECT * FROM $type WHERE $whereClause");
+           $result = pdo_query($pdo,$query);
              
-            $row = $result->fetch(PDO::FETCH_ASSOC);
+          $row = $result->fetch(PDO::FETCH_ASSOC);
             if(!$row){
                 $exists=false;
             }
@@ -189,13 +201,13 @@ function checkIfIDExists($type,$what){
         
         }
 
-function updateTerms($id, $term,$definition,$catID){
+function updateTerms($term,$definition,$catID){
     try {
         $pdo = newPDO();
         $query = ("UPDATE IGNORE terms SET name =:word , definition = :definition,
-                     catID = :catID WHERE ID = :IDs");
-         $list = array(0 => ":word",1 => ":definition",2 => ":catID", 3 => ":IDs");
-         $data = array(0 => $term,1 => $definition,2 => $catID, 3 => $id);           
+                     catID = :catID WHERE name = :term");
+         $list = array(0 => ":word",1 => ":definition",2 => ":catID", 3 => ":term");
+         $data = array(0 => $term,1 => $definition,2 => $catID, 3 => $term);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
@@ -236,19 +248,19 @@ function insertTermsIntoDB($term,$definition,$catID){
 
 }
 
-function updateCategories($id, $catName,$level){
+function updateCategories($catName,$level){
     try {
         $pdo = newPDO();
         $query = ("UPDATE IGNORE categories SET name =:catName , level = :level
-                      WHERE ID = :IDs");
-         $list = array(0 => ":catName",1 => ":level",2 => ":IDs");
-         $data = array(0 => $catName,1 => $level,2 => $id);           
+                      WHERE name =:cats");
+         $list = array(0 => ":catName",1 => ":level",2 => ":cats");
+         $data = array(0 => $catName,1 => $level,2 => $catName);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
-          return "Changed info for $catName level $level successfully";
+          return "Changed info for $catName level $level successfully <br>";
           }
-          else{ return "Update of $catName level $level Failed";}
+          else{ return "Update of $catName level $level Failed<br>";}
           }
       catch(PDOException $e)
           {
@@ -283,13 +295,13 @@ function insertCategoriesIntoDB($name,$level){
 
 }
 
-function updateSchools($id, $name){
+function updateSchools($name){
     try {
         $pdo = newPDO();
         $query = ("UPDATE IGNORE schools SET name =:name
-                      WHERE ID = :IDs");
-         $list = array(0 => ":name",1 =>":IDs");
-         $data = array(0 => $name,1 => $id);           
+                      WHERE name = :name1");
+         $list = array(0 => ":name",1 =>":name1");
+         $data = array(0 => $name,1 => $name);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
@@ -331,13 +343,13 @@ function insertSchoolIntoDB($name){
 
 }
 
-function updateClasses($id, $name,$level,$schoolID){
+function updateClasses($name,$level,$schoolID){
     try {
         $pdo = newPDO();
         $query = ("UPDATE IGNORE classes SET name = :name , gradeLevel = :gradeLevel, schoolID= :schoolID
-                      WHERE ID = :IDs");
-         $list = array(0 => ":name",1 => ":gradeLevel",2=> ":schoolID",3 => ":IDs");
-         $data = array(0 => $name, 1 => $level, 2 => $schoolID,3 => $id);           
+                      WHERE name = :name1");
+         $list = array(0 => ":name",1 => ":gradeLevel",2=> ":schoolID",3 => ":name1");
+         $data = array(0 => $name, 1 => $level, 2 => $schoolID,3 => $name);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
@@ -420,8 +432,8 @@ function retrieveSelectedCategory($id){
 // returns associatve array list of categories
 function  getCategoriesData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT * FROM categories");
-       } else   $query = ("SELECT * FROM categories ORDER BY $sortBy");
+        $query = ("SELECT name, level FROM categories");
+       } else   $query = ("SELECT name, level FROM categories ORDER BY $sortBy");
  try {
        $pdo = newPDO();
        $result = pdo_query($pdo,$query);
@@ -438,8 +450,9 @@ return $row;
 
 function getTermsData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT * FROM terms");
-       } else   $query = ("SELECT terms.ID, terms.name, terms.definition, categories.name as category 
+        $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+        FROM terms, categories Where terms.catID = categories.ID");
+       } else   $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade
                             FROM terms, categories Where terms.catID = categories.ID  ORDER BY $sortBy");
 
     try {
@@ -459,9 +472,10 @@ function getTermsData($sortBy){
  function getTermsDataSpecial($categoryID,$sortBy){
 
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT * FROM terms  WHERE catID = \"$categoryID\"");
-       } else   $query = ("SELECT terms.ID, terms.name, terms.definition, categories.name as category 
-                            FROM terms, categories Where terms.catID = \"$categoryID\"   ORDER BY $sortBy");
+        $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+        FROM terms, categories WHERE terms.catID = categories.ID And terms.catID = \"$categoryID\"");
+       } else   $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+       FROM terms, categories WHERE terms.catID = categories.ID And terms.catID = \"$categoryID\" ORDER BY $sortBy");
     try {
         $pdo = newPDO();
         $result = pdo_query($pdo,$query);
@@ -498,8 +512,8 @@ function getTermsData($sortBy){
 
  function getSchoolData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT *  FROM schools");
-       } else   $query = ("SELECT * FROM schools ORDER BY $sortBy");
+        $query = ("SELECT name FROM schools");
+       } else   $query = ("SELECT name FROM schools ORDER BY $sortBy");
     try {
         $pdo = newPDO();
         $result = pdo_query($pdo,$query);
@@ -516,8 +530,9 @@ function getTermsData($sortBy){
 
  function getClassData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT * FROM classes");
-       } else  $query = ("SELECT classes.ID, classes.name, classes.gradeLevel, schools.name as school 
+        $query = ("SELECT classes.name, classes.gradeLevel, schools.name as school
+       FROM classes, schools Where classes.schoolID = schools.ID");
+       } else  $query = ("SELECT classes.name, classes.gradeLevel, schools.name as school 
                             FROM classes, schools Where classes.schoolID = schools.ID ORDER BY $sortBy");
 
     try {

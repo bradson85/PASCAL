@@ -6,9 +6,10 @@ $(document).ready(function () {
     var count = 0 // for preventing save warning from popping up every time.
     $('#changes').hide();
     var index = 0;
+    var changeArray = new Array();  // for keeping track of changed tables;
     var currentPage = "categories";
     var lastSort = "All";
-    var sortNumber =10;
+    var sortNumber = 10;
     var curPageNum = 1;   // current selected page
     var totalNumOfPages = 1;   // total pages
     var sortBy = 0;  // assennding items =  1, 2 is table head 2 3 is table head 3, 0 is default sort 
@@ -21,23 +22,12 @@ $(document).ready(function () {
 
 
 
-    // loading selected on start
-    setTimeout(
-        function () {
-            updateSelected('categories');
-        }, 350);
-
-
     /// for clicking the next page
     $(document).on("click", "#pageNext", function (e) {
         e.preventDefault();
         if (curPageNum < totalNumOfPages) {
             curPageNum++;
             tableSorting();
-            setTimeout(
-                function () {
-                    updateSelected(currentPage);
-                }, 50);
         }
 
     });
@@ -48,32 +38,17 @@ $(document).ready(function () {
         if (curPageNum > 1) {
             curPageNum--;
             tableSorting();
-            setTimeout(
-                function () {
-                    updateSelected(currentPage);
-
-                }, 50);
         }
     });
 
     $(document).on("change", "#sortSize", function () {
-        sortNumber =  $("#sortSize").val();
+        sortNumber = $("#sortSize").val();
         tableSorting();
-        setTimeout(
-            function () {
-                updateSelected(currentPage);
-            }, 50);
-
     });
- 
-    $(document).on("click", ".pagesnumber", function () {
-          curPageNum = parseInt($(this).text());
-          tableSorting();
-            setTimeout(
-                function () {
-                    updateSelected(currentPage);
-                }, 50);
 
+    $(document).on("click", ".pagesnumber", function () {
+        curPageNum = parseInt($(this).text());
+        tableSorting();
     });
 
     $(document).on("click", "#sort_1", function (e) {
@@ -81,37 +56,31 @@ $(document).ready(function () {
             sortBy = 4;
         } else sortBy = 1;
         getTableData(currentPage);
-        setTimeout(
-            function () {
-                updateSelected(currentPage);
-                markSorted(1);
-            }, 150);
-        
     });
     $(document).on("click", "#sort_2", function (e) {
         if (sortBy == 2) {
             sortBy = 5;
         } else sortBy = 2;
         getTableData(currentPage);
-        setTimeout(
-            function () {
-                updateSelected(currentPage);
-                markSorted(2);
-            }, 150);
     });
     $(document).on("click", "#sort_3", function (e) {
         if (sortBy == 3) {
             sortBy = 6;
         } else sortBy = 3;
         getTableData(currentPage);
-        setTimeout(
-            function () {
-                updateSelected(currentPage);
-                markSorted(3);
-            }, 150);  
     });
 
+    $(document).on("change", "#word_table td", function () {
+        // start out with categories
+        $(this).parent().find('td:last #changebox1').prop('checked', true);
 
+    });
+
+    $(document).on("keypress", '[contenteditable="true"]', function () {
+        // start out with categories
+        $(this).parent().find('td:last #changebox1').prop('checked', true);
+
+    });
 
     //for tooltip help
     $('[data-toggle="tooltip"]').tooltip();
@@ -130,11 +99,6 @@ $(document).ready(function () {
         // start out with categories
         getTableData(currentPage);
         $("#" + currentPage).tab("show");
-        setTimeout(
-            function () {
-                updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values
-
-            }, 300);
     });
     /// for class inport modal
     $(document).on("click", "a#classImportSelect", function () {
@@ -159,11 +123,6 @@ $(document).ready(function () {
                     }
                     getTableData(currentPage);
                     $("#".currentPage).tab("show");
-                    setTimeout(
-                        function () {
-                            updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
-
-                        }, 300);
 
                 }
             })
@@ -221,14 +180,6 @@ $(document).ready(function () {
         currentPage = "categories";
         $("#topTable").hide();
         getTableData("categories");
-        setTimeout(
-            function () {
-
-                updateSelected('categories');
-
-
-            }, 250);
-
     });
     // sets tab for opening terms db interfacd
     $(document).on("click", "#terms", function () {
@@ -241,7 +192,6 @@ $(document).ready(function () {
         setTimeout(
             function () {
                 updateSearch();
-                updateSelected('terms');
             }, 250);
     });
 
@@ -253,12 +203,6 @@ $(document).ready(function () {
         $("#topTable").hide();
         getTableData("schools");
 
-        setTimeout(
-            function () {
-                updateSelected('schools');
-
-            }, 250);
-
     });
 
     // sets tab for opening School List db interfacd
@@ -267,13 +211,6 @@ $(document).ready(function () {
         $("#topTable").hide();
         currentPage = "classes";
         getTableData("classes");
-
-        setTimeout(
-            function () {
-                updateSelected('classes');
-
-
-            }, 250);
     });
 
 
@@ -327,10 +264,6 @@ $(document).ready(function () {
                 $("#t_body").empty();
                 getTableData(currentPage);
                 $("#" + currentPage).tab("show");
-                setTimeout(
-                    function () {
-                        updateSelected(currentPage);
-                    }, 350);
                 return false;
             }
         });
@@ -357,11 +290,32 @@ $(document).ready(function () {
     });
 
     $(document).on("click", ".deleteRow", function () {
-        tabID = $(this).parent().siblings("td:eq(0)").text().trim(); // get current id
         if (currentPage == "terms") {
-            items = $(this).parent().siblings("td:eq(2)").text().trim();
-        } else items = $(this).parent().siblings("td:eq(1)").text().trim();
-        $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + items + "\" From Database?");
+            items = [$(this).parent().siblings("td:eq(0)").find('select').val(),
+            $(this).parent().siblings("td:eq(1)").text().trim(),
+            $(this).parent().siblings("td:eq(2)").text().trim()
+
+            ];
+            console.log(items);
+            itemName = $(this).parent().siblings("td:eq(1)").text().trim();
+        } else if (currentPage == "classes") {
+            items = [$(this).parent().siblings("td:eq(0)").text().trim(),
+            $(this).parent().siblings("td:eq(1)").find('select').val(),
+            $(this).parent().siblings("td:eq(2)").find('select').val()
+            ];
+            itemName = $(this).parent().siblings("td:eq(0)").text().trim();
+        } else if (currentPage == "categories") {
+            items = [$(this).parent().siblings("td:eq(0)").text().trim(),
+            $(this).parent().siblings("td:eq(1)").find('select').val()
+            ];
+           
+            itemName = $(this).parent().siblings("td:eq(0)").text().trim();
+        } else if (currentPage == "schools") {
+            items = [$(this).parent().siblings("td:eq(0)").text().trim(),
+            ];
+            itemName = $(this).parent().siblings("td:eq(0)").text().trim();
+        }
+        $("#sure .modal-title").text("Are You Sure You Want To Delete \"" + itemName + "\" From Database?");
         $("#sure .modal-body").text("You will not be able to undo this action.");
         $("#modalsave").removeClass("save").addClass("delete");
         $("#modalsave").text("Delete");
@@ -372,14 +326,21 @@ $(document).ready(function () {
 
     //when modal is ready on delete
     $("body").on("click", ".delete", function () {
-        deleteRows(tabID, currentPage);
+        deleteRows(items, currentPage);
         $("#sure").modal('hide');
     });
     $("#modalclose").on("click", function () {
         $("#sure").modal('hide');
     });
-   
-    
+
+    //when clicking search box
+    $(document).on("click", "#searchGo", function () {
+        var searchstring = $('#wordsearch').val();
+        searchSorting(searchstring);
+
+    });
+
+
 
     // Special errore messages can be retrieved form the the url GET that alert on load this hides them after 
     // a while from he messages phph section 
@@ -393,7 +354,21 @@ $(document).ready(function () {
 
 
     /// below are fucntions ----------------------------------------------------------------
+    function searchSorting(wordSearch) {
+        if (item.length < 1) {
+            throw "no table data";
+        }
+        if ($.trim($('#wordsearch').val()) === '') {
+            alert('Seach box can not be left blank');
+        } else {
+            var numOfItems = Math.ceil(parseInt(item.length, 10));
+            for (let sindex = 0; sindex < numOfItems; sindex++) {
+                var currItem = item[sindex];
+                currItem
 
+            }
+        }
+    }
 
     function tableSorting() {
         if (item.length < 1) {
@@ -432,19 +407,19 @@ $(document).ready(function () {
         $("#pages").append('<li id="pageNext" class="page-item"> <a class="page-link" href="#">Next</a> </li>');
         $("#t_body_" + currentPage).empty();
         for (let index = startIndex; index < endIndex; index++) {
-            $("#t_body_" + currentPage).append(item[index]);
+            $("#t_body_" + currentPage).append(createdTableData[index]);
         }
 
     }
 
     function getTableData(type) {
-      sortByName = getOrderByName(type);
+        sortByName = getOrderByName(type);
         // terms has search variable
         if (type == 'terms') {
             var choice = $("#sort_body").find('td:eq(1)').find('select').val();
             lastSort = choice;
-            
-            $.ajax({ // delete from database
+
+            $.ajax({ // get info from db
                 type: "POST",
                 url: "/php/inc-admin-data.php",
                 data: {
@@ -453,20 +428,14 @@ $(document).ready(function () {
                     sortBy: sortByName
                 },
                 success: function (data) {
+
                     answer = JSON.parse(data);
-                    item = JSON.parse(answer[1]);
+                    item = answer[1][0];
+                    createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
                     $("#steve").html(answer[0]);
-
                     setTimeout(
                         function () {
-                          tableSorting();
-
-                        }, 50);
-
-                    setTimeout(
-                        function () {
-                            updateSelected('terms');
-
+                            tableSorting();
                         }, 50);
 
 
@@ -484,21 +453,14 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     answer = JSON.parse(data);
-                    item = JSON.parse(answer[1]);
+                    item = answer[1][0];
+                    createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
                     $("#steve").html(answer[0]);
 
                     setTimeout(
                         function () {
                             tableSorting();
-
                         }, 50);
-
-                    setTimeout(
-                        function () {
-                            updateSelected(currentPage);
-
-                        }, 50);
-
                 }
             });
         }
@@ -506,7 +468,7 @@ $(document).ready(function () {
     // alters confirmatrion modal to alert what has taken place.
     function confirmModal(message1) {
         $("#confirm .modal-title").text("Result");
-        $("#confirm .modal-body").text(message1);
+        $("#confirm .modal-body").html(message1);
         $("#confirm").modal('show');
         $("#modalclose").on("click", function () {
             $("#confirm").modal('hide');
@@ -552,93 +514,14 @@ $(document).ready(function () {
         } else $("#sort_body").find('td:eq(1)').find('select').val(lastSort); // make sure retuns to last sort when clicke
     }
 
-    // update what select level is chosen when loading the db 
-    // options based up on id:
-    // This is what calls the php file to get which
-    // option is the selected option.
-    function updateSelected(type) {
-
-        var ID = new Array();
-        $('#word_table tr').each(function (row, tr) {
-            ID[row] = {
-                "ID": $(tr).find('td:eq(0)').text()
-            }
-        });
-
-        ID.shift(); // moves past first row with headings
 
 
-        switch (type) {
-            case "terms":
-
-                $.ajax({
-                    type: "POST",
-                    url: "/php/inc-admin-data.php",
-                    data: {
-                        currCat: ID
-                    },
-                    success: function (data) {
-                        answer = (JSON.parse(data));
-                        $('#word_table tr').not(":first").each(function (row, tr) {
-                            $(tr).find('td:eq(1)').find('select').val(answer[row]);
-                        });
-                    }
-                });
-
-                break;
-            case "categories":
-
-                $.ajax({
-                    type: "POST",
-                    url: "/php/inc-admin-data.php",
-                    data: {
-                        currLev: ID
-                    },
-                    success: function (data) {
-                        answer = JSON.parse(data);
-
-                        $('#word_table tr').not(":first").each(function (row, tr) {
-                            //console.log(data[row]);
-                            $(tr).find('td:eq(2)').find('select').val(answer[row]);
-                        });
-                    },
-                });
-
-                break;
-            case "schools":
-
-                break;
-            case "classes":
-                $.ajax({
-                    type: "POST",
-                    url: "/php/inc-admin-data.php",
-                    data: {
-                        currClass: ID
-                    },
-                    success: function (data) {
-                        answer = JSON.parse(data);
-                        $('#word_table tr').not(":first").each(function (row, tr) {
-                            //console.log(data[row]);
-                            $(tr).find('td:eq(2)').find('select').val(answer[1][row])
-                            $(tr).find('td:eq(3)').find('select').val(answer[0][row]);
-                        });
-                    },
-
-                });
-
-                break;
-            default:
-
-        }
-
-    }
-
-    function deleteRows(currID, type) {
+    function deleteRows(currItems, type) {
         $.ajax({ // delete from database
             type: "POST",
             url: "/php/inc-admin-data.php",
             data: {
-                delete: currID,
+                delete: currItems,
                 delType: type
             },
             success: function (data) {
@@ -647,11 +530,6 @@ $(document).ready(function () {
                 // start out with categories
                 getTableData(type);
                 $("#".type).tab("show");
-                setTimeout(
-                    function () {
-                        updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values 
-
-                    }, 300);
             }
         });
     }
@@ -698,8 +576,7 @@ $(document).ready(function () {
     }
 
     function blankTermRow($categoriesSel) {
-        return '<tr><td style="display:none;">0</td>' +
-            $categoriesSel +
+        return '<tr>' + $categoriesSel +
             '<td id ="newbox" contenteditable= "true" style="color:#778899;">'
             +
             ' Click To Enter A New Word</td>' // term name
@@ -711,8 +588,7 @@ $(document).ready(function () {
     }
 
     function blankCatRow($levelSelect) {
-        return $('<tr><td style="display:none;">0</td>' +
-            '<td id ="newbox" contenteditable= "true" style="color:#778899;">Click To Enter A New Category</td>' // term name
+        return $('<tr><td id ="newbox" contenteditable= "true" style="color:#778899;">Click To Enter A New Category</td>' // term name
             +
             $levelSelect
             +
@@ -720,9 +596,7 @@ $(document).ready(function () {
 
     }
     function blankSchoolRow() {
-        return $("<tr><td style='display:none;'"
-            +
-            ">0</td>><td id ='newbox' contenteditable= 'true' style='color:#778899;'"
+        return $("<tr><td id ='newbox' contenteditable= 'true' style='color:#778899;'"
             +
             ">Click to Add New School Name</td>' // term name"
             +
@@ -731,8 +605,7 @@ $(document).ready(function () {
     }
 
     function blankClassRow($schoolSelect) {
-        return '<tr><td style=\'display:none;\'>0</td>' +
-            '<td id ="newbox" contenteditable= "true" style="color:#778899;">Enter A Class Name</td>' // class name
+        return '<tr><td id ="newbox" contenteditable= "true" style="color:#778899;">Enter A Class Name</td>' // class name
             +
             $schoolSelect
             +
@@ -740,63 +613,93 @@ $(document).ready(function () {
 
     }
     function retrieveCurrentData(type) {
-
+        var save = true; //for if save can happen
         // this iterates throught every value in the table and stores it in an array
         var TableData = new Array();
         //first time throght retrns header so set ing up count
-        var count = 0
+        var tableCount = 0;
         $('#word_table tr').each(function (row, tr) {
-            // if text fields are empty
-            if (count > 0 && ($.trim($(tr).find('td:eq(1)').text()) == "" || $(tr).find('td:eq(2)').find('select').val() == '0')) {
-                save = false; //false because of blank field somewhere
+
+            // count is greater than the first row which is the header then return values;
+            if (tableCount <= 0) {
+                // do nothing
+                tableCount++;
             } else {
                 switch (type) {
                     case "terms":
-                        TableData[row] = {
-                            "ID": $(tr).find('td:eq(0)').text(),
-                            "category": $(tr).find('td:eq(1)').find('select').val(),
-                            "word": $(tr).find('td:eq(2)').text(),
-                            "definition": $(tr).find('td:eq(3)').text()
+                        if (($.trim($(tr).find('td:eq(1)').text()) == "" || $(tr).find('td:eq(2)').text()) == "" ||
+                            $(tr).find('td:eq(0)').find('select').val() == '0'
+                            || $(tr).find('td:eq(0)').find('select').val() == null) {
+                            save = false;
+                            return;
+                        } else {
+                            TableData[row] = {
+                                "category": $(tr).find('td:eq(0)').find('select').val(),
+                                "word": $(tr).find('td:eq(1)').text(),
+                                "definition": $(tr).find('td:eq(2)').text(),
+                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked')
+                            }
                         }
                         break;
                     case "categories":
-                        TableData[row] = {
-                            "ID": $.trim($(tr).find('td:eq(0)').text()),
-                            "catName": $.trim($(tr).find('td:eq(1)').text()),// trim this data to eliminate trailing spaces
-                            "level": $(tr).find('td:eq(2)').find('select').val()
+                        if (($.trim($(tr).find('td:eq(0)').text()) == "" ||
+                            $(tr).find('td:eq(1)').find('select').val() == '0'
+                            || $(tr).find('td:eq(1)').find('select').val() == null)) {
+                            save = false;
+                            return;
+                        } else {
+                            TableData[row] = {
+                                "catName": $.trim($(tr).find('td:eq(0)').text()),// trim this data to eliminate trailing spaces
+                                "level": $(tr).find('td:eq(1)').find('select').val(),
+                                "checked": $(tr).find('td:eq(3) #changebox1').is(':checked')
+                            }
                         }
                         break;
                     case "schools":
-                        TableData[row] = {
-                            "ID": $.trim($(tr).find('td:eq(0)').text()),
-                            "schoolName": $.trim($(tr).find('td:eq(1)').text())
+                        if ($.trim($(tr).find('td:eq(0)').text()) == "") {
+                            save = false;
+                            return;
+                        } else {
+                            TableData[row] = {
+                                "schoolName": $.trim($(tr).find('td:eq(0)').text()),
+                                "checked": $(tr).find('td:eq(2) #changebox1').is(':checked')
+                            }
                         }
                         break;
                     case "classes":
-                        TableData[row] = {
-                            "ID": $.trim($(tr).find('td:eq(0)').text()),
-                            "className": $.trim($(tr).find('td:eq(1)').text()),// trim this data to eliminate trailing spaces
-                            "gradeLevel": $.trim($(tr).find('td:eq(2)').find('select').val()),
-                            "schoolName": $(tr).find('td:eq(3)').find('select').val()
+                        if (($.trim($(tr).find('td:eq(0)').text()) == "" ||
+                            $(tr).find('td:eq(1)').find('select').val() == '0'
+                            || $(tr).find('td:eq(1)').find('select').val() == null ||
+                            $(tr).find('td:eq(2)').find('select').val() == '0'
+                            || $(tr).find('td:eq(2)').find('select').val() == null)) {
+                            save = false;
+                            return;
+                        } else {
+                            TableData[row] = {
+                                "className": $.trim($(tr).find('td:eq(0)').text()),// trim this data to eliminate trailing spaces
+                                "gradeLevel": $.trim($(tr).find('td:eq(1)').find('select').val()),
+                                "schoolName": $(tr).find('td:eq(2)').find('select').val(),
+                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked')
+                            }
                         }
-
                         break;
                     default:
                 }
-            }
-            count++;
-        });
-        return TableData;
 
+            }
+        });
+
+        if (save) {
+            return TableData;
+        } else return "fail";
     }
 
     function saveToDB(type) {
-        console.log("test");
-        var save = true;
-        TableData = retrieveCurrentData(type);
+
+        TableData = (retrieveCurrentData(type));
         ///  if blank fields havent occurred
-        if (save) {
-            TableData.shift(); // first row is the table header - so remove
+        if (TableData != "fail") {
+            TableData.shift(); // first row is the table header and didnt ad to array - so remove blank row.
             TableData = JSON.stringify(TableData);
             $.ajax({
                 type: "POST",
@@ -811,18 +714,66 @@ $(document).ready(function () {
                     // start out with categories
                     getTableData(type);
                     $("#" + type).tab("show");
-                    setTimeout(
-                        function () {
-                            updateSelected(currentPage); // waits 2 ms to make sure page is loaded before addeing selet values
-                        }, 300);
                 }
             });
         } else {
 
-            confirmModal("Data Not Saved", "Empty field or Level not"
-                + "selected. \nPlease enter data into all fields and select level");
+            confirmModal("Data Not Saved <br> Empty field or select box not "
+                + "selected. <br>Please enter data into all fields and choose an option for all select boxes.");
 
         }
+    }
+
+    function createTableFromJSON(jsonData, pageType, selectData) {
+        var jsonList = new Array();
+        switch (pageType) {
+            case "terms":
+                for (let jindex = 0; jindex < jsonData.length; jindex++) {
+                    jsonList.push("<tr>" + selectData[jindex] +
+                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        +
+                        '<td contenteditable= "true" >' + jsonData[jindex]["definition"] + '</td>' /// for level
+                        +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
+                }
+                break;
+            case "categories":
+                for (let jindex = 0; jindex < jsonData.length; jindex++) {
+                    jsonList.push("<tr>" +
+                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        +
+                        selectData[jindex]
+                        +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
+
+                }
+                break;
+            case "schools":
+                for (let jindex = 0; jindex < jsonData.length; jindex++) {
+                    jsonList.push("<tr>" + '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
+                }
+                break;
+            case "classes":
+                for (let jindex = 0; jindex < jsonData.length; jindex++) {
+                    jsonList.push("<tr>" +
+                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        +
+                        selectData[jindex]
+                        +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td><td style="display:none;">' +
+                        '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
+                }
+
+                break;
+            default:
+        }
+
+        return jsonList;
     }
     function getOrderByName(type) {
         orderBy = sortBy;
@@ -842,7 +793,7 @@ $(document).ready(function () {
                     case 4:
                         $returnString = "category DESC";
                         break;
-                     case 5:
+                    case 5:
                         $returnString = "name DESC";
                         break;
                     case 6:
@@ -853,58 +804,58 @@ $(document).ready(function () {
                 }
                 break;
             case "categories":
-            switch (orderBy) {
-                case 1:
-                    $returnString = "name ASC";
-                    break;
-                case 2:
-                    $returnString = "level ASC";
-                    break;
-                case 4:
-                    $returnString = "name DESC";
-                    break;
-                 case 5:
-                    $returnString = "level DESC";
-                    break;
-                default:
-                    $returnString = "ID";
-            }
+                switch (orderBy) {
+                    case 1:
+                        $returnString = "name ASC";
+                        break;
+                    case 2:
+                        $returnString = "level ASC";
+                        break;
+                    case 4:
+                        $returnString = "name DESC";
+                        break;
+                    case 5:
+                        $returnString = "level DESC";
+                        break;
+                    default:
+                        $returnString = "ID";
+                }
                 break;
             case "schools":
-            switch (orderBy) {
-                case 1:
-                    $returnString = "name ASC";
-                    break;
-                case 4:
-                    $returnString = "name DESC";
-                    break;
-                default:
-                    $returnString = "ID";
-            }
+                switch (orderBy) {
+                    case 1:
+                        $returnString = "name ASC";
+                        break;
+                    case 4:
+                        $returnString = "name DESC";
+                        break;
+                    default:
+                        $returnString = "ID";
+                }
                 break;
             case "classes":
-            switch (orderBy) {
-                case 1:
-                    $returnString = "name ASC";
-                    break;
-                case 2:
-                    $returnString = "gradeLevel ASC";
-                    break;
-                case 3:
-                    $returnString = "school ASC";
-                    break;
-                case 4:
-                    $returnString = "name DESC";
-                    break;
-                 case 5:
-                    $returnString = "gradeLevel DESC";
-                    break;
-                case 6:
-                    $returnString = "school DESC";
-                    break;
-                default:
-                    $returnString = "ID";
-            }
+                switch (orderBy) {
+                    case 1:
+                        $returnString = "name ASC";
+                        break;
+                    case 2:
+                        $returnString = "gradeLevel ASC";
+                        break;
+                    case 3:
+                        $returnString = "school ASC";
+                        break;
+                    case 4:
+                        $returnString = "name DESC";
+                        break;
+                    case 5:
+                        $returnString = "gradeLevel DESC";
+                        break;
+                    case 6:
+                        $returnString = "school DESC";
+                        break;
+                    default:
+                        $returnString = "ID";
+                }
                 break;
             default:
 

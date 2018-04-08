@@ -7,6 +7,7 @@ include $_SERVER['DOCUMENT_ROOT']."/php/inc-admin-db.php";
 //$test_array[1] = array('ID' => 334, 'category' => 'Physical Science 5','word' => 'test word2', 'definition' => 'test definition2');
 
 //echo pickSaveDB("terms",$test_array);
+//print_r(addClassesToTable());
 
 // -----------------------------check what is postting from ajax____________
 if(isset($_POST['type'])){
@@ -28,14 +29,21 @@ if(isset($_POST['currLev'])){
    unset($valeu);
    echo json_encode($returnData);    
 }
-
+//for deleteing items from db
 if(isset($_POST['delete'])){
-
     $type = $_POST['delType'];
-    $id = $_POST['delete'];
-    deleteFromTable($type, "ID", $id);
+    $data = $_POST['delete'];
+    if($type == "terms"){
+        deleteTerms($type,$data);
+    }else if($type == 'categories'){
+       
+        deleteCategories($type,$data);
+    }else if($type == "classes"){
+        deleteClasses($type,$data);
+}else if($type == "schools"){
+    deleteSchools($type,$data);
 }
-
+}
 if(isset($_POST['info'])){
 
   $data = json_decode(stripslashes($_POST['info']),true);
@@ -103,21 +111,52 @@ function pickTable($tableType){
 function pickUpdateRow($rowUpdate){
     switch ($rowUpdate) {
         case "terms":
-        return createCatAndLevelSelect() ;
+        return createCatAndLevelSelect("") ;
             break;
         case "categories":
-        return createLevelSelect();
+        return createLevelSelect("");
             break;
         case "schools":
         return ;
             break;
         case "classes":
-        return createSchoolsSelect();
+        return createGradeLevelSelect("")." " . createSchoolsSelect("");
         break;
         default:
             return "Error: No Table Type Data";
     }
 
+}
+function deleteCategories($type,$data){
+    $where = array(0=>'name',1=> 'level');
+    $what = array(0=>$data[0],1=> $data[1]);
+        deleteFromTable($type, $where,$what ,2);
+    
+}
+function deleteTerms($type,$data){
+
+    $level =  trim(substr($data[0], -1));                        // category is first of the split string
+    $category = trim(substr($data[0], 0, -2));
+    $catID = matchCatID($category, $level);
+    $where = array(0=>'name',1=> 'definition',2=> 'catID');
+    $what = array(0=>$data[1],1=> $data[2],2=> $catID);
+
+        deleteFromTable($type, $where, $what ,3);
+}
+function deleteSchools($type,$data){
+    $where = array(0=>'name');
+    $what = array(0=>$data[0]);
+
+        deleteFromTable($type, $where, $what ,1);
+    
+}
+function deleteClasses($type,$data){
+    $schoolID =  matchSchoolName(trim($data[2]));     
+    $where = array(0=>'name',1=> 'gradeLevel',2=> 'schoolID');
+    $what = array(0=>$data[0],1=> $data[1],2=> $schoolID);
+
+        deleteFromTable($type, $where, $what ,3);
+    
 }
 
 
@@ -147,16 +186,16 @@ for ($i=0; $i < count($data); $i++) {
          $level =  trim(substr($data[$i]["category"], -1));                        // category is first of the split string
         $category = trim(substr($data[$i]["category"], 0, -2));
         $catID = matchCatID($category, $level);
+        $where = array(0=>'name',1=> 'definition',2=> 'catID');
+        $what = array(0=>$data[$i]["word"],1=> $data[$i]["definition"],2=> $catID);
    // If the ID  exist then we need to detect changes 
-   if (checkIfIDExists("terms", $data[$i]['ID']) ) {
+   if ($data[$i]["checked"] ) {
     // we check to see if anthing in the tables. if one thing
     // has changed then this will return false we update other wise do nothing.
-    if (!(checkIfInfoExists("terms","name", $data[$i]['word'],$data[$i]['ID']) 
-    and checkIfInfoExists("terms","definition", $data[$i]["definition"],$data[$i]['ID']) 
-    and checkIfInfoExists("terms","catID", $catID,$data[$i]['ID']))){
+    if (!(checkIfInfoExists("terms",$where, $what ,3))){
     
-     $string.= updateTerms($data[$i]["ID"],$data[$i]["word"],$data[$i]["definition"],$catID);
-    }
+     $string.= updateTerms($data[$i]["word"],$data[$i]["definition"],$catID);
+    } else $string.= "Did not save changes to" .$data[$i]["catName"]." ".$data[$i]["level"].". It already exists";
 }else{ // if ID doensn't exist then we have a new table entry thsu insert
     // check if definition exists.
     if(checkCustom("terms","definition", $data[$i]["definition"])){
@@ -173,26 +212,23 @@ return $string;
 
 function saveCategories($data){
     $string ="";   
-    for ($i=0; $i < count($data); $i++) { 
-       // If the ID  exist then we need to detect changes 
-       if (checkIfIDExists("categories", $data[$i]['ID']) ) {
-        // we check to see if anthing in the tables. if one thing
+    for ($i=0; $i < count($data); $i++) {
+        $where = array(0=>'name',1=> 'level');
+        $what = array(0=>$data[$i]["catName"],1=> $data[$i]["level"]);
+        if($data[$i]["checked"]){  // see if changees to exists
+       // we check to see if anthing in the tables. if one thing
         // has changed then this will return false we update other wise do nothing.
-        if (!(checkIfInfoExists("categories","name", $data[$i]['catName'],$data[$i]['ID']) 
-        and checkIfInfoExists("categories","level", $data[$i]["level"],$data[$i]['ID']) )){
-        
+       
+        if (!(checkIfInfoExists("categories",$where,$what,2))){
          $string.= updateCategories($data[$i]["ID"],$data[$i]["catName"],$data[$i]["level"]);
-        }
-    }else{ // if ID doensn't exist then we have a new table entry thsu insert
-        // check if definition exists.
-        if(checkCustom("categories","name", $data[$i]["catName"])){
-            $string .=  $data[$i]["catName"] ." already exists";
-         } else{
-              $string.= insertCategoriesIntoDB($data[$i]['catName'],$data[$i]["level"]);
+        } else $string.= "Did not save changes to" .$data[$i]["catName"]." ".$data[$i]["level"].". It already exists";
+      }  else{ // if name or category doesnt exist then we have a new table entry thsu insert
+        if (!(checkIfInfoExists("categories",$where,$what,2))){
+             $string.= insertCategoriesIntoDB($data[$i]['catName'],$data[$i]["level"]);
             }
     }
     
-    }
+}  
       
     return $string;
     
@@ -201,14 +237,16 @@ function saveCategories($data){
 function saveSchools($data){
     $string ="";   
     for ($i=0; $i < count($data); $i++) { 
+        $where = array(0=>'name');
+        $what = array(0=>$data[$i]["schoolName"]);
        // If the ID  exist then we need to detect changes 
-       if (checkIfIDExists("schools", $data[$i]['ID']) ) {
+       if ($data[$i]["checked"] ) {
         // we check to see if anthing in the tables. if one thing
         // has changed then this will return false we update other wise do nothing.
-        if (!(checkIfInfoExists("schools","name", $data[$i]['schoolName'],$data[$i]['ID']))){
+        if (checkIfInfoExists("schools",$where, $what, 1)){
         
-         $string.= updateSchools($data[$i]["ID"],$data[$i]["schoolName"]);
-        }
+         $string.= updateSchools($data[$i]["schoolName"]);
+        } else $string.= "Did not save changes to" .$data[$i]["schoolName"].". It already exists";
     }else{ // if ID doensn't exist then we have a new table entry thsu insert
         // check if definition exists.
         if(checkCustom("schools","name", $data[$i]["schoolName"])){
@@ -228,18 +266,16 @@ function saveClasses($data){
     $string ="";   
 for ($i=0; $i < count($data); $i++) { 
          $schoolID =  matchSchoolName(trim($data[$i]["schoolName"]));                        // category is first of the split string
-    
-   // If the ID  exist then we need to detect changes 
-   if (checkIfIDExists("classes", $data[$i]['ID']) ) {
+         $where = array(0=>'name',1=> 'gradeLevel',2=> 'schoolID');
+         $what = array(0=>$data[$i]["className"],1=> $data[$i]["gradeLevel"],2=> $schoolID);
+         if($data[$i]["checked"]){  // see if changees to exists
+   // If the changes  exist then we need to detect id changed for db 
     // we check to see if anthing in the tables. if one thing
     // has changed then this will return false we update other wise do nothing.
-    if (!(checkIfInfoExists("classes","name", $data[$i]['className'],$data[$i]['ID']) 
-    and checkIfInfoExists("classes","gradeLevel", $data[$i]["gradeLevel"],$data[$i]['ID']) 
-    and checkIfInfoExists("classes","schoolID", $schoolID,$data[$i]['ID']))){
-    
-     $string.= updateClasses($data[$i]["ID"],$data[$i]["className"],$data[$i]["gradeLevel"],$schoolID);
-    }
-}else{ // if ID doensn't exist then we have a new table entry thsu insert
+    if (!(checkIfInfoExists("classes",$where, $what,3))){
+     $string.= updateClasses($data[$i]["className"],$data[$i]["gradeLevel"],$schoolID);
+    }else $string.= "Did not save changes to" .$data[$i]["schoolName"].". It already exists";
+}else{ // if name doensn't exist then we have a new table entry thsu insert
     // check if definition exists.
     if(checkCustom("classes","name", $data[$i]["className"])){
         $string .=  $data[$i]["className"] ." already exists";
@@ -247,12 +283,12 @@ for ($i=0; $i < count($data); $i++) {
           $string.= insertClassIntoDB($data[$i]["className"],$data[$i]["gradeLevel"],$schoolID);
         }
 }
-} 
 return $string;
+}
 }
 
 function addWordsToTable(){
-   $arr = array();
+   $select = array();
    $sortBy = $_POST['sortBy'];
     if(isset($_POST['choice'])&& strcmp($_POST['choice'],"All")!=0){
         $level =  trim(substr($_POST['choice'], -1));                        // category is first of the split string
@@ -260,20 +296,16 @@ function addWordsToTable(){
         $catID = matchCatID($category, $level);
         $words =getTermsDataSpecial($catID,$sortBy);
     } else {$words = getTermsData($sortBy);}
-      $select = createCatAndLevelSelect();
-   
-    foreach ($words as $index) { 
-        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
-         $select
-          <td contenteditable= 'true'>".$index['name']." </td>  
-           <td contenteditable= 'true'>".$index['definition']."</td>
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
-        }
+      
+   foreach ($words as $index) { 
+    $unifiedString = "".$index["category"]. " ".$index["grade"];
+        array_push($select, createCatAndLevelSelect($unifiedString));
+       }
         unset($index);
-  return json_encode($arr);
+  return array(0=>$words,1=>$select);
 }
 
-function createCatAndLevelSelect(){
+function createCatAndLevelSelect($selected){
 
     $selectstring= array();
     $selectVal =array();
@@ -287,88 +319,77 @@ function createCatAndLevelSelect(){
         $count = $count+1;
     }
        unset($value);
-    return createHTMLSelect($selectstring,$selectVal,$htmlIDName,$titleOption);
+    return createHTMLSelect($selectstring,$selectVal,$htmlIDName,$titleOption,$selected);
     
 }
 
-function createLevelSelect(){
+function createLevelSelect($selected){
     $htmlIDName = "sellev";
     $titleOption = "--Select Level--";
     $levelID =array(3,4,5,6,7);
     $levelname = array("Level 3", "Level 4", "Level 5", "Level 6","Level 7");
-    return createHTMLSelect($levelname,$levelID,$htmlIDName,$titleOption);
+    return createHTMLSelect($levelname,$levelID,$htmlIDName,$titleOption,$selected);
 
 }
 
-function createSchoolsSelect(){
+function createGradeLevelSelect($selected){
+    $htmlIDName = "sellev";
+    $titleOption = "--Select Level--";
+    $levelID =array(3,4,5,6,7);
+    $levelname = array("Grade 3", "Grade 4", "Grade 5", "Grade 6","Grade 7");
+    return createHTMLSelect($levelname,$levelID,$htmlIDName,$titleOption,$selected);
+
+}
+
+// get schools select
+function createSchoolsSelect($selected){
     
     $selectstring = array();
     $schools = getSchoolData("ID");
-    $htmlIDNameLev = "sellev";
-    $titleOptionLev = "--Select Level--";
-    $level =array (3,4,5,6,7);
-    $levelname = array("Grade 3", "Grade 4", "Grade 5", "Grade 6","Grade 7");
-    $selectLev = createHTMLSelect($levelname,$level,$htmlIDNameLev,$titleOptionLev);
     $htmlIDNameSch = "selschool";
     $titleOptionSch = "--Select School--";
-     
     $count = 0;
-    foreach ($schools as  $value) {
-        $selectstring[$count] = $value["name"];
-        $count =$count+1;
+    foreach ($schools as $value) {
+        $selectstring[$count]= "".$value["name"];
+        $count++;
     }
     unset($value);
-    $selectSch =createHTMLSelect($selectstring,$selectstring,$htmlIDNameSch,$titleOptionSch);
+    $selectSch =createHTMLSelect($selectstring,$selectstring,$htmlIDNameSch,$titleOptionSch,$selected);
    
-    return $selectLev ."".$selectSch;
+    return $selectSch;
 }
 
 function addCategoriesToTable(){
     $sortBy = $_POST['sortBy'];
-    $arr = array();
+    $select = array();
     $categories = getCategoriesData($sortBy);
-    $select = createLevelSelect();
-
     foreach ($categories as $index) { 
-       array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
-          <td contenteditable= 'true'>".$index['name']." </td>  
-           $select
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
+       array_push($select,  createLevelSelect($index['level']));
         }
         unset($index);
-  return json_encode($arr);
+  return array(0=>$categories,1=>$select);
 
 }
 
 function addSchoolsToTable(){
     $sortBy = $_POST['sortBy'];
-    $arr = array();
     $schools= getSchoolData($sortBy);
     
-    foreach ($schools as $index) { 
-        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
-          <td contenteditable= 'true'>".$index['name']." </td>  
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
-        }
-        unset($index);
-  return json_encode($arr);
+  return array(0=>$schools,1=>null);
 
 }
 
 function addClassesToTable(){
     $sortBy = $_POST['sortBy'];
-    $arr = array();
+    $select = array();
     $classes = getClassData($sortBy);
-    $select = createSchoolsSelect();
-
+    $unifiedString = "";
     foreach ($classes as $index) { 
-        array_push($arr,  "<tr><td style='display:none;'>".$index['ID']."</td>
-          <td contenteditable= 'true'>".$index['name']." </td>  
-         $select
-            <td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
+        $unifiedString = createGradeLevelSelect($index['gradeLevel'] )."  ". createSchoolsSelect($index['school']);
+        array_push($select, $unifiedString );
         }
         unset($index);
-  return json_encode($arr);
+  return array(0=>$classes,1=>$select);
 
 }
 
@@ -405,7 +426,6 @@ function tableHeadings($choice){
     switch ($choice) {
         case "terms":
         return ' <tr>
-        <th style="display:none;">ID</th>
         <th id="sort_1">Category And Grade Level</th>
         <th id="sort_2">Word</th>
         <th id="sort_3">Definition</th>
@@ -487,14 +507,18 @@ function createTable($title,$type){
       Click "Save" to save all new changes. Saves Current Tab only. Switch Tabs to Save Data under other Tabs\'
       ><img src ="img/helpicon.png" width="25"> </button>
       &nbsp; &nbsp; &nbsp; &nbsp;
-    <div class="btn-group" role="group" aria-label="Basic example">' .importExport($type).'</div>
+    <div class="btn-group float-right" role="group" aria-label="Basic example">' .importExport($type).'</div>
     </span>
-    <div id="sortsearch"> <label>Size:</label> <select class="input-small" id="sortSize">
+    <div id="sortsearch"> <span><label>Size:</label> <select class="input-small" id="sortSize">
     <option value="10">10</option>
     <option value="50">50</option>
     <option value="100">100</option>
     <option value="250">250</option>
-  </select>       </div>
+  </select> <span class ="float-right"><label>'.ucfirst($type).' Search:</label> <input id="wordsearch" "type="text" placeholder="Search..">
+  <button class = " btn btn-sm btn-primary" id="searchGo">Search</button>
+  </span>
+  </span>
+  </div>
     <small  class="form-text text-muted">Click Table Cells To Edit. Click Titles To Sort </small>
     <table id="word_table" class="table table-striped table-bordered">
       <thead>
@@ -532,14 +556,19 @@ function createTable($title,$type){
 // used alot in the tables we create
 // takes one to many options data, the name that the id html attribute needs
 // and the first default tilte ie category, or level etc
-function createHTMLSelect($optionContent,$optionID,$idName,$selectTitle){
+function createHTMLSelect($optionContent,$optionID,$idName,$selectTitle,$selected){
 
     $selectString = "<td><select class=\"form-control\" 
-    id=\"$idName\"><<option value = \"0\"> $selectTitle</option>";
+    id=\"$idName\"><<option value = \"0\" selected disabled> $selectTitle</option>";
    $count = 0;
     foreach ($optionContent as $value) {
+        if(isset($selected) && ((strcasecmp($selected,$optionID[$count])== 0)|| ($selected == $optionID[$count]))){
+            $selectString.= "<option value = \"".$optionID[$count]."\" selected>".$value."</option>";
+            $count = $count+1;
+        }else {
         $selectString.= "<option value = \"".$optionID[$count]."\">".$value."</option>";
          $count = $count+1;
+        }
     }
     unset($value);
     $selectString.= "</select></td>";
