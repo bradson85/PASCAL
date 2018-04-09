@@ -10,6 +10,16 @@
     margin: 0 auto;
 }
 
+#closingImage {
+    margin-top: -5%;
+    display: block;
+    width:80%;
+    height:80%;
+    margin: 0 auto;
+    border-radius: 5%;
+    /* object-fit: cover; */
+}
+
 .checkbox {
     display: block;
     margin: 0 auto;
@@ -54,6 +64,7 @@
     margin-top: 2%;
     z-index: 1; 
     border: solid 2px #385D8A !important;
+    height: auto;
 }
 
 .canDrag {

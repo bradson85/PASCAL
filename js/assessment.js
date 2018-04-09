@@ -3,7 +3,7 @@ $('.quizCard').hide();
 $('#next').hide();
 
 $(document).ready(function() {
-    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner", snapTolerance: 100, grid: [5, 5]});
+    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner", snapTolerance: 80, grid: [5, 5]});
     $('.canDrop').droppable();
     $('.countdown').hide();    
 
@@ -19,6 +19,9 @@ $(document).ready(function() {
     results = [];
     correct = [];
     placement = [];
+    wasMatched = [];
+    wasMatched[0] = [];
+    wasMatched[1] = [];
     page = 1;
     termCount = 0;
     requiredTerms = 5;
@@ -27,6 +30,7 @@ $(document).ready(function() {
     currLevel = getLevel();
     minLevel = 0;
     maxLevel = 0;
+    origHeight = $('#drop1').height();
 
     // initializes the results array
     setResults();
@@ -70,10 +74,15 @@ $(document).ready(function() {
         }
     });
 
-    $('#closeDirections').click(function() {
-        timer();
-        pageTimer();
-    });
+    $('.canDrag').draggable({
+        start: function(){
+            $(this).css('z-index', 5);
+        },
+        stop: function(){
+            $(this).css('z-index', 2);
+        }
+    })
+
 
     $('.speak').click(function() {
         console.log($(this).closest('div').find("span").text());
@@ -97,10 +106,6 @@ $(document).ready(function() {
 
     $('#next').click(function() {
         console.log("Number of terms: " + termCount);
-        if(termCount < requiredTerms) {
-            //error message 
-            //return;
-        }
         termCount = 0;
         page++;
         let correct = checkResults();
@@ -108,6 +113,8 @@ $(document).ready(function() {
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
         // Note: May change this to be configurable based on feedback.
+        console.log("Got " + correct + " terms correct on page " + page);
+        console.log("Current level before checking: " + currLevel);
         if(correct === 5){
             if(currLevel < maxLevel && terms[currLevel + 1].length > 0)
                 currLevel++;
@@ -116,6 +123,8 @@ $(document).ready(function() {
             if(currLevel > minLevel && terms[currLevel - 1].length > 0)
                 currLevel--;
         }
+
+        console.log("Current level after checking: " + currLevel);
         // If the page is less than 5, reset the draggable elements and the results array.
         // otherwise, the assessment is over, the results are displayed
         if(page < 5){
@@ -124,6 +133,7 @@ $(document).ready(function() {
             setResults();
             $('#next').attr('disabled', true);
             pageTimer();
+            resetHeight();
         }
         else {
             // Go to results page
@@ -180,7 +190,7 @@ $(document).ready(function() {
         // $('.countdown').show();
         // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
         // Original author: AJ
-        var timer2 = "10:01";
+        var timer2 = "1:25";
         var interval = setInterval(function() {
             var timer = timer2.split(':');
             //by parsing integer, I avoid all extra string processing
@@ -192,6 +202,19 @@ $(document).ready(function() {
                 clearInterval(interval);
                 // end the assessment if time limit is reached
                 showResults();
+                if(wasMatched[0].length === 0) {
+                    for(let i = 0; i < 20; i++ )
+                    {
+                        correct.push({id: terms[currLevel][i].id, mID: null, correct: 0});
+                    }
+                }
+                else {
+                    for(let i = (page - 1) * 5; i < 20; i++ )
+                    {
+                        correct.push({id: terms[currLevel][i].id, mID: null, correct: 0});
+                    }
+                }
+                
                 submitResults();
             }
             seconds = (seconds < 0) ? 59 : seconds;
@@ -216,6 +239,10 @@ $(document).ready(function() {
                 $('#next').attr('disabled', false);
                 clearInterval(pageInterval);
             }
+
+            $('#next').click(function() {
+                clearInterval(pageInterval);
+            });
 
             pageSeconds = (pageSeconds < 0) ? 59 : pageSeconds;
             pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
@@ -365,7 +392,7 @@ $(document).ready(function() {
             document.getElementById(defID).innerHTML = randDefs[i];
         }
 
-        
+        setHeight();
     }
     // Checks the results array and adds each item to the correct array
     function checkResults() {
@@ -386,14 +413,19 @@ $(document).ready(function() {
                 if(filterTerm[0].id === filterDef[0].id) {
                     numCorrect++;
                     correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 1});
+                    wasMatched[0].push(filterTerm[0].id);
+                    wasMatched[1].push(currLevel);
                 }
                 else {
                     correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 0});
+                    wasMatched[0].push(filterTerm[0].id);
+                    wasMatched[1].push(currLevel);
                 }
                     
             }
             
         }
+        console.log(wasMatched);
         return numCorrect;
     }
     
@@ -409,11 +441,27 @@ $(document).ready(function() {
                 numCorrect++;
         }   
         complete = true;
-        $('.container-fluid').append("<h2 class='text-center'>You have successfully completed the assessment.</h2>");
+        $('.container-fluid').append('<img src="img/Assessment_Closing_Page.jpg" id="closingImage">');
         $('.container-fluid').append("<button class='btn btn-primary' id='returnButton'>Return</button>");
     }
 
     function submitResults(){
+        console.log(wasMatched);
+        let matchCount = 0;
+        if(wasMatched[0].length > 0) {
+            for(let j = 0; j < ((page - 1) * 5); j++) {
+                if(matchCount === wasMatched[0].length) {
+                    correct.push({id: terms[currLevel][j].id, mID: null, correct: 0});
+                }
+                else if($.inArray(terms[wasMatched[1][matchCount]][j].id, wasMatched[0]) === -1) {
+                    correct.push({id: terms[currLevel][j].id, mID: null, correct: 0});
+                }
+                else {
+                    matchCount++;
+                }
+            }
+        } 
+        
         $.ajax({
             type: "POST",
             url: "php/inc.assessment.php",
@@ -427,15 +475,23 @@ $(document).ready(function() {
         });
     }
 
+    function resetHeight(){
+        console.log("Resetting height to: " + origHeight);
+      //  $('.quizCard').height(origHeight * 1.8);
+    }
+
     function setHeight(){
         // Thanks to ghayes for detecting max height: https://stackoverflow.com/questions/6781031/use-jquery-css-to-find-the-tallest-of-all-elements
         // Get an array of all element heights
         var elementHeights = $('.quizCard').map(function() {
-            return $(this).height();
+            return $(this).find('div span').outerHeight(true);
         }).get();
+        let maxHeight = origHeight * 1.8;
         // Math.max takes a variable number of arguments
         // `apply` is equivalent to passing each height as an argument
-        var maxHeight = Math.max.apply(null, elementHeights);
+        maxHeight = Math.max.apply(null, elementHeights);
+        if(maxHeight < origHeight * 1.8)
+            maxHeight = origHeight * 1.8;
         // Set each height to the max height
         $('.quizCard').height(maxHeight);
     }

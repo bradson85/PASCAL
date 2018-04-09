@@ -1,7 +1,7 @@
 <?php
     session_start();
-    $_SESSION['email'] = "student@test.com";
-    $_SESSION['type'] = 2;
+    // $_SESSION['email'] = "student@test.com";
+    // $_SESSION['type'] = 2;
 
     $page_title = "Assessment";
     $css_path = "css/main.css";
@@ -16,7 +16,6 @@
         <span><p hidden name="assessmentID" id="assessmentID" value="<?php echo $id; ?>"><?php echo "$id";?></p></span>
         
         <div class="container-fluid">
-
             <div class="card" id="directions">
                 <div class="card-body">
                     <h5 class="card-title text-center">Directions</h5>

@@ -1,8 +1,8 @@
 <?php
     //testing variables
-    $_SESSION['class'] = 1;
-    $_SESSION['ID'] = 31;
-    $_SESSION['type'] = 0;
+    // $_SESSION['class'] = 1;
+    // $_SESSION['ID'] = 31;
+    // $_SESSION['type'] = 0;
 
     include('inc-createassessment-getTerms.php');
     require_once('../dbconfig.php');
@@ -19,7 +19,7 @@
         $endDate = strtotime("+7 day", $endDate);
         $endDate = date('Y-m-d H:i:s', $endDate);
 
-        if($startDate == "" || $catID = 0)
+        if($startDate == "" || $catID == 0)
         {
             echo "false";
             return;
@@ -28,6 +28,7 @@
 
 
         $sql = "INSERT INTO assessments (start_date, end_date, catID, classID) VALUES ('$startDate', '$endDate', $catID, $classID)";
+
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
 
@@ -72,7 +73,7 @@
         }
         $sql = substr($sql, 0, -2);
         $sql .= ";";
-        
+
         if($pdo->exec($sql)) {
             echo "Success";
         } 

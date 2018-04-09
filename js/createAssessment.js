@@ -169,8 +169,11 @@ $(document).ready(function(){
                     },
                     success: function(response) {
                         console.log(response);
-                        if(typeof response !== "number")
-                            showAlert("Error creating assessment.", "alert-danger");
+                        if(typeof response !== "number") {
+                            console.log("Error creating assessment because not a number (bad assessment creation)");
+                           // showAlert("Error creating assessment.", "alert-danger");
+                        }
+                            
                         asessmentID = response;
                         for(let i = 0; i < cats.length; i++) {
                             getTerms(cats[i].ID, response);
@@ -180,6 +183,7 @@ $(document).ready(function(){
                 });
             }
             else {
+                console.log("Error creating assessment because start date was empty.");
                 showAlert("Error creating assessment.", "alert-danger");
             }
             
@@ -191,6 +195,7 @@ $(document).ready(function(){
         let terms = [];
         let extra = [];
         let assessmentID = 0;
+        let numChecked = 0;
         $.ajax({
             type: "POST",
             url: "php/inc-createassessment-saveAssessment.php",
@@ -207,6 +212,7 @@ $(document).ready(function(){
                     if($(this).find('td input[type="checkbox"]').is(':checked')) {
                         console.log('Item is checked: ' + termID);
                         terms.push({termID: termID, assessmentID: assessmentID, isMatch: 1});
+                        numChecked++;
                     }
                     else {
                         console.log('pushed term extra is now (+1): ' + extra.length);
@@ -236,24 +242,29 @@ $(document).ready(function(){
                     }
                     
                 }
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "php/inc-createassessment-saveAssessment.php",
-                    data: {
-                        assessData: JSON.stringify(terms)
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if(response === "Success") {
-                            $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
-                                $("#alertSuccess").slideUp(500);
-                            });
+    
+                if(numChecked === (cats.length * 20)) {
+                    $.ajax({
+                        type: "POST",
+                        url: "php/inc-createassessment-saveAssessment.php",
+                        data: {
+                            assessData: JSON.stringify(terms)
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            if(response === "Success") {
+                                console.log("Success from processChecks");
+                                showAlert("Successfully created assessment.", "alert-success");
+                            }
                         }
-                    }
-                });
-                submitStudents(assessmentID);
+                    });
+                    submitStudents(assessmentID);
+                }
+                else {
+                    console.log("Fail from processChecks");
+                    showAlert("Error creating assessment.", "alert-danger");
+                }
+                
             }
         });        
 
@@ -317,6 +328,7 @@ $(document).ready(function(){
             },
             error: function(response) {
                 console.log(response);
+                console.log("Error creating assessment in getTerms.");
                 showAlert("Error creating assessment.", "alert-danger");
             }
         });
@@ -352,10 +364,15 @@ $(document).ready(function(){
                     if(response === "Success") {
                         loadAssessments();
                         submitSuccess++;
-                        if(submitSuccess == cats.length)
+                        if(submitSuccess == cats.length) {
+                            console.log("Success from submit function");
                             showAlert("Successfully created assessment.", "alert-success");
+                            submitSuccess = 0;
+                        }
+                            
                     }
                     else {
+                        console.log("Error in submit function");
                         showAlert("Error creating assessment.", "alert-danger");
                     }
                 }
