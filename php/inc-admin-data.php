@@ -17,7 +17,7 @@ if(isset($_POST['type'])){
 
 if(isset($_POST['get'])){
     $rowUpdate = $_POST['get'];
-   echo pickUpdateRow($rowUpdate);
+   echo pickUpdateRow($rowUpdate,$_POST['selected']);
 }
 
 if(isset($_POST['currLev'])){
@@ -85,6 +85,8 @@ if(isset($_POST['currCat'])){
 
 //--------------------End of Posts--------------------------------//
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 //==============Start of Functions===================================//
 
 function pickTable($tableType){
@@ -108,19 +110,19 @@ function pickTable($tableType){
 }
 
 // For choosing to laod specific slect option boxes.
-function pickUpdateRow($rowUpdate){
+function pickUpdateRow($rowUpdate,$selected){
     switch ($rowUpdate) {
         case "terms":
-        return createCatAndLevelSelect("") ;
+        return createCatAndLevelSelect($selected[0]) ;
             break;
         case "categories":
-        return createLevelSelect("");
+        return createLevelSelect($selected[0]);
             break;
         case "schools":
         return ;
             break;
         case "classes":
-        return createGradeLevelSelect("")." " . createSchoolsSelect("");
+        return createGradeLevelSelect($selected[0])." " . createSchoolsSelect($selected[1]);
         break;
         default:
             return "Error: No Table Type Data";
@@ -183,12 +185,12 @@ function pickSaveDB($type,$info){
 function saveTerms($data){
  $string ="";   
 for ($i=0; $i < count($data); $i++) { 
-         $level =  trim(substr($data[$i]["category"], -1));                        // category is first of the split string
-        $category = trim(substr($data[$i]["category"], 0, -2));
+         $level =  trim($data[$i]["gradeLevel"]);        
+        $category = trim($data[$i]["category"]);   // category is first of the split string
         $catID = matchCatID($category, $level);
         $where = array(0=>'name',1=> 'definition',2=> 'catID');
         $what = array(0=>$data[$i]["word"],1=> $data[$i]["definition"],2=> $catID);
-   // If the ID  exist then we need to detect changes 
+   // If the entry is marked in order to detect changes 
    if ($data[$i]["checked"] ) {
     // we check to see if anthing in the tables. if one thing
     // has changed then this will return false we update other wise do nothing.
@@ -220,7 +222,7 @@ function saveCategories($data){
         // has changed then this will return false we update other wise do nothing.
        
         if (!(checkIfInfoExists("categories",$where,$what,2))){
-         $string.= updateCategories($data[$i]["ID"],$data[$i]["catName"],$data[$i]["level"]);
+         $string.= updateCategories($data[$i]["catName"],$data[$i]["level"]);
         } else $string.= "Did not save changes to" .$data[$i]["catName"]." ".$data[$i]["level"].". It already exists";
       }  else{ // if name or category doesnt exist then we have a new table entry thsu insert
         if (!(checkIfInfoExists("categories",$where,$what,2))){
@@ -298,7 +300,7 @@ function addWordsToTable(){
     } else {$words = getTermsData($sortBy);}
       
    foreach ($words as $index) { 
-    $unifiedString = "".$index["category"]. " ".$index["grade"];
+    $unifiedString = "".$index["category"]. " ".$index["gradeLevel"];
         array_push($select, createCatAndLevelSelect($unifiedString));
        }
         unset($index);
@@ -314,8 +316,8 @@ function createCatAndLevelSelect($selected){
     $categories = getCategoriesData("ID");
     $count = 0;
     foreach ($categories as $value) {
-        $selectstring[$count]= "".$value["name"]." - Level ".$value["level"];
-        $selectVal[$count]= "".$value["name"]. " ".$value["level"];
+        $selectstring[$count]= "".$value["catName"]." - Level ".$value["level"];
+        $selectVal[$count]= "".trim($value["catName"]). " ".trim($value["level"]);
         $count = $count+1;
     }
        unset($value);
@@ -350,7 +352,7 @@ function createSchoolsSelect($selected){
     $titleOptionSch = "--Select School--";
     $count = 0;
     foreach ($schools as $value) {
-        $selectstring[$count]= "".$value["name"];
+        $selectstring[$count]= "".$value["schoolName"];
         $count++;
     }
     unset($value);
@@ -385,7 +387,7 @@ function addClassesToTable(){
     $classes = getClassData($sortBy);
     $unifiedString = "";
     foreach ($classes as $index) { 
-        $unifiedString = createGradeLevelSelect($index['gradeLevel'] )."  ". createSchoolsSelect($index['school']);
+        $unifiedString = createGradeLevelSelect($index['gradeLevel'] )."  ". createSchoolsSelect($index['schoolName']);
         array_push($select, $unifiedString );
         }
         unset($index);
@@ -436,7 +438,7 @@ function tableHeadings($choice){
 
         case "categories":
         return '  <tr>
-        <th style="display:none;">ID</th>
+      
                 <th id="sort_1">Category Name</th>
                 <th id="sort_2"> Grade Level</th>
                 <th class="col-sm-auto"></th>
@@ -445,7 +447,7 @@ function tableHeadings($choice){
 
         case "schools":
             return '<tr>
-            <th style="display:none;">ID</th>
+        
             <th id="sort_1">School Name</th>
             <th class="col-sm-auto"> </th>
             </tr>';
@@ -453,7 +455,7 @@ function tableHeadings($choice){
 
         case "classes":
            return  '<tr>
-           <th style="display:none;">ID</th>
+          
            <th id="sort_1">Class Name</th>
            <th id="sort_2">Grade Level</th>
            <th id="sort_3">School</th>
@@ -521,7 +523,7 @@ function createTable($title,$type){
   </div>
     <small  class="form-text text-muted">Click Table Cells To Edit. Click Titles To Sort </small>
     <table id="word_table" class="table table-striped table-bordered">
-      <thead>
+      <thead style="cursor: pointer;">
        '.tableHeadings($type).'
       </thead>
       <tbody id ="t_body_'.$type.'">

@@ -252,7 +252,7 @@ function updateCategories($catName,$level){
     try {
         $pdo = newPDO();
         $query = ("UPDATE IGNORE categories SET name =:catName , level = :level
-                      WHERE name =:cats");
+                      WHERE name =:cats AND level =:level");
          $list = array(0 => ":catName",1 => ":level",2 => ":cats");
          $data = array(0 => $catName,1 => $level,2 => $catName);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
@@ -432,8 +432,8 @@ function retrieveSelectedCategory($id){
 // returns associatve array list of categories
 function  getCategoriesData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT name, level FROM categories");
-       } else   $query = ("SELECT name, level FROM categories ORDER BY $sortBy");
+        $query = ("SELECT name as catName, level FROM categories");
+       } else   $query = ("SELECT name as catName, level FROM categories ORDER BY $sortBy");
  try {
        $pdo = newPDO();
        $result = pdo_query($pdo,$query);
@@ -450,9 +450,9 @@ return $row;
 
 function getTermsData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+        $query = ("SELECT terms.name AS word, terms.definition, categories.name as category, categories.level as gradeLevel 
         FROM terms, categories Where terms.catID = categories.ID");
-       } else   $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade
+       } else   $query = ("SELECT terms.name AS word, terms.definition, categories.name as category, categories.level as gradeLevel
                             FROM terms, categories Where terms.catID = categories.ID  ORDER BY $sortBy");
 
     try {
@@ -472,9 +472,9 @@ function getTermsData($sortBy){
  function getTermsDataSpecial($categoryID,$sortBy){
 
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+        $query = ("SELECT terms.name AS word, terms.definition, categories.name as category, categories.level as gradeLevel 
         FROM terms, categories WHERE terms.catID = categories.ID And terms.catID = \"$categoryID\"");
-       } else   $query = ("SELECT terms.name, terms.definition, categories.name as category, categories.level as grade 
+       } else   $query = ("SELECT terms.name AS word, terms.definition, categories.name as category, categories.level as gradeLevel 
        FROM terms, categories WHERE terms.catID = categories.ID And terms.catID = \"$categoryID\" ORDER BY $sortBy");
     try {
         $pdo = newPDO();
@@ -512,8 +512,8 @@ function getTermsData($sortBy){
 
  function getSchoolData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT name FROM schools");
-       } else   $query = ("SELECT name FROM schools ORDER BY $sortBy");
+        $query = ("SELECT name AS schoolName FROM schools");
+       } else   $query = ("SELECT name AS schoolName FROM schools ORDER BY $sortBy");
     try {
         $pdo = newPDO();
         $result = pdo_query($pdo,$query);
@@ -530,9 +530,9 @@ function getTermsData($sortBy){
 
  function getClassData($sortBy){
     if ( !protectOrderStrings($sortBy)){
-        $query = ("SELECT classes.name, classes.gradeLevel, schools.name as school
+        $query = ("SELECT classes.name AS className, classes.gradeLevel, schools.name as schoolName
        FROM classes, schools Where classes.schoolID = schools.ID");
-       } else  $query = ("SELECT classes.name, classes.gradeLevel, schools.name as school 
+       } else  $query = ("SELECT classes.name AS className, classes.gradeLevel, schools.name as schoolName 
                             FROM classes, schools Where classes.schoolID = schools.ID ORDER BY $sortBy");
 
     try {

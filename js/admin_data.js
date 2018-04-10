@@ -3,18 +3,34 @@ $(document).ready(function () {
     //___________B Peradotto ____________________________________________________
     //======= This begins the Code for DOM accessing=================== 
 
+
+  var getAllSelectTypes = new Array();;
     var count = 0 // for preventing save warning from popping up every time.
     $('#changes').hide();
     var index = 0;
-    var changeArray = new Array();  // for keeping track of changed tables;
+    var changeArray = new Array();  // for marking changed tables;
+    var savedArray = new Array(); // for saving changes of entire table
+    var savedSelect = new Array();
+    var savedTableHeaders = new Array();
     var currentPage = "categories";
     var lastSort = "All";
+    var currentStartIndex;
+    var currentEndIndex;
     var sortNumber = 10;
     var curPageNum = 1;   // current selected page
     var totalNumOfPages = 1;   // total pages
     var sortBy = 0;  // assennding items =  1, 2 is table head 2 3 is table head 3, 0 is default sort 
     // descending item =  4 is table head 1, 5 is table head 2, etc.
     // there are at most 3 tables headers to be sorted.
+
+    // on page load must delete old cookies by expiring them ORDER IMPORTANT HERE
+    eraseAllCookies();
+
+
+    //laod all the select types for use later
+    getAllSelectsTypes();
+    
+
     // start out with categories
     getTableData("categories");
     $("#categories").tab("show");
@@ -22,57 +38,86 @@ $(document).ready(function () {
 
 
 
+
+
     /// for clicking the next page
     $(document).on("click", "#pageNext", function (e) {
         e.preventDefault();
+        saveToJson(currentPage);
         if (curPageNum < totalNumOfPages) {
             curPageNum++;
-            tableSorting();
+            createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+            tableSorting(changeArray[currentPage]);
         }
 
     });
     // for clicking the previous page
     $(document).on("click", "#pagePrev", function (e) {
         e.preventDefault();
-
+        saveToJson(currentPage); //saving changes
         if (curPageNum > 1) {
             curPageNum--;
-            tableSorting();
+            createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+            tableSorting(changeArray[currentPage]);
         }
     });
 
     $(document).on("change", "#sortSize", function () {
+        saveToJson(currentPage);
         sortNumber = $("#sortSize").val();
-        tableSorting();
+        createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+        tableSorting(changeArray[currentPage]);
+
     });
 
     $(document).on("click", ".pagesnumber", function () {
+        saveToJson(currentPage);
         curPageNum = parseInt($(this).text());
-        tableSorting();
+        createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+        tableSorting(changeArray[currentPage]);
     });
 
     $(document).on("click", "#sort_1", function (e) {
+        saveToJson(currentPage);
         if (sortBy == 1) {
             sortBy = 4;
         } else sortBy = 1;
+        
         getTableData(currentPage);
+        markSorted(1);
+
     });
     $(document).on("click", "#sort_2", function (e) {
+        saveToJson(currentPage);
         if (sortBy == 2) {
             sortBy = 5;
         } else sortBy = 2;
+        
         getTableData(currentPage);
+        markSorted(2);
     });
     $(document).on("click", "#sort_3", function (e) {
+        saveToJson(currentPage);
         if (sortBy == 3) {
             sortBy = 6;
         } else sortBy = 3;
         getTableData(currentPage);
+        markSorted(3);
+
     });
 
     $(document).on("change", "#word_table td", function () {
         // start out with categories
         $(this).parent().find('td:last #changebox1').prop('checked', true);
+        count++;
+        if (count % 7 == 1) {
+            $("#changes").fadeIn(200);
+            $('#changes strong').text("Click \"Save\" to Store Changes");
+            setTimeout(
+                function () {
+                    $('#changes').fadeOut();
+                }, 3000);
+        }
 
     });
 
@@ -96,6 +141,7 @@ $(document).ready(function () {
 
     // when search button changes
     $(document).on("change", "#sort", function () {
+        saveToJson(currentPage);
         // start out with categories
         getTableData(currentPage);
         $("#" + currentPage).tab("show");
@@ -176,14 +222,16 @@ $(document).ready(function () {
     });
     /// sets tab for opening categories db interface
     $(document).on("click", "#categories", function () {
+        saveToJson(currentPage);
         $(this).tab("show");
         currentPage = "categories";
         $("#topTable").hide();
         getTableData("categories");
+       
     });
     // sets tab for opening terms db interfacd
     $(document).on("click", "#terms", function () {
-
+        saveToJson(currentPage);
         $(this).tab("show");
         currentPage = "terms";
         getTableData("terms");
@@ -195,9 +243,9 @@ $(document).ready(function () {
             }, 250);
     });
 
-
     // sets tab for opening School List db interfacd
     $(document).on("click", "#schools", function () {
+        saveToJson(currentPage);
         $(this).tab("show");
         currentPage = "schools";
         $("#topTable").hide();
@@ -207,6 +255,7 @@ $(document).ready(function () {
 
     // sets tab for opening School List db interfacd
     $(document).on("click", "#classes", function () {
+        saveToJson(currentPage);
         $(this).tab("show");
         $("#topTable").hide();
         currentPage = "classes";
@@ -232,21 +281,26 @@ $(document).ready(function () {
     });
 
     $('body').on("click", "#save2,#save1", function () {
-
         $("#sure .modal-title").text("Are You Sure You Want To Save?");
         $("#sure .modal-body").text("If you have changed a current Category or Level, all Terms associtated " +
             "with the old Category or Level will match the new altered Category and Level");
-        $("#modalsave").removeClass("delete").addClass("save");
-        $("#modalsave").text("Save");
+        $("#modalsave").removeClass("delete").addClass("presave");
+        $("#modalsave").text("Continue");
         $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
         $("#modalsave").show();
         $("#sure").modal('show');
     });
     // when modal is on save
+    $("body").on("click", '.presave', function (e) {
+        saveToJson(currentPage);
+        finalizeChanges(currentPage);
+    });
+
     $("body").on("click", '.save', function (e) {
-        saveToDB(currentPage);
+        // saveToDB(currentPage,savedArray);
         $("#sure").modal('hide');
     });
+
     $("#modalclose").on("click", function () {
         $("#sure").modal('hide');
     });
@@ -296,7 +350,7 @@ $(document).ready(function () {
             $(this).parent().siblings("td:eq(2)").text().trim()
 
             ];
-            console.log(items);
+            //console.log(items);
             itemName = $(this).parent().siblings("td:eq(1)").text().trim();
         } else if (currentPage == "classes") {
             items = [$(this).parent().siblings("td:eq(0)").text().trim(),
@@ -308,7 +362,7 @@ $(document).ready(function () {
             items = [$(this).parent().siblings("td:eq(0)").text().trim(),
             $(this).parent().siblings("td:eq(1)").find('select').val()
             ];
-           
+
             itemName = $(this).parent().siblings("td:eq(0)").text().trim();
         } else if (currentPage == "schools") {
             items = [$(this).parent().siblings("td:eq(0)").text().trim(),
@@ -351,33 +405,37 @@ $(document).ready(function () {
 
     //======= End of DOM accessing=================== 
 
-
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     /// below are fucntions ----------------------------------------------------------------
     function searchSorting(wordSearch) {
-        if (item.length < 1) {
-            throw "no table data";
-        }
-        if ($.trim($('#wordsearch').val()) === '') {
+        if (wordSearch.length < 1) {
+            alert('Seach box can not be left blank');
+        }else if ($.trim($('#wordsearch').val()) === '') {
             alert('Seach box can not be left blank');
         } else {
-            var numOfItems = Math.ceil(parseInt(item.length, 10));
-            for (let sindex = 0; sindex < numOfItems; sindex++) {
-                var currItem = item[sindex];
-                currItem
+            
 
             }
-        }
+        
     }
 
-    function tableSorting() {
+    function getAllSelectsTypes(){
+        getSelectTypes("terms");
+        getSelectTypes("categories");
+        getSelectTypes("schools");
+        getSelectTypes("classes");
+ 
+       }
+
+    function tableSorting(item) {
         if (item.length < 1) {
             throw "no table data";
         }
         $("#sortSize").val(sortNumber);
         totalNumOfPages = Math.ceil(parseInt(item.length, 10) / parseInt(sortNumber, 10)); // total pages number of items total divide by items per page is number of pages.
-        var endIndex = curPageNum * sortNumber;  // end index will be currpage multipied by how many per page.
-        var startIndex = endIndex - sortNumber; // start index will be number per page minus end index;
+        var endIndex = currentEndIndex = curPageNum * sortNumber;  // end index will be currpage multipied by how many per page.
+        var startIndex = currentStartIndex = endIndex - sortNumber; // start index will be number per page minus end index;
         if (endIndex > item.length) {
             endIndex = item.length;
         }
@@ -406,63 +464,84 @@ $(document).ready(function () {
         // add next to paginaion
         $("#pages").append('<li id="pageNext" class="page-item"> <a class="page-link" href="#">Next</a> </li>');
         $("#t_body_" + currentPage).empty();
-        for (let index = startIndex; index < endIndex; index++) {
-            $("#t_body_" + currentPage).append(createdTableData[index]);
+        for (let index = startIndex; index < endIndex; index++) {   // for adding current page data to table
+            $("#t_body_" + currentPage).append(createdTableData[index]);  // append to table
         }
 
     }
 
     function getTableData(type) {
-        sortByName = getOrderByName(type);
-        // terms has search variable
-        if (type == 'terms') {
-            var choice = $("#sort_body").find('td:eq(1)').find('select').val();
-            lastSort = choice;
+        sortByName = getOrderByName(type); // when sortign with database
+        cookieString = 'fresh' + type;
+        if (checkCookie(cookieString)) {
+            changeArray[type]=sortLocal(type);
+            createdTableData = updateTableFromJson(changeArray[type], type);
+            $("#steve").html(savedTableHeaders[type]);
+            setTimeout(
+                function () {
+                    tableSorting(changeArray[type]);
+                }, 50);
+        } else {
+            setCookie(cookieString, false, 1);
+            // terms has search variable
+            if (type == 'terms') {
+                var choice = $("#sort_body").find('td:eq(1)').find('select').val();
+                lastSort = choice;
 
-            $.ajax({ // get info from db
-                type: "POST",
-                url: "/php/inc-admin-data.php",
-                data: {
-                    type: type,
-                    choice: choice,
-                    sortBy: sortByName
-                },
-                success: function (data) {
+                $.ajax({ // get info from db
+                    type: "POST",
+                    url: "/php/inc-admin-data.php",
+                    data: {
+                        type: type,
+                        choice: choice,
+                        sortBy: sortByName
+                    },
+                    success: function (data) {
 
-                    answer = JSON.parse(data);
-                    item = answer[1][0];
-                    createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
-                    $("#steve").html(answer[0]);
-                    setTimeout(
-                        function () {
-                            tableSorting();
-                        }, 50);
+                        answer = JSON.parse(data);
+                        freshDBData = answer[1][0];
+                        changeArray[type] = freshDBData;
+                        savedSelect[type] = answer[1][1];
+                        savedTableHeaders[type] = answer[0];
+                        createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
+                        
+                        $("#steve").html(answer[0]);
+                        setTimeout(
+                            function () {
+                                tableSorting(freshDBData);
+                               
+                            }, 50);
 
+                    }
+                });
+            }
+            else {
+                lastSort = "All";
+                $.ajax({ // delete from database
+                    type: "POST",
+                    url: "/php/inc-admin-data.php",
+                    data: {
+                        type: type,
+                        sortBy: sortByName
+                    },
+                    success: function (data) {
+                        answer = JSON.parse(data);
+                        freshDBData = answer[1][0];
+                        changeArray[type] = freshDBData;
+                        savedSelect[type] = answer[1][1];
+                        savedTableHeaders[type] = answer[0];
+                        createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
+                       
+                        $("#steve").html(answer[0]);
 
-                }
-            });
-        }
-        else {
-            lastSort = "All";
-            $.ajax({ // delete from database
-                type: "POST",
-                url: "/php/inc-admin-data.php",
-                data: {
-                    type: type,
-                    sortBy: sortByName
-                },
-                success: function (data) {
-                    answer = JSON.parse(data);
-                    item = answer[1][0];
-                    createdTableData = createTableFromJSON(answer[1][0], type, answer[1][1]);
-                    $("#steve").html(answer[0]);
+                        setTimeout(
+                            function () {
+                                tableSorting(freshDBData);
+                            }, 50);
 
-                    setTimeout(
-                        function () {
-                            tableSorting();
-                        }, 50);
-                }
-            });
+                    }
+                });
+            }
         }
     }
     // alters confirmatrion modal to alert what has taken place.
@@ -536,13 +615,7 @@ $(document).ready(function () {
 
 
     function addRows(type, when) {
-        $.ajax({
-            type: "POST",
-            url: "/php/inc-admin-data.php",
-            data: {
-                get: type
-            },
-            success: function (data) {
+       data = getAllSelectTypes[type];
                 switch (type) {
                     case "terms":
                         rows = blankTermRow(data);
@@ -570,10 +643,7 @@ $(document).ready(function () {
 
 
             }
-        });
-
-
-    }
+    
 
     function blankTermRow($categoriesSel) {
         return '<tr>' + $categoriesSel +
@@ -583,7 +653,10 @@ $(document).ready(function () {
             +
             '<td id ="newbox" contenteditable= "true" style="color:#778899;">Click To Enter New Definition</td>' /// for level
             +
-            '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>';
+            '<td><button class="btn btn-sm deleteRow">Delete</button></td>'
+            + '<td style="display:none;"> <input type="checkbox" value="check1" id="changebox1"></td>'
+            +'<td style="display:none;">' +
+            '<input type="checkbox" value="newchecked" id="newCheckbox1" checked></td></tr>';
 
     }
 
@@ -592,7 +665,10 @@ $(document).ready(function () {
             +
             $levelSelect
             +
-            '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>');
+            '<td><button class="btn btn-sm deleteRow">Delete</button></td>'
+            + '<td style="display:none;"> <input type="checkbox" value="check1" id="changebox1"></td>'
+            +'<td style="display:none;">' +
+            '<input type="checkbox" value="newchecked" id="newCheckbox1" checked></td></tr>');
 
     }
     function blankSchoolRow() {
@@ -600,7 +676,10 @@ $(document).ready(function () {
             +
             ">Click to Add New School Name</td>' // term name"
             +
-            "<td><button class='btn btn-sm deleteRow'>Delete</button></td></tr>");
+            "<td><button class='btn btn-sm deleteRow'>Delete</button></td>"
+            + '<td style="display:none;"> <input type="checkbox" value="check1" id="changebox1"></td>'
+            +'<td style="display:none;">' +
+            '<input type="checkbox" value="newchecked" id="newCheckbox1" checked></td></tr>');
 
     }
 
@@ -609,7 +688,103 @@ $(document).ready(function () {
             +
             $schoolSelect
             +
-            '<td><button class="btn btn-sm deleteRow">Delete</button></td></tr>';
+            '<td><button class="btn btn-sm deleteRow">Delete</button></td>'
+           + '<td style="display:none;"> <input type="checkbox" value="check1" id="changebox1"></td>'
+            +'<td style="display:none;">' +
+            '<input type="checkbox" value="newchecked" id="newCheckbox1" checked></td></tr>';
+
+    }
+
+    function saveToJson(type) {
+        var TableData = new Array();
+        TableData[type] = retrieveCurrentData(type);
+       var workingLength;
+       var finalLength =0; 
+       var offset =0;
+       var specialLength = 0; // for when curent page of data is less than sortNumber.
+        if (TableData[type] != "fail") {
+            TableData[type].shift(); // first row is the table header and didnt ad to array - so remove blank row.
+            workingLength = TableData[type].length - sortNumber;
+           if(workingLength < sortNumber){
+            for (let findex = 0; findex < TableData[type].length; findex++) {
+                if(TableData[type][findex]['newCheck']){
+                   specialLength++;
+                    offset ++;
+                }    
+           }
+           finalLength = TableData[type].length - offset;
+         } else {specialLength = workingLength; 
+        finalLength = currentEndIndex;
+        }
+           
+
+           console.log(specialLength);
+           console.log(offset);
+            var counterIndex = 0;
+            // this will overwrite current table with value 1-10 of new table
+            for (let dindex = currentStartIndex; dindex < finalLength ;  dindex++) {
+                if (!(typeof TableData[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
+                    changeArray[type][dindex] = TableData[type][counterIndex];
+                }
+                counterIndex++;
+            }
+            //if there is extra by adding new table entries this will add that to the end
+            for (let index = (changeArray[type].length); index < (changeArray[type].length + specialLength); index++) {
+                
+                if (!(typeof TableData[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
+                    changeArray[type][index] = TableData[type][counterIndex];
+                    savedSelect[type][index] = getAllSelectTypes[type];
+                   console.log( changeArray[type]);
+                  console.log( savedSelect[type]);
+                }
+             
+                counterIndex++;
+            }
+            //console.log(changeArray[type]);
+            //console.log(item[type]);
+        } else {
+
+            confirmModal("Data Not Saved <br> Empty field or select box not "
+                + "selected. <br>Please enter data into all fields and choose an option for all select boxes.");
+
+        }
+
+    }
+
+    function finalizeChanges(type) {
+        var changeStringNew = "";
+        var changeStringOld = "";
+        var finalString = "";
+        for (let cindex = 0; cindex < item.length; cindex++) {
+            // prevents undefinded stuff on shortened last html page of short first page and if checked then ther are changes
+            if ((!(typeof changeArray[type][cindex] == 'undefined')) && changeArray[type][cindex]['checked']) { //if changes
+                // then then add those chages to final array 
+                savedArray[type][cindex] = changeArray[type][cindex];
+
+                //-------- for reporting changes to string
+                for (key in changeArray[type][cindex]) {
+                    if (changeArray[type][cindex].hasOwnProperty(key) && key != 'checked') {
+                        changeStringNew += "" + changeArray[type][cindex][key] + " ";
+                    }
+                }
+
+                for (key in item[cindex]) {
+                    if (item[cindex].hasOwnProperty(key)) {
+                        changeStringOld += "" + item[cindex][key] + " ";
+                    }
+                }
+                // end of to string stuff -----------------------------
+
+                finalString = ("<br>Changed " + changeStringOld + "(Old) To: " + changeStringNew + "(New) \n");
+            } else savedArray[cindex] = item[cindex]; //else just resend old data;
+
+        }
+        $("#sure .modal-body").html("The following changes will be made:" + finalString);
+        $("#modalsave").removeClass("delete").addClass("save");
+        $("#modalsave").text("Save");
+        $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
+        $("#modalsave").show();
+        $("#sure").modal('show');
 
     }
     function retrieveCurrentData(type) {
@@ -633,11 +808,16 @@ $(document).ready(function () {
                             save = false;
                             return;
                         } else {
+                            categoryAndLevel = $(tr).find('td:eq(0)').find('select').val().trim();
+                            level = categoryAndLevel.substring(categoryAndLevel.length - 1);
+                            category = categoryAndLevel.substring(0, categoryAndLevel.length - 1);
                             TableData[row] = {
-                                "category": $(tr).find('td:eq(0)').find('select').val(),
+                                "category": category,
                                 "word": $(tr).find('td:eq(1)').text(),
                                 "definition": $(tr).find('td:eq(2)').text(),
-                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked')
+                                "gradeLevel": level,
+                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked'),
+                                "newCheck": $(tr).find('td:eq(5) #newCheckbox1').is(':checked')
                             }
                         }
                         break;
@@ -651,7 +831,8 @@ $(document).ready(function () {
                             TableData[row] = {
                                 "catName": $.trim($(tr).find('td:eq(0)').text()),// trim this data to eliminate trailing spaces
                                 "level": $(tr).find('td:eq(1)').find('select').val(),
-                                "checked": $(tr).find('td:eq(3) #changebox1').is(':checked')
+                                "checked": $(tr).find('td:eq(3) #changebox1').is(':checked'),
+                                "newCheck": $(tr).find('td:eq(4) #newCheckbox1').is(':checked')
                             }
                         }
                         break;
@@ -662,7 +843,8 @@ $(document).ready(function () {
                         } else {
                             TableData[row] = {
                                 "schoolName": $.trim($(tr).find('td:eq(0)').text()),
-                                "checked": $(tr).find('td:eq(2) #changebox1').is(':checked')
+                                "checked": $(tr).find('td:eq(2) #changebox1').is(':checked'),
+                                "newCheck": $(tr).find('td:eq(3) #newCheckbox1').is(':checked')
                             }
                         }
                         break;
@@ -679,7 +861,8 @@ $(document).ready(function () {
                                 "className": $.trim($(tr).find('td:eq(0)').text()),// trim this data to eliminate trailing spaces
                                 "gradeLevel": $.trim($(tr).find('td:eq(1)').find('select').val()),
                                 "schoolName": $(tr).find('td:eq(2)').find('select').val(),
-                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked')
+                                "checked": $(tr).find('td:eq(4) #changebox1').is(':checked'),
+                                "newCheck": $(tr).find('td:eq(5) #newCheckbox1').is(':checked')
                             }
                         }
                         break;
@@ -694,34 +877,71 @@ $(document).ready(function () {
         } else return "fail";
     }
 
-    function saveToDB(type) {
+    function saveToDB(type, tableInfo) {
 
-        TableData = (retrieveCurrentData(type));
-        ///  if blank fields havent occurred
-        if (TableData != "fail") {
-            TableData.shift(); // first row is the table header and didnt ad to array - so remove blank row.
-            TableData = JSON.stringify(TableData);
-            $.ajax({
-                type: "POST",
-                url: "/php/inc-admin-data.php",
-                data: {
-                    info: TableData,
-                    what: type
-                },
-                success: function (data) {
-                    confirmModal(data);
-                    currentPage = type;
-                    // start out with categories
-                    getTableData(type);
-                    $("#" + type).tab("show");
-                }
-            });
-        } else {
+        tableInfo = JSON.stringify(tableInfo);
+        $.ajax({
+            type: "POST",
+            url: "/php/inc-admin-data.php",
+            data: {
+                info: tableInfo,
+                what: type
+            },
+            success: function (data) {
+                confirmModal(data);
+                currentPage = type;
+                // start out with categories
+                getTableData(type);
+                $("#" + type).tab("show");
+            }
+        });
 
-            confirmModal("Data Not Saved <br> Empty field or select box not "
-                + "selected. <br>Please enter data into all fields and choose an option for all select boxes.");
+    }
 
+    function updateTableFromJson(jsonData, pageType) {
+        var newSelectData = new Array(); // array for adding new list of selecteds to update 
+        for (let jindex = 0; jindex < jsonData.length; jindex++) {
+            switch (pageType) {
+                case "terms":
+                    catAndLev = jsonData[jindex]['category'].trim() + " " + jsonData[jindex]['gradeLevel'].trim();
+                
+                    newSelected = $(savedSelect[pageType][jindex]);
+                    newSelected.find('#selcat option[value="'+catAndLev+'"]').attr("selected", true).siblings()
+                    .removeAttr("selected");
+                 newSelectData[jindex] = ("<td>" + newSelected.html() + "</td>");
+                    break;
+                case "categories":
+                    lev = jsonData[jindex]['level'];
+                    newSelected = $(savedSelect[pageType][jindex]);
+                    newSelected.find('#sellev option[value="'+lev+'"]').attr("selected", true).siblings()
+                    .removeAttr("selected");
+                    newSelectData[jindex] = ("<td>" + newSelected.html() + "</td>");
+                    break;
+                case "schools":
+
+                    break;
+                case "classes":
+                    lev = jsonData[jindex]['gradeLevel'];
+                    school = jsonData[jindex]['schoolName'];
+                    //elemitate the inner td used in other parts for the table and split stirngs
+                    newSelectedArr = savedSelect[pageType][jindex].split("</td>  <td>");
+                    newSelected1 = $(newSelectedArr[0] + "</td>");
+                    newSelected2 = $("<td>" + newSelectedArr[1]);
+                    newSelected1.find('#sellev option[value="'+lev+'"]').attr("selected", true).siblings()
+                    .removeAttr("selected");
+                    newSelected2.find('#selschool option[value="'+school+'"]').attr("selected", true).siblings()
+                    .removeAttr("selected");
+                 //   console.log(newSelected1.find('select').val());
+                 //   console.log(newSelected2.find('select').val());
+                    newSelectData[jindex] = newSelected1[0].outerHTML +"" + newSelected2[0].outerHTML;
+                    break;
+                default:
+                    rows = "error: addRows.admin_data.js";
+            }
         }
+
+      return createTableFromJSON(jsonData, pageType,newSelectData);
+
     }
 
     function createTableFromJSON(jsonData, pageType, selectData) {
@@ -730,38 +950,38 @@ $(document).ready(function () {
             case "terms":
                 for (let jindex = 0; jindex < jsonData.length; jindex++) {
                     jsonList.push("<tr>" + selectData[jindex] +
-                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        '<td contenteditable= "true">' + jsonData[jindex]["word"] + '</td>' // term name
                         +
                         '<td contenteditable= "true" >' + jsonData[jindex]["definition"] + '</td>' /// for level
                         +
-                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td><td style="display:none;">' +
                         '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
                 }
                 break;
             case "categories":
                 for (let jindex = 0; jindex < jsonData.length; jindex++) {
                     jsonList.push("<tr>" +
-                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        '<td contenteditable= "true">' + jsonData[jindex]["catName"] + '</td>' // term name
                         +
                         selectData[jindex]
                         +
-                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td><td style="display:none;">' +
                         '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
 
                 }
                 break;
             case "schools":
                 for (let jindex = 0; jindex < jsonData.length; jindex++) {
-                    jsonList.push("<tr>" + '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                    jsonList.push("<tr>" + '<td contenteditable= "true">' + jsonData[jindex]["schoolName"] + '</td>' // term name
                         +
-                        '<td><button class="btn btn-sm deleteRow">Delete</button></td></td><td style="display:none;">' +
+                        '<td><button class="btn btn-sm deleteRow">Delete</button></td><td style="display:none;">' +
                         '<input type="checkbox" value="check1" id="changebox1"></td></tr>');
                 }
                 break;
             case "classes":
                 for (let jindex = 0; jindex < jsonData.length; jindex++) {
                     jsonList.push("<tr>" +
-                        '<td contenteditable= "true">' + jsonData[jindex]["name"] + '</td>' // term name
+                        '<td contenteditable= "true">' + jsonData[jindex]["className"] + '</td>' // term name
                         +
                         selectData[jindex]
                         +
@@ -785,7 +1005,7 @@ $(document).ready(function () {
                         $returnString = "category ASC";
                         break;
                     case 2:
-                        $returnString = "name ASC";
+                        $returnString = "word ASC";
                         break;
                     case 3:
                         $returnString = "definition ASC";
@@ -794,7 +1014,7 @@ $(document).ready(function () {
                         $returnString = "category DESC";
                         break;
                     case 5:
-                        $returnString = "name DESC";
+                        $returnString = "word DESC";
                         break;
                     case 6:
                         $returnString = "definition DESC";
@@ -806,13 +1026,13 @@ $(document).ready(function () {
             case "categories":
                 switch (orderBy) {
                     case 1:
-                        $returnString = "name ASC";
+                        $returnString = "catName ASC";
                         break;
                     case 2:
                         $returnString = "level ASC";
                         break;
                     case 4:
-                        $returnString = "name DESC";
+                        $returnString = "catName DESC";
                         break;
                     case 5:
                         $returnString = "level DESC";
@@ -824,10 +1044,10 @@ $(document).ready(function () {
             case "schools":
                 switch (orderBy) {
                     case 1:
-                        $returnString = "name ASC";
+                        $returnString = "schoolName ASC";
                         break;
                     case 4:
-                        $returnString = "name DESC";
+                        $returnString = "schoolName DESC";
                         break;
                     default:
                         $returnString = "ID";
@@ -836,22 +1056,22 @@ $(document).ready(function () {
             case "classes":
                 switch (orderBy) {
                     case 1:
-                        $returnString = "name ASC";
+                        $returnString = "className ASC";
                         break;
                     case 2:
                         $returnString = "gradeLevel ASC";
                         break;
                     case 3:
-                        $returnString = "school ASC";
+                        $returnString = "schoolName ASC";
                         break;
                     case 4:
-                        $returnString = "name DESC";
+                        $returnString = "className DESC";
                         break;
                     case 5:
                         $returnString = "gradeLevel DESC";
                         break;
                     case 6:
-                        $returnString = "school DESC";
+                        $returnString = "schoolName DESC";
                         break;
                     default:
                         $returnString = "ID";
@@ -863,24 +1083,208 @@ $(document).ready(function () {
         }
         return $returnString;
     }
+
+    function sortLocal(type) {
+        orderBy = sortBy;
+        
+        masterList = new Array() 
+        
+        $returnString = "ID";
+        switch (type) {
+            case "terms":
+                switch (orderBy) {
+                    case 1:
+                      masterList = changeArray[type].sort(function (a, b) {
+                        return a.category.localeCompare( b.category );
+                    });
+                        break;
+                    case 2:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return a.word.localeCompare( b.word );
+                    });
+                        break;
+                    case 3:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return a.definition.localeCompare( b.definition );
+                    });
+                        break;
+                    case 4:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.category.localeCompare( a.category );
+                    });
+                        break;
+                    case 5:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.word.localeCompare( a.word );
+                    });
+                        break;
+                    case 6:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.definition.localeCompare( a.definition );
+                    });
+                        break;
+                    default:
+                       return changeArray[type];
+                }
+                break;
+            case "categories":
+                switch (orderBy) {
+                    case 1:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return a.catName.localeCompare( b.catName );
+                    });
+                        break;
+                    case 2:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return a.level.localeCompare( b.level );
+                    });
+                        break;
+                    case 4:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.catName.localeCompare( a.catName );
+                    });
+                        break;
+                    case 5:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.level.localeCompare( a.level );
+                    });
+                        break;
+                    default:
+                    return changeArray[type];
+                }
+                break;
+            case "schools":
+                switch (orderBy) {
+                    case 1:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return a.schoolName.localeCompare( b.schoolName );
+                    });
+                        break;
+                    case 4:
+                    masterList = changeArray[type].sort(function (a, b) {
+                        return b.schoolName.localeCompare( a.schoolName );
+                    });
+                        break;
+                    default:
+                    return changeArray[type];
+                }
+                break;
+            case "classes":
+                switch (orderBy) {
+                    case 1:
+                    masterList = changeArray[type].sort(function (a, b) {
+                      return a.className.localeCompare( b.clasName );
+                  });
+                      break;
+                  case 2:
+                  masterList = changeArray[type].sort(function (a, b) {
+                      return a.gradeLevel.localeCompare( b.gradeLevel );
+                  });
+                      break;
+                  case 3:
+                  masterList = changeArray[type].sort(function (a, b) {
+                      return a.schoolName.localeCompare( b.schoolName );
+                  });
+                      break;
+                  case 4:
+                  masterList = changeArray[type].sort(function (a, b) {
+                      return b.className.localeCompare( a.className );
+                  });
+                      break;
+                  case 5:
+                  masterList = changeArray[type].sort(function (a, b) {
+                      return b.gradeLevel.localeCompare( a.gradeLevel );
+                  });
+                      break;
+                  case 6:
+                  masterList = changeArray[type].sort(function (a, b) {
+                      return b.schoolName.localeCompare( a.schoolName );
+                  });
+                      break;
+                  default:
+                  return changeArray[type];
+              }
+              break;
+            default:
+
+
+        }
+        return masterList;
+    }
+    
+
+    function getSelectTypes(type){
+        $.ajax({
+            type: "POST",
+            url: "/php/inc-admin-data.php",
+            data: {
+                get: type,
+                selected: ""
+            },
+            success: function (data) {
+                getAllSelectTypes[type] = data;
+            }
+
+            });
+
+    }
+
     function markSorted(index) {
         $(".removeLater").remove();
         if (index == 1) {
             if (sortBy == 1) {
-                $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9650</span>');
-            } else $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9660</span>');
+                $("#word_table").find('th:eq(0)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(0)').append('<span class="removeLater">&#9660</span>');
         } else if (index == 2) {
             if (sortBy == 2) {
-                $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9650</span>');
-            } else $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9660</span>');
+                $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(1)').append('<span class="removeLater">&#9660</span>');
 
         } else if (index == 3) {
             if (sortBy == 3) {
-                $("#word_table").find('th:eq(3)').append('<span class="removeLater">&#9650</span>');
-            } else $("#word_table").find('th:eq(3)').append('<span class="removeLater">&#9660</span>');
+                $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9650</span>');
+            } else $("#word_table").find('th:eq(2)').append('<span class="removeLater">&#9660</span>');
 
         }
     }
+    // from w3schools
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+    //from w3school
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    function checkCookie(cname) {
+        var freshData = getCookie(cname);
+        if (freshData != "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    function eraseAllCookies() {
+        setCookie('freshcategories', true, 0);
+        setCookie('freshterms', true, 0);
+        setCookie('freshschools', true, 0);
+        setCookie('freshclasses', true, 0);
+
+    }
 
 });
