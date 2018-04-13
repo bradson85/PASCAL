@@ -7,7 +7,7 @@
       </ul>
         <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="createAssessment.php">Create or Edit Assessment
+            <a class="nav-link" href="createAssessment.php">Create Assessment
             </a>
           </li>
             <li class="nav-item">

@@ -67,9 +67,10 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
         <h5 class="card-title text-white">Class Table Stats</h5></div>
         <div class="card-body">
         <div id = "topTable">
-       <small class='text-muted'>Select Options to View Graph.</small>
-        <span id='schoolOptions'></span>
-        <span id='classOptions'></span>
+        <table id="sort_table" class="table table-bordered">
+         <tbody id = "sort_body"></tbody>
+       </table>
+       <small class='text-muted'>Select Options to View Class.</small>
         <div class="table-responsive">
         <small class='text-muted'>Click on row to view student data.</small>
             <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">

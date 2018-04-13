@@ -202,7 +202,7 @@ $("#modalclose").on("click", function () {
             },
             success: function (data) {
                 var rows = "<td> Select Which Class:</td>" + data;
-                $("#sort_body").html(rows);
+                $("#sort_table").html(rows);
             }
         });
 

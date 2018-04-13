@@ -68,14 +68,14 @@
         <div class="row">
            <div class="col-sm-6"><img class="img-responsive" style="width: 100%" src="img/dashboard.png"></div>
         <div class="col-sm-6">
-        <ul><p>1. Teachers can select key discipline for the assessment (i.e. Life Science,
-                Physical Science, Earth Science, and Engineering, Technology, and Applications)</p></ul>
-         <ul><p>2. The computer-generated assessments allow students to match as many science concepts/words 
-                with their corresponding defintions as they can in 10 mimutes. Additional defintions are included 
-                to control for the process of elimination.</p></ul>
-        <ul><p>3. Students are presented with grade level words and able to utilize text to speech
-                software to to assist with the reading if the text</p></ul>
-                <ul><p>4. Reports are self-generated to assist the teacher in tracking student progress.</p></ul>
+        <ul><p>1. Teachers can select a key discipline for the assessment
+         (i.e. Life Science, Physical Science, Earth Science, and Engineering, Technology, and Applications)</p></ul>
+         <ul><p>The computer-generated assessments allow students to match as many science concepts/words with their corresponding definitions as they can in 10 minutes.
+          Additional definitions are included to control for the process of elimination.</p></ul>
+        <ul><p>3. Students are presented with grade level words and able to utilize text to
+         speech software to to assist with the reading of the text.</p></ul>
+                <ul><p>4. Reports are self-generated to assist the 
+                teacher in tracking student progress.</p></ul>
                 </div>
                 </div>
       </div>
