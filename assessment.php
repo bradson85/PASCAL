@@ -77,7 +77,7 @@
                         <div class="card definition quizCard">
                             <div class="card-body align-items-center d-flex">
                                 <span id="def1">Definition 1</span>
-                                <button class="speak white"><i class="fas fa-volume-up"></i></button>
+                                <button class="speak white float-right"><i class="fas fa-volume-up"></i></button>
                             </div>
                         </div>
                     </div>

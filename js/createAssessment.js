@@ -85,10 +85,10 @@ $(document).ready(function(){
                 type: "POST",
                 url: "php/inc-createassessment-getcategories.php",
                 data: {
-                    data:  ""    
+                    
                 },
-                        success: function (data) {
-                    $("#categorychoice").append(data);
+                    success: function (response) {
+                    $("#categorychoice").append(response);
                     
                 }
             });

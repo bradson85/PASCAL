@@ -83,7 +83,8 @@ $(document).ready(function() {
         }
     })
 
-
+    // text to speech function. Additional options are available for further customization
+    // This uses the built in speech synthesis function from the HTML5 specification.
     $('.speak').click(function() {
         console.log($(this).closest('div').find("span").text());
         let msg = new SpeechSynthesisUtterance($(this).closest('div').find('span').text());
@@ -143,7 +144,7 @@ $(document).ready(function() {
         
     });
     
-    setTimeout(100, ($.ajax({
+    setTimeout(150, ($.ajax({
         type: "POST",
         url: "php/inc.assessment.php",
         dataType: "json",
@@ -190,7 +191,7 @@ $(document).ready(function() {
         // $('.countdown').show();
         // Code used from: https://stackoverflow.com/questions/41035992/jquery-countdown-timer-for-minutes-and-seconds
         // Original author: AJ
-        var timer2 = "1:25";
+        var timer2 = "10:01";
         var interval = setInterval(function() {
             var timer = timer2.split(':');
             //by parsing integer, I avoid all extra string processing

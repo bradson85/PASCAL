@@ -1,7 +1,12 @@
 <?php
 require_once("../db/dbconfig.php");
 
-   $selectString = "<select id=\"categorySelect\" class=\"styled-select slate\"><<option value = \"0\"> --Select Category/Level--</option>";
+    if(isset($_POST['data']))
+        GetCategories("categorySelect", 0);
+
+    function GetCategories($val, $setVal)
+    {
+        $selectString = "<select id=\"$val\" class=\"styled-select slate\">";
 
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -10,16 +15,26 @@ require_once("../db/dbconfig.php");
         PDO::ERRMODE_EXCEPTION);
     
      $sql = ("SELECT * FROM categories");
-    
+     $count = 0;
      $result = $pdo->query($sql);
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
            $catID = $row['ID'];
            $catName = $row['name'];
            $level = $row['level']; 
-
-           $selectString.= "<option value = \"$catID\"> $catName - Level $level</option>";
-
-     }
+           if($count < 1)
+           {
+            if($setVal == 0)
+                $selectString .=  "<option value =\"0\" selected>--Select Category/Level--</option>";
+             else
+                $selectString .= "<option value =\"0\">--Select Category/Level--</option>";
+           }
+           
+            if($catID == $setVal)
+                $selectString .="<option value=\"$catID\" selected> $catName - Level $level</option>";
+            else
+                $selectString.= "<option value = \"$catID\"> $catName - Level $level</option>";
+            $count++;
+      }
     }
     catch(PDOException $e)
         {
@@ -27,7 +42,10 @@ require_once("../db/dbconfig.php");
         }
     $pdo = null;
  
-    $selectString.= "</select></td>";
-    echo $selectString;
-
+    $selectString.= "</select>";
+    if($val == "categorySelect")
+        echo $selectString;
+    else
+        return $selectString;
+    }
 ?>

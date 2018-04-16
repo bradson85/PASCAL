@@ -47,7 +47,7 @@
 }
 
 .createAccount {
-    margin-top: 5%;
+    margin-top: 4%;
 }
 
 #CreateAccount {
@@ -57,7 +57,7 @@
 }
 
 #assessment {
-    margin-top: 5%;
+    margin-top: 3%;
 }
 
 .quizCard {
@@ -86,6 +86,10 @@
     margin-top: 2.5%;
 }
 
+#directions {
+    padding-bottom: 1.5%;
+}
+
 #directions p {
     font-size: 16pt;
 }
@@ -107,8 +111,8 @@
 .speak {
     background: none;
     border: none;
-    text-align: absolute;
-    float: right;
+    position: absolute;
+    right: 0;
     cursor: pointer;
     font-size: 12pt;
 }
@@ -144,6 +148,7 @@
     width: 68%;
     z-index: 0;
     font-size: 16pt;
+    text-align: left;
 }
 
 

@@ -98,7 +98,7 @@
             {
                 $to = $email;
                 $subject = "Create Your Password";
-                $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: localhost/form-assess/create-password.php?id=$guid";
+                $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: http://cafaprojectcs425.perado.tech/create-password.php?id=$guid";
                 $headers = "FROM: Formative Assessment <formassess-no-reply@siue.edu>";
 
                 mail($to, $subject, $txt, $headers);
