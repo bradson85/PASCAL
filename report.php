@@ -11,7 +11,7 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] == 2){
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Assign An Assessment</title>
+  <title>Reports</title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
  
@@ -53,7 +53,7 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] == 2){
 
 <!--response modal content-->
 <div id ="sure" class="modal fade">
-<div class="modal-dialog" role="dialog">
+<div class="modal-dialog modal-lg" role="dialog">
   <div class="modal-content">
     <div class="modal-header">
       <h5 class="modal-title">Result</h5>
@@ -79,65 +79,50 @@ if(!isset($_SESSION['type']) || $_SESSION['type'] == 2){
                     FileFormat:
                     <select class="form-control input-small" id="format">
                          <option value="csv">CSV</option>
-                         <option value="pdf">PDF</option>
-                        <option value="jpeg">JPEG</option> 
-                        <option value="charts">Charts</option>          
+                         <option value="pdf" >PDF</option>         
                     </select>
                 </div>
             </div>
-            <div class="row">
+
+             <div class="row">
                 <div class="col-sm-6">
+                   Choosse Word Data or Assessment Data:
+                    <select class="form-control" id="datatype"></select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6"  id ="categoryArea">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6" id ="schoolArea">
                     School:
                     <select class="form-control" id="school"></select>
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6"  id ="classArea">
                     Class: <select class="form-control" id="class"></select>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-sm-6">
-                    Student or Entire Class:
+                <div class="col-sm-6"  id ="studentEntireArea">
+                    Individual Student or Entire Class:
                     <select class="form-control" id="student"></select>
                 </div>
             </div>
 
-
-            <div class="row">
-            <br>
-            Report:
+            <div class="row" id="reportCustomiztion">
+            <h5><br>Report Column Titles:</h5>
                 <div class="col-md-10">
-                <br> 
+                <div class="form-check" id="secCheckBoxes">
+            </div>
                 <div class="form-check" id="checkBoxes">
-                    Select One or More: &nbsp; <br>
-                    <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" disabled>
-                                <label class="form-check-label" for="inlineCheckbox1">AVG Score</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" disabled>
-                            <label class="form-check-label" for="inlineCheckbox2">All Scores</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" disabled>
-                            <label class="form-check-label" for="inlineCheckbox3"> Last Completed Grade Level</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="4" disabled>
-                            <label class="form-check-label" for="inlineCheckbox3"> Grade Level For Each Assessment</label>
-                        </div>
             </div>
-            </div>
-             </div>
-
-              <div class="row">
-            <br>
-            Graph:
-                <div class="col-md-10">
-                <br> 
-                
+            
             </div>
              </div>
             <br>

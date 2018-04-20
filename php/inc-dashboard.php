@@ -71,16 +71,16 @@ include  __DIR__ ."/../sidebar-header.php"
         <span id='schoolOptions'></span>
         <span id='classOptions'></span>
         <div class="table-responsive">
-        <small class='text-muted'>Click on row to view student data.</small>
+        <small class='text-muted'>Click on row to view student detailed data.</small>
             <table class="table table-bordered" id="dataTableAdmin" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Grade</th>
-                  <th>Class</th>
-                  <th>Last Taken Assessment</th>
-                  <th>Last Assessment Level</th>
-                  <th>Date Completed</th>
+                  <th>Student Grade Level</th>
+                  <th>Average Score</th>
+                  <th>Total Word<br> Matches Correct &nbsp;/Attempted</th>
+                  <th>Best Assessment Score</th>
+                  <th>Last Assessment Taken</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,6 +112,19 @@ include  __DIR__ ."/../sidebar-header.php"
           </div>
           </div>
           </div>
+        
+         </div>
+         <div class="row" >  <br>
+         <div class="card mb-6">
+<div class="card-header boardModule">
+<h5 class="card-title text-white">Word Stats</h5></div>
+<div class="card-body">
+<small class='text-muted'>Select Category For Words</small><br>
+         <span id='categoryoption'></span>
+         <div class="table-responsive" id="wordStatTable"> </div>
+</div> 
+</div>
+</div>
          </div>
       </main>
     

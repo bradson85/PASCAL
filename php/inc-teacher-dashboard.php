@@ -75,13 +75,13 @@ include  __DIR__ ."/../teacher-sidebar-header.php"
         <small class='text-muted'>Click on row to view student data.</small>
             <table class="table table-bordered" id="dataTableTeach" width="100%" cellspacing="0">
               <thead>
-                <tr>
+              <tr>
                   <th>Name</th>
-                  <th>Grade</th>
-                  <th>Class</th>
-                  <th>Last Taken Assessment</th>
-                  <th>Last Assessment Level</th>
-                  <th>Date Completed</th>
+                  <th>Student Grade Level</th>
+                  <th>Average Score</th>
+                  <th>Total Word<br> Matches Correct &nbsp;/Attempted</th>
+                  <th>Best Assessment Score</th>
+                  <th>Last Assessment Taken</th>
                 </tr>
               </thead>
               <tbody>

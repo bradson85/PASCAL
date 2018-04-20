@@ -2,7 +2,15 @@
 session_start();
     require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
-    if(isset($_POST['classSelect'])){
+
+    if(isset($_POST['checkBoxType'])){
+        $labels = $_POST['checkBoxType']; 
+        $values =$_POST['checkBoxValues'];
+             echo assembleCheckBoxes($labels,$values);
+    } else if(isset($_POST['typeSelect'])){
+        $option = $_POST['typeSelect']; 
+             echo assembleTypeSelect();
+    } else if(isset($_POST['classSelect'])){
         $option = $_POST['classSelect']; 
              echo assembleClassSelect($option);
     }
@@ -53,7 +61,22 @@ session_start();
               }
           $pdo = null;
      return $row;
-     }     
+     }  
+     
+     function assembleTypeSelect(){
+
+       
+         $selectString = "<option disabled selected value = \"0\"> Select A Type</option>
+         <option  value = \"allwordScores\">All Word Data For All Tests</option>
+         <option  value = \"studentwordScores\">Word Data By Students and Classes </option>
+         <option  value = \"assessmentScores\">Student Results For All Assessments</option>";
+         
+         
+         unset($value); //php manuel says do this after for each
+         return $selectString;
+         
+         }
+
 
     function assembleSchoolSelect(){
         $selectString = "<option disabled selected value = \"0\"> Select A School</option>";
@@ -333,14 +356,25 @@ function pdo_error($message){
     return($arr);
     }
     
-    
+    function assembleCheckBoxes($labels,$values){
+      $string ="";
+      foreach($labels as $key =>$index){
+     $string .= 
+        '<div class="form-check form-check-inline">
+                    <input class="form-check-input check1" type="checkbox" id="inlineCheckbox'.$key.'" value="'.$values[$key].'" >
+                    <label class="form-check-label" for="inlineCheckbox'.$key.'">'.$index.'</label>
+        </div>';
+
+      }unset($index);
+      return $string;
+    }
     
     
     function getAverage($arr){
     
         $a = array_filter($arr);
     $average = array_sum($a)/count($a);
-    return $average;
+    return number_format(($average * 100), 2, '.', ',') . "%";
     }
     
 ?>

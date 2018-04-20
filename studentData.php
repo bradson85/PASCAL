@@ -43,6 +43,26 @@ include  "teacher-sidebar-header.php";
 
 <!-- Start main html-->
 <main class="col-sm-9  ml-sm-auto ccol-md-10 pt-3 " role="main">
+<div class="card mb-6">
+        <div class="card-header boardModule">
+        <h5 class="card-title text-white" id="studentName"></h5></div>
+        <div class="card-body">
+<div class="table-responsive">
+            <table class="table table-bordered" id="dataTableStudentAssess" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Assessment Name</th>
+                  <th>Category</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                </tbody>
+            </table>
+            <br>
+          </div>
+          </div>
+          </div>
         <div id="chart">
         <canvas id="studentChart" width="300" height="200"></canvas>
         </div>

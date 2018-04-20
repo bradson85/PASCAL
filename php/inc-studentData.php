@@ -1,14 +1,29 @@
 <?php 
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
-if(isset($_POST['studentData'])){
+
+if(isset($_POST['studentTableData'])){
+    $email = $_SESSION['currStudentEmail'];
+    $allAssessments = getAllAssessments();
+    $arr['name'] = getName($email);
+    foreach ($allAssessments as $value) {
+        if(checkIfResultsExist($email,$value['ID'])){
+         $catArr = getCatNameLevel($value['catID']);
+       $arr['category'] = $catArr['name'] ." ". $catArr['level'];
+       $arr['testScores'][$value['ID']] = getStudentTestScoreData($email,$value['ID']);
+        }
+    }
+    unset($value);
+        echo json_encode($arr);
+
+}elseif(isset($_POST['studentData'])){
     $email = $_SESSION['currStudentEmail'];
 $allAssessments = getAllAssessments();
 $arr['name'] = getName($email);
 $arr[0] = 0;
 foreach ($allAssessments as $value) {
     if(checkIfResultsExist($email,$value['ID'])){
-   $arr[$value['ID']] = getStudentTestData($email,$value['ID']);
+   $arr[$value['ID']] = getStudentTestScoreData($email,$value['ID']);
     }
 }
 unset($value);
@@ -21,17 +36,23 @@ unset($value);
     $arr[0] = 0;
 foreach ($allAssessments as $value) {
     if(checkIfResultsExist($email,$value['ID'])){
-   $arr[$value['ID']] = getStudentTestData($email,$value['ID']);
+   $arr[$value['ID']] = getStudentTestScoreData($email,$value['ID']);
     }
 }
+unset($value);
     } else if(strcmp($_POST['type'],"class")==0){
         $classID = $_POST['choice'];
        $classList = getClassList($classID);
        $arr = getClassStudentScores($classList);
-       $arr['name'] = "Average of " .getClassName($classID);
-    }else  
-
-unset($value);
+       $classInfo = getClassInfo($classID);
+       $arr['name'] = "Average of " .$classInfo['name'];
+    } else if(strcmp($_POST['type'],"classTable")==0){
+        $classID = $_POST['choice'];
+       $classList = getClassList($classID);
+       $arr = getAllClassStudentScores($classList);
+       $classInfo = getClassInfo($classID);
+       $arr['name'] = "" . $classInfo['name'];
+    }  
     echo json_encode($arr);
 }
 else echo "No student selected";
@@ -72,10 +93,10 @@ function getName($email){
 
 }
 
-function getClassName($classID){
+function getClassInfo($classID){
     try {
         $pdo = newPDO();
-        $query = ("SELECT name From classes WHERE ID = '$classID'");
+        $query = ("SELECT name, gradeLevel From classes WHERE ID = '$classID'");
         $result = pdo_query($pdo,$query);
         $row = $result->fetch(PDO::FETCH_ASSOC);
     } 
@@ -84,14 +105,49 @@ function getClassName($classID){
             echo pdo_error($e);
          }
             $pdo = null;
-        return $row['name'];
+        return $row;
 
 }
 
-function getStudentTestData($email,$assessID){
+function getLastAssessmentTaken($email){
+    try {
+    $pdo = newPDO();
+    $query = ("SELECT count(r.ID) FROM results AS r, accounts AS s WHERE assessmentID = $assessID AND r.correct = 1 AND s.email = '$email' AND s.ID = r.studentID");
+    $result = pdo_query($pdo,$query);
+    $row = $result->fetch();
+    if($row[0] > 0){
+
+    }
+}
+    catch(PDOException $e)
+    {
+        echo pdo_error($e);
+     }
+        $pdo = null;
+    return $row[0];
+
+}
+
+function getStudentTestScoreData($email,$assessID){
     try {
         $pdo = newPDO();
         $query = ("SELECT count(r.ID) FROM results AS r, accounts AS s WHERE assessmentID = $assessID AND r.correct = 1 AND s.email = '$email' AND s.ID = r.studentID");
+        $result = pdo_query($pdo,$query);
+        $row = $result->fetch();
+    }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $row[0];
+
+}
+
+function getStudentTestMissedData($email,$assessID){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT count(r.ID) FROM results AS r, accounts AS s WHERE assessmentID = $assessID AND r.correct = 0  AND s.email = '$email' AND s.ID = r.studentID");
         $result = pdo_query($pdo,$query);
         $row = $result->fetch();
     }
@@ -159,7 +215,67 @@ function getStudentInfo($accountID){
 
 } 
 
+// for getting table data on dashboards
+function getAllClassStudentScores($classList){  // class list can have multipvle values
+    $allAssessments = getAllAssessments(); 
+    $classGradeLevel = getClassInfo($_POST['choice']);  
+ foreach ($classList as $value) { 
+     $totalAttempts=0;
+     $totalSuccess = 0; 
+     $bestAssessmentScore = 0; 
+     $bestAssessmentScoreID="N/A"; 
+     $bestAssessmentScoreCat = "";
+     $latestTestID = 'None'; 
+     $latestTestCat = "";
+    $latestTestDate = strtotime("4/15/2000"); // random early date
+     $arr1 =array();
+    $info= getStudentInfo($value['accountID']);
+    $email = $info['email'];
+    $name  = $info['name'];
+    
+    foreach ($allAssessments as $item) {
+        if(checkIfResultsExist($email,$item['ID'])){
+       $arr1[$item['ID']] = getStudentTestScoreData($email,$item['ID']);
+       if($arr1[$item["ID"]] > $bestAssessmentScore){
+        $bestAssessmentScore =$arr1[$item["ID"]];
+        $bestAssessmentScoreID = $item["ID"];
+         $category = getCatNameLevel($item['catID']);
+        $bestAssessmentScoreCat = $category['name']." ". $category['level'];
+       }
+       $totalSuccess += $arr1[$item["ID"]];
+       $totalAttempts += (getStudentTestMissedData($email,$item['ID']) +$arr1[$item["ID"]] );
+       $date_time = new DateTime($item['start_date']);
+       $formated_date = $date_time->format('m/d/Y');
+       $newtestDate = strtotime($formated_date);
+        if($newtestDate > $latestTestDate){
+            $latestTestDate = $newtestDate;
+            $cat = getCatNameLevel($item['catID']);
+            $latestTestCat = $cat['name']." ". $cat['level'];
+            $latestTestID = " ID:". $item['ID'];
+        }
+        }
 
+    }
+    unset($item);
+    if(!checkForTeacher($value['accountID'])){
+        $avgScore = getTermAverage($totalSuccess,$totalAttempts);
+        $arr1['average'] = utf8_encode($avgScore); // had to utf encode beceause json erros
+       
+        $arr1["totalmatched"] = $totalSuccess;
+        $arr1["totaltried"] = $totalAttempts;
+        $arr1["bestScore"] = $bestAssessmentScore . " (".$bestAssessmentScoreCat . " ID:" . $bestAssessmentScoreID . ")";
+        $arr1["gradeLevel"] = $classGradeLevel['gradeLevel'];
+        $arr1["email"] = $email;
+        if($latestTestDate == strtotime("4/15/2000")) {
+            $arr1['lastTest'] =  $latestTestID;
+        } else {$arr1['lastTest'] = $latestTestCat. " (". $latestTestID . ") taken on " . date("m/d/Y",$latestTestDate);}
+        $arr[$name] = $arr1;
+    }
+   
+}
+unset($value);
+return($arr);
+}
 
 
 function getClassStudentScores($classList){  // class list can have multipvle values
@@ -171,7 +287,7 @@ function getClassStudentScores($classList){  // class list can have multipvle va
     $name  = $info['name'];
     foreach ($allAssessments as $item) {
         if(checkIfResultsExist($email,$item['ID'])){
-       $arr1[] = getStudentTestData($email,$item['ID']);
+       $arr1[] = getStudentTestScoreData($email,$item['ID']);
         }
     }
     unset($item);
@@ -180,8 +296,7 @@ function getClassStudentScores($classList){  // class list can have multipvle va
         if(is_nan($avgScore)){
             $arr[$name]= 0;
         } else $arr[$name] = $avgScore;
-    }
-   
+    } 
 }
 unset($value);
 return($arr);
@@ -189,13 +304,20 @@ return($arr);
 
 
 
-
 function getAverage($arr){
-
     $a = array_filter($arr);
 $average = array_sum($a)/count($a);
 return $average;
 }
+
+function getTermAverage($value1, $value2){
+    
+   $average = $value1/$value2;
+    if(is_nan($average)){ // if not a number
+        $average = "0";
+    } 
+    return $average * 100 ."%";
+    }
 
 function checkForTeacher($ID){
 
@@ -221,6 +343,21 @@ function checkForTeacher($ID){
 
 } 
 
+function getCatNameLevel($catID){
+    try {
+        $pdo = newPDO();
+        $query = ("SELECT name,level FROM categories WHERE ID = '$catID'");
+        $result = pdo_query($pdo,$query);
+         
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        }
+        catch(PDOException $e)
+        {
+            echo pdo_error($e);
+         }
+            $pdo = null;
+        return $row;
+}
 
 // creat new pd object
 function newPDO(){

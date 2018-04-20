@@ -38,7 +38,9 @@ function pdo_query($pdo, $query)
 function pdo_error($message){
 
     $error =  $message->getCode();
-    return "Error". $message;}
+    if($error == 23000){
+        return "Cannot Delete Class Because It Has Dependent Data In Assessments";
+    }else return "Error". $message;}
       
 
 

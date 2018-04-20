@@ -1,7 +1,7 @@
 
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
-
+assignedAssessments(3);
 
 if(isset($_SESSION['ID'])){
 $id = $_SESSION['ID'];
@@ -10,9 +10,8 @@ if($assignmentID !=0){
     
 $infoarray = getAssessmentData($assignmentID);
 echo "<tr><td>" .$infoarray["category"]. "</td><td>". $infoarray["start"]."</td>   
-<td>". $infoarray["end"]."</td>
-<td>". $infoarray["class"]."</td></tr>" ;
-} else echo "";
+<td>". $infoarray["end"]."</td></tr>" ;
+} else echo " No Assessments Available";
 }
 function getButton(){
 
@@ -28,7 +27,8 @@ if(!checkIfTaken($assignmentID,$id)){
     }}
 function assignedAssessments($id){
     $assessmentID = 0;
-    $date = strtotime("now");
+    $todaydate = strtotime(date("m/d/Y"));
+    $date = strtotime("4/15/2099"); // random later date
     $finalID = 0;
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -40,15 +40,22 @@ function assignedAssessments($id){
         $result = $pdo->query($sql);
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             $assessmentID = $row["assessmentID"]; 
-    
+          
             if(!checkIfTaken($assessmentID,$id)){
             $d = getAssessmentDate($assessmentID);
-            $date1 =strtotime($d);
-            if ($date1 < $date){
-                $date = $date1;
+            $date_time1 = new DateTime($d[0]);
+            $formated_start_date = $date_time1->format('m/d/Y');
+            $date_time2 = new DateTime($d[1]);
+            $formated_end_date = $date_time2->format('m/d/Y');
+            $startTestDate = strtotime($formated_start_date);
+            $endTestDate = strtotime($formated_end_date);
+            if(($startTestDate < $todaydate)&& $endTestDate >$todaydate){
+            if ($startTestDate < $date){
+                $date = $startTestDate;
                 $finalID = $assessmentID;
             }
         }
+    }
         }
       $pdo = null;
       } catch (PDOException $e) {
@@ -85,10 +92,11 @@ function getAssessmentDate($id){
         $pdo->setAttribute(PDO::ATTR_ERRMODE,
         PDO::ERRMODE_EXCEPTION);
     // query to get all categries for drop down menu
-        $sql = "SELECT start_date FROM assessments Where ID = '$id'";
+        $sql = "SELECT start_date, end_date FROM assessments Where ID = '$id'";
         $result = $pdo->query($sql);
         $row = $result->fetch(PDO::FETCH_ASSOC);
-            $date = $row["start_date"];   
+            $date[] = $row["start_date"];
+            $date[] = $row["end_date"];
       $pdo = null;
       } catch (PDOException $e) {
       die( $e->getMessage() );
@@ -110,17 +118,22 @@ function getAssessmentData($id){
         $row = $result->fetch(PDO::FETCH_ASSOC);
             $start = $row["start_date"];  
             $end = $row["end_date"];
-            $class = getClassName($row['classID']);
+            $class = getClassName($_SESSION['class']);
             $category = getCategoryName($row['catID']);
       $pdo = null;
       } catch (PDOException $e) {
       die( $e->getMessage() );
       } 
 
+      $date_time1 = new DateTime($end);
+      $formated_end_date = $date_time1->format('m/d/Y');
+      $date_time2 = new DateTime($start);
+      $formated_start_date = $date_time2->format('m/d/Y');
+
       $arr = array( "category" =>$category,
       "class" => $class,
-      "end" => $end,
-      "start" => $start
+      "end" => $formated_end_date,
+      "start" => $formated_start_date
       );
        
       return($arr);

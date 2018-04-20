@@ -62,6 +62,12 @@ if(isset($_POST['numAvailable'])){
          echo assembleClassListTable($class);
 }
 
+if(isset($_POST['categorySelect'])){
+     
+         echo createCatAndLevelSelect("ID") ;
+}
+
+
 if(isset($_POST['name'])){
     $name = $_POST['name']; 
     $email = $_POST['email'];
@@ -114,6 +120,72 @@ function pdo_error($message){
   
     }else {return "Error". $message;}
       }
+
+      function createCatAndLevelSelect($selected){
+
+        $selectstring= array();
+        $selectVal =array();
+        $htmlIDName = "selcat";
+        $titleOption = "--Select Category/Level--";
+        $categories = getCategoriesData("ID");
+        $count = 0;
+        foreach ($categories as $value) {
+            $selectstring[$count]= "".$value["catName"]." - Level ".$value["level"];
+            $selectVal[$count]= "".trim($value["catName"]). " ".trim($value["level"]);
+            $count = $count+1;
+        }
+           unset($value);
+        return createHTMLSelect($selectstring,$selectVal,$htmlIDName,$titleOption,$selected);
+        
+    }
+    function protectOrderStrings($string){
+        $pieces = explode(" ",$string);
+        if(str_word_count($string) > 2){
+                           return false;           
+        } else if (strcmp($pieces[1], "ASC") ==0 || strcmp($pieces[1], "DESC") ==0){
+            return true;
+        } else return false;
+
+
+  }
+  function createHTMLSelect($optionContent,$optionID,$idName,$selectTitle,$selected){
+
+    $selectString = "<td><select class=\"form-control\" 
+    id=\"$idName\"><<option value = \"0\" selected disabled> $selectTitle</option>";
+   $count = 0;
+    foreach ($optionContent as $value) {
+        if(isset($selected) && ((strcasecmp($selected,$optionID[$count])== 0)|| ($selected == $optionID[$count]))){
+            $selectString.= "<option value = \"".$optionID[$count]."\" selected>".$value."</option>";
+            $count = $count+1;
+        }else {
+        $selectString.= "<option value = \"".$optionID[$count]."\">".$value."</option>";
+         $count = $count+1;
+        }
+    }
+    unset($value);
+    $selectString.= "</select></td>";
+
+    return $selectString;
+
+}
+
+    function  getCategoriesData($sortBy){
+        if ( !protectOrderStrings($sortBy)){
+            $query = ("SELECT name as catName, level FROM categories");
+           } else   $query = ("SELECT name as catName, level FROM categories ORDER BY $sortBy");
+     try {
+           $pdo = newPDO();
+           $result = pdo_query($pdo,$query);
+            
+           $row = $result->fetchAll(PDO::FETCH_ASSOC);
+             }
+         catch(PDOException $e)
+             {
+             return pdo_error($e);
+             }
+         $pdo = null;
+    return $row;
+    }
 
 // returns all the classIDs a teacher belongs to.
 function getTeacherClassIDs(){

@@ -31,7 +31,6 @@
                 <th>Assessment Category</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Class</th>
               </tr>
             </thead>
             <tbody id = "sort_body">

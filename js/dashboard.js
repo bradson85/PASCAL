@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     loadNumberCompleted();
+    loadCategorySelectForWordStats();
     $("tbody").css( 'cursor', 'pointer' );
 
     if ($('#dataTableTeach').length) {
@@ -99,10 +100,6 @@ $(document).ready(function () {
         $("#exportModal").modal('hide');
     });
 
-    $(document).on("change", "#dashboard", function () {
-        loadDashboardClassList();
-    });
-
     $(document).on("change", "#classlist", function () {
         loadClassList();
     });
@@ -111,9 +108,7 @@ $(document).ready(function () {
         loadClassListSearchAdmin();
     });
 
-    $(document).on("change", "#adminClassList", function () {
-        loadAdminClassList();
-    });
+   
 
     $(document).on("change", "#graphclassoption", function () {
        loadGraphStudentList();
@@ -189,7 +184,7 @@ $("#modalclose").on("click", function () {
 });
 
 
-    loadAssessmentData();
+//loadAssessmentData();
     loadNumberAvailable();
 
     function loadClassListSearch(which) {
@@ -218,6 +213,21 @@ $("#modalclose").on("click", function () {
             },
             success: function (data) {
                 $("#classOptions").html(data);
+            }
+        });
+
+    }
+
+    function loadCategorySelectForWordStats() {
+        $.ajax({ // delete from database
+            type: "POST",
+            url: "php/inc-dashboard-functions.php",
+            data: {
+                categorySelect: ""
+            },
+            success: function (data) {
+                $("#categoryoption").html(data);
+                $("#categoryoption select").append("<option value='all'>All Categories</option>")
             }
         });
 
