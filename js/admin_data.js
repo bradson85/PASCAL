@@ -7,9 +7,11 @@ $(document).ready(function () {
     var getAllSelectTypes = new Array();;
     var count = 0 // for preventing save warning from popping up every time.
     $('#changes').hide();
+    var types = ["categories", "terms", "schools", "classes"];
     var index = 0;
-    var changeArray = new Array();  // for marking changed tables;
-    var savedArray = new Array(); // for saving changes of entire table
+    var previousData = {}; //for keeping old table before changes;
+    var changeArray = {};  // for marking changed tables;
+    var savedArray = {}; // for saving changes of entire table
     var savedSelect = new Array();
     var savedTableHeaders = new Array();
     var currentPage = "categories";
@@ -43,65 +45,82 @@ $(document).ready(function () {
     /// for clicking the next page
     $(document).on("click", "#pageNext", function (e) {
         e.preventDefault();
-        saveToJson(currentPage);
-        if (curPageNum < totalNumOfPages) {
-            curPageNum++;
-            createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
-            tableSorting(changeArray[currentPage]);
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            if (curPageNum < totalNumOfPages) {
+                curPageNum++;
+                createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+                tableSorting(changeArray[currentPage]);
+            }
         }
-
     });
     // for clicking the previous page
     $(document).on("click", "#pagePrev", function (e) {
         e.preventDefault();
-        saveToJson(currentPage); //saving changes
-        if (curPageNum > 1) {
-            curPageNum--;
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            if (curPageNum > 1) {
+                curPageNum--;
+                createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+                tableSorting(changeArray[currentPage]);
+            }
+        }
+    });
+
+    $(document).on("change", "#sortSize", function () {
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            sortNumber = $("#sortSize").val();
             createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
             tableSorting(changeArray[currentPage]);
         }
     });
 
-    $(document).on("change", "#sortSize", function () {
-        saveToJson(currentPage);
-        sortNumber = $("#sortSize").val();
-        createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
-        tableSorting(changeArray[currentPage]);
-
-    });
-
     $(document).on("click", ".pagesnumber", function () {
-        saveToJson(currentPage);
-        curPageNum = parseInt($(this).text());
-        createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
-        tableSorting(changeArray[currentPage]);
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            curPageNum = parseInt($(this).text());
+            createdTableData = updateTableFromJson(changeArray[currentPage], currentPage);
+            tableSorting(changeArray[currentPage]);
+        }
     });
 
     $(document).on("click", "#sort_1", function (e) {
-        saveToJson(currentPage);
-        if (sortBy == 1) {
-            sortBy = 4;
-        } else sortBy = 1;
-        getTableData(currentPage);
-        markSorted(1);
-
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            if (sortBy == 1) {
+                sortBy = 4;
+            } else sortBy = 1;
+            getTableData(currentPage);
+            markSorted(1);
+        }
     });
     $(document).on("click", "#sort_2", function (e) {
-        saveToJson(currentPage);
-        if (sortBy == 2) {
-            sortBy = 5;
-        } else sortBy = 2;
-        getTableData(currentPage);
-        markSorted(2);
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            if (sortBy == 2) {
+                sortBy = 5;
+            } else sortBy = 2;
+            getTableData(currentPage);
+            markSorted(2);
+        }
     });
     $(document).on("click", "#sort_3", function (e) {
-        saveToJson(currentPage);
-        if (sortBy == 3) {
-            sortBy = 6;
-        } else sortBy = 3;
-        getTableData(currentPage);
-        markSorted(3);
-
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            if (sortBy == 3) {
+                sortBy = 6;
+            } else sortBy = 3;
+            getTableData(currentPage);
+            markSorted(3);
+        }
     });
 
     $(document).on("change", "#word_table td", function () {
@@ -118,9 +137,14 @@ $(document).ready(function () {
         }
 
     });
-
+// for if keys are presssed int textbox to mark change
     $(document).on("keypress", '[contenteditable="true"]', function () {
-        // start out with categories
+       
+        $(this).parent().find('td:last #changebox1').prop('checked', true);
+    });
+// for  if text box is edited
+    $(document).on("input", '[contenteditable="true"]', function () {
+       
         $(this).parent().find('td:last #changebox1').prop('checked', true);
     });
 
@@ -138,10 +162,13 @@ $(document).ready(function () {
 
     // when search button changes
     $(document).on("change", "#sort", function () {
-        saveToJson(currentPage);
-        // start out with categories
-        getTableData(currentPage);
-        $("#" + currentPage).tab("show");
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage, newData);
+            // start out with categories
+            getTableData(currentPage);
+            $("#" + currentPage).tab("show");
+        }
     });
     /// for class inport modal
     $(document).on("click", "a#classImportSelect", function () {
@@ -219,43 +246,54 @@ $(document).ready(function () {
     });
     /// sets tab for opening categories db interface
     $(document).on("click", "#categories", function () {
-        saveToJson(currentPage);
-        $(this).tab("show");
-        currentPage = "categories";
-        $("#topTable").hide();
-        getTableData("categories");
-
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            $(this).tab("show");
+            currentPage = "categories";
+            $("#topTable").hide();
+            getTableData("categories");
+        }
     });
     // sets tab for opening terms db interfacd
     $(document).on("click", "#terms", function () {
-        saveToJson(currentPage);
-        $(this).tab("show");
-        currentPage = "terms";
-        getTableData("terms");
-        $("#topTable").show();
-        loadSearch(); // laads serach box data at top
-        setTimeout(
-            function () {
-                updateSearch();
-            }, 250);
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            $(this).tab("show");
+            currentPage = "terms";
+            getTableData("terms");
+            $("#topTable").show();
+            loadSearch(); // laads serach box data at top
+            setTimeout(
+                function () {
+                    updateSearch();
+                }, 250);
+        }
     });
 
     // sets tab for opening School List db interfacd
     $(document).on("click", "#schools", function () {
-        saveToJson(currentPage);
-        $(this).tab("show");
-        currentPage = "schools";
-        $("#topTable").hide();
-        getTableData("schools");
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            $(this).tab("show");
+            currentPage = "schools";
+            $("#topTable").hide();
+            getTableData("schools");
+        }
     });
 
     // sets tab for opening School List db interfacd
     $(document).on("click", "#classes", function () {
-        saveToJson(currentPage);
-        $(this).tab("show");
-        $("#topTable").hide();
-        currentPage = "classes";
-        getTableData("classes");
+        var newData = getValidData(currentPage);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            $(this).tab("show");
+            $("#topTable").hide();
+            currentPage = "classes";
+            getTableData("classes");
+        }
     });
 
 
@@ -280,7 +318,7 @@ $(document).ready(function () {
         $("#sure .modal-title").text("Are You Sure You Want To Save?");
         $("#sure .modal-body").text("If you have changed a current Category or Level, all Terms associtated " +
             "with the old Category or Level will match the new altered Category and Level");
-        $("#modalsave").removeClass("delete").addClass("presave");
+        $("#modalsave").removeClass("delete").removeClass("save").addClass("presave");
         $("#modalsave").text("Continue");
         $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
         $("#modalsave").show();
@@ -288,12 +326,22 @@ $(document).ready(function () {
     });
     // when modal is on save
     $("body").on("click", '.presave', function (e) {
-        saveToJson(currentPage);
-        finalizeChanges(currentPage);
+        var newData = getValidData(currentPage);
+       // console.log(newData);
+        if (newData) {
+            saveToJson(currentPage,newData);
+            
+            setTimeout(
+                function () {
+                    finalizeChanges(previousData);
+                }, 100);
+
+        } else $("#sure").modal('hide');
     });
 
     $("body").on("click", '.save', function (e) {
-        saveToDB(currentPage,savedArray);
+       // console.log(savedArray);
+        saveToDB(savedArray,previousData);
         $("#sure").modal('hide');
     });
 
@@ -309,6 +357,7 @@ $(document).ready(function () {
         $(this).on('keydown', function (e) {
             if (e.which == 13 && e.shiftKey == false) {
                 $(this).blur();
+                    $(this).parent().find('td:last #changebox1').prop('checked', true);
                 return false;
             } else if (e.which == 27) { // to exit editing without saving then reload db
                 $("#t_body").empty();
@@ -390,6 +439,15 @@ $(document).ready(function () {
         searchSorting(searchstring);
 
     });
+// when hitting enter in searchbox
+    $(document).on("keypress", '#wordsearch', function (e) {
+        if (e.which == 13 && e.shiftKey == false) {
+            searchActive = 1;
+            var searchstring = $('#wordsearch').val();
+            searchSorting(searchstring);
+        }
+       
+    });
 
 
 
@@ -458,7 +516,7 @@ $(document).ready(function () {
         var tempArray = new Array();
         var tempCount = 0;
         for (let index = 0; index < changeArray['categories'].length; index++) {
-        
+
             if (searchExpression.test(changeArray["categories"][index]['catName'])) {
                 tempArray[tempCount] = changeArray["categories"][index];
                 tempCount++;
@@ -550,7 +608,9 @@ $(document).ready(function () {
             setTimeout(
                 function () {
                     tableSorting(changeArray[type]);
+                    previousData[type] = JSON.parse(JSON.stringify($.extend({}, changeArray[type])));
                 }, 50);
+
         } else {
             setCookie(cookieString, false, 1);
             // terms has search variable
@@ -578,7 +638,7 @@ $(document).ready(function () {
                         setTimeout(
                             function () {
                                 tableSorting(freshDBData);
-
+                                previousData[type] = JSON.parse(JSON.stringify($.extend({}, freshDBData)));
                             }, 50);
 
                     }
@@ -606,11 +666,13 @@ $(document).ready(function () {
                         setTimeout(
                             function () {
                                 tableSorting(freshDBData);
+                                previousData[type] = JSON.parse(JSON.stringify($.extend({}, freshDBData)));
                             }, 50);
 
                     }
                 });
             }
+
         }
     }
     // alters confirmatrion modal to alert what has taken place.
@@ -676,6 +738,7 @@ $(document).ready(function () {
                 confirmModal(data);
                 currentPage = type;
                 // start out with categories
+                eraseAllCookies(); // this allows a fresh database screening
                 getTableData(type);
                 $("#".type).tab("show");
             }
@@ -763,32 +826,51 @@ $(document).ready(function () {
             '<input type="checkbox" value="newchecked" id="newCheckbox1" checked></td></tr>';
 
     }
-    function saveEntireJson(type, data) {
+    function saveEntireJson(type,data) {
         for (let findex = 0; findex < data[type].length; findex++) {
             if (data[type][findex]['newCheck'] || data[type][findex]['checked']) {
                 for (let index = 0; index < changeArray[type].length; index++) {
                     switch (type) {
                         case "terms":
-                        var tempComp1 = changeArray[type][index]['word'];
-                        var tempComp2 = changeArray[type][index]['definition'];
-                        var tempComp3 = data[type][findex]['definition'];
-                        var tempComp4 = data[type][findex]['word'];
-                        if(tempComp1 == tempComp4 || tempComp2 == tempComp3){
-                            changeArray[terms][index] = data[type][findex];
-                        }
+                            var tempComp1 = changeArray[type][index]['word'];
+                            var tempComp2 = changeArray[type][index]['definition'];
+                            var tempComp3 = data[type][findex]['definition'];
+                            var tempComp4 = data[type][findex]['word'];
+                            if (tempComp1 == tempComp4 || tempComp2 == tempComp3) {
+                                changeArray["terms"][index] = data[type][findex];
+                            }
                             break;
                         case "categories":
-                          
+                            var tempComp1 = changeArray[type][index]['catName'];
+                            var tempComp2 = changeArray[type][index]['level'];
+                            var tempComp3 = data[type][findex]['level'];
+                            var tempComp4 = data[type][findex]['catName'];
+                            if (tempComp1 == tempComp4 || tempComp2 == tempComp3) {
+                                changeArray["categories"][index] = data[type][findex];
+                            }
+
                             break;
                         case "schools":
-                            
+                            var tempComp1 = changeArray[type][index]['schoolName'];
+                            var tempComp2 = data[type][findex]['schoolName'];
+                            if (tempComp1 == tempComp2) {
+                                changeArray["schools"][index] = data[type][findex];
+                            }
+
+
                             break;
                         case "classes":
-                            
-            
+                            var tempComp1 = changeArray[type][index]['className'];
+                            var tempComp2 = changeArray[type][index]['gradeLevel'];
+                            var tempComp3 = data[type][findex]['gradeLevel'];
+                            var tempComp4 = data[type][findex]['className'];
+                            if (tempComp1 == tempComp4 || tempComp2 == tempComp3) {
+                                changeArray["classes"][index] = data[type][findex];
+                            }
+
                             break;
                         default:
-                           
+
                     }
                 }
             }
@@ -796,93 +878,126 @@ $(document).ready(function () {
 
 
     }
-
-    function saveToJson(type) {
-        var TableData = new Array();
-        TableData[type] = retrieveCurrentData(type);
-
+    // needs validation from checkifDataExists if not this will fail;
+    function saveToJson(type,data) {
         var workingLength;
         var finalLength = 0;
         var offset = 0;
         var specialLength = 0; // for when curent page of data is less than sortNumber.
+        if (searchActive == 1) {
+            saveEntireJson(type,data);
+        } else {
+            workingLength = data[type].length - sortNumber;
+            if (workingLength < sortNumber) {
+                for (let findex = 0; findex < data[type].length; findex++) {
+                    if (data[type][findex]['newCheck']) {
+                        specialLength++;
+                        offset++;
+                        previousData[type] = insertBlankDataIntoObject(0,previousData[type],data[type][findex] );   // this fills in the blank space for the oldData stuff
+                    }
+                }
+                finalLength = data[type].length - offset;
+            } else {
+                specialLength = workingLength;
+                finalLength = currentEndIndex;
+            }
+            var counterIndex = 0;
+            // this will overwrite current table with value 1-10 of new table
+            for (let dindex = currentStartIndex; dindex < finalLength; dindex++) {
+                if (!(typeof data[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
+                    changeArray[type][dindex] = data[type][counterIndex];
+                }
+                counterIndex++;
+            }
+            //if there is extra by adding new table entries this will add that to the end
+            for (let index = (changeArray[type].length); index < (changeArray[type].length + specialLength); index++) {
+                
+                if (!(typeof data[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
+                    changeArray[type][index] = data[type][counterIndex];
+                    if(type !="schools"){
+                        console.log(getAllSelectTypes[type]);
+                    savedSelect[type][index] = getAllSelectTypes[type];
+                    }
+                }
+                counterIndex++;
+            }
+            //savedSelect[type] = tempArray;
+           // console.log(tempArray);
+            //console.log(savedSelect[type]);
+          //  console.log(previousData[type]);
+        }
+
+
+    }
+    function getValidData(type) {
+        var TableData = new Array();
+        TableData[type] = retrieveCurrentData(type);
         if (TableData[type] != "fail") {
             TableData[type].shift(); // first row is the table header and didnt ad to array - so remove blank row.
-            if (searchActive == 1) {
-                saveEntireJson(type, TableData);
-            } else {
-
-                workingLength = TableData[type].length - sortNumber;
-                if (workingLength < sortNumber) {
-                    for (let findex = 0; findex < TableData[type].length; findex++) {
-                        if (TableData[type][findex]['newCheck']) {
-                            specialLength++;
-                            offset++;
-                        }
-                    }
-                    finalLength = TableData[type].length - offset;
-                } else {
-                    specialLength = workingLength;
-                    finalLength = currentEndIndex;
-                }
-                var counterIndex = 0;
-                // this will overwrite current table with value 1-10 of new table
-                for (let dindex = currentStartIndex; dindex < finalLength; dindex++) {
-                    if (!(typeof TableData[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
-                        changeArray[type][dindex] = TableData[type][counterIndex];
-                    }
-                    counterIndex++;
-                }
-                //if there is extra by adding new table entries this will add that to the end
-                for (let index = (changeArray[type].length); index < (changeArray[type].length + specialLength); index++) {
-
-                    if (!(typeof TableData[type][counterIndex] == 'undefined')) { // prevents undefinded stuff on shortened last html page of short first page
-                        changeArray[type][index] = TableData[type][counterIndex];
-                        savedSelect[type][index] = getAllSelectTypes[type];
-                    }
-
-                    counterIndex++;
-                }
-                //console.log(changeArray[type]);
-                //console.log(item[type]);
-            }
+            return TableData;
         } else {
             confirmModal("Data Issue <br> 1. Empty field<br> OR: <br>2. Select box not "
                 + "selected. <br>Please enter data into all fields and choose an option for all select boxes.");
-
+            return false;
         }
-
     }
 
-    function finalizeChanges(type) {
+
+    function finalizeChanges(oldData) {  
+      //  console.log(oldData);
+       // console.log(changeArray);
         var changeStringNew = "";
         var changeStringOld = "";
         var finalString = "";
-        for (let cindex = 0; cindex < changeArray.length; cindex++) {
-            // prevents undefinded stuff on shortened last html page of short first page and if checked then ther are changes
-            if ((!(typeof changeArray[type][cindex] == 'undefined')) && changeArray[type][cindex]['checked']) { //if changes
-                // then then add those chages to final array 
-                savedArray[type][cindex] = changeArray[type][cindex];
+       
+        for (value in types) {
+            type = types[value];
+            var tempArray = new Array(); // new array for each type
+            if (types.hasOwnProperty(value) && (!(typeof changeArray[type] == 'undefined'))) {
+                for (let cindex = 0; cindex < changeArray[type].length; cindex++) {
+                   
+                    // prevents undefinded stuff on shortened last html page of short first page and if checked then ther are changes
+                    if ((!(typeof changeArray[type][cindex] == 'undefined')) && changeArray[type][cindex]['checked']) { //if changes
+                        // then then add those chages to final array 
+                       tempArray [cindex] = changeArray[type][cindex];
+            
+                        //-------- for reporting changes to string
+                        for (key in changeArray[type][cindex]) {
+                            if (changeArray[type][cindex].hasOwnProperty(key) && key != 'checked' && key != 'newCheck') {
+                                changeStringNew += "" + changeArray[type][cindex][key] + " ";
+                            }
+                        }
 
-                //-------- for reporting changes to string
-                for (key in changeArray[type][cindex]) {
-                    if (changeArray[type][cindex].hasOwnProperty(key) && key != 'checked') {
-                        changeStringNew += "" + changeArray[type][cindex][key] + " ";
-                    }
+                        for (key in oldData[type][cindex]) {
+                            if (oldData[type][cindex].hasOwnProperty(key)) {
+                                changeStringOld += "" + oldData[type][cindex][key] + " ";
+                            }
+                        }
+                        // end of to string stuff -----------------------------
+
+                        finalString += ("<br>Changed " + changeStringOld + "(Old) To: " + changeStringNew + "(New) \n");
+                    } else if((!(typeof changeArray[type][cindex] == 'undefined')) && changeArray[type][cindex]['newCheck']) { // for new addtions
+                        tempArray [cindex] = changeArray[type][cindex];
+            
+                        //-------- for reporting new additons to string
+                        for (key in changeArray[type][cindex]) {
+                            if (changeArray[type][cindex].hasOwnProperty(key) && key != 'checked' && key != 'newCheck') {
+                                changeStringNew += "" + changeArray[type][cindex][key] + " ";
+                            }
+                        }
+                        // end of to string stuff -----------------------------
+
+                        finalString += ("<br>Adding " + changeStringNew + "(New). \n");
+                    }else tempArray [cindex] = oldData[type][cindex]; //else just resend old data because it's proven;
+
                 }
+            } else console.log("NO " + type +" loaded");
 
-                for (key in item[cindex]) {
-                    if (item[cindex].hasOwnProperty(key)) {
-                        changeStringOld += "" + item[cindex][key] + " ";
-                    }
-                }
-                // end of to string stuff -----------------------------
-
-                finalString = ("<br>Changed " + changeStringOld + "(Old) To: " + changeStringNew + "(New) \n");
-            } else savedArray[cindex] = item[cindex]; //else just resend old data;
-
+            savedArray[type] = tempArray;
         }
-        $("#sure .modal-body").html("The following changes will be made:" + finalString);
-        $("#modalsave").removeClass("delete").addClass("save");
+    
+        $("#sure .modal-body").html("The following changes will be attempted:" + finalString);
+        $("#modalsave").removeClass("delete").removeClass("presave").addClass("save");
         $("#modalsave").text("Save");
         $('#modalsave').removeClass('btn-danger').addClass('btn-warning');
         $("#modalsave").show();
@@ -979,22 +1094,25 @@ $(document).ready(function () {
         } else return "fail";
     }
 
-    function saveToDB(type, tableInfo) {
+    function saveToDB( tableInfo, oldData) {
 
         tableInfo = JSON.stringify(tableInfo);
+        oldInfo = JSON.stringify(oldData);
         $.ajax({
             type: "POST",
             url: "/php/inc-admin-data.php",
             data: {
                 info: tableInfo,
-                what: type
+                oldData: oldInfo
             },
             success: function (data) {
-                confirmModal(data);
-                currentPage = type;
+               // confirmModal(data);
+                console.log(data);
+               // currentPage = type;
                 // start out with categories
-                getTableData(type);
-                $("#" + type).tab("show");
+                eraseAllCookies(); // this allows a fresh db screening
+                getTableData(currentPage);
+                $("#" + currentPage).tab("show");
             }
         });
 
@@ -1349,6 +1467,7 @@ $(document).ready(function () {
 
         }
     }
+
     // from w3schools
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
@@ -1387,6 +1506,15 @@ $(document).ready(function () {
         setCookie('freshschools', true, 0);
         setCookie('freshclasses', true, 0);
 
+    }
+
+    // for splice into object
+    function insertBlankDataIntoObject(index, currObject,newItem){
+      
+        tempItem = Object.values(currObject);
+        tempItem.splice(index,0, newItem);
+        return tempItem;
+           
     }
 
 });

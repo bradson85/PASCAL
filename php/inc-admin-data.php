@@ -45,14 +45,20 @@ if(isset($_POST['delete'])){
 }
 }
 if(isset($_POST['info'])){
-
-  $data = json_decode(stripslashes($_POST['info']),true);
-  $type = $_POST['what'];
-  
-   $finished = pickSaveDB($type,$data);
+  $finished = "";
+  $stypes.= "";
+  $ntypes.-"";
+  $newData = json_decode(stripslashes($_POST['info']),true);
+  $oldData = json_decode(stripslashes($_POST['oldData']),true);
+  foreach ($newData as $key => $value) {
+      if(!empty($value)){
+   $stypes .= "$key, ";
+  $finished.= saveToDB($key,$newData[$key],$oldData[$key]);
+      } else  $ntypes .= "$key, ";
+  }
    if(checkEmptyUpdateString($finished))
   {
-      echo "No Updates";
+      echo "No updates for " . substr($stypes, 0, -2) .". Data already exists. No new data sent for " . substr($ntypes , 0,-2). ".";
   } else {
       echo $finished;
   }
@@ -119,7 +125,7 @@ function pickUpdateRow($rowUpdate,$selected){
         return createLevelSelect($selected[0]);
             break;
         case "schools":
-        return ;
+             return "" ;
             break;
         case "classes":
         return createGradeLevelSelect($selected[0])." " . createSchoolsSelect($selected[1]);
@@ -162,19 +168,19 @@ function deleteClasses($type,$data){
 }
 
 
-function pickSaveDB($type,$info){
+function saveToDB($type,$newinfo,$oldinfo){
     switch ($type) {
         case "terms":
-         return saveTerms($info);
+         return saveTerms($newinfo,$oldinfo);
             break;
         case "categories":
-        return saveCategories($info);
+        return saveCategories($newinfo,$oldinfo);
             break;
         case "schools":
-        return saveSchools($info);
+        return saveSchools($newinfo,$oldinfo);
             break;
         case "classes":
-        return saveClasses($info);
+        return saveClasses($newinfo,$oldinfo);
         break;
         default:
             return "Error: No Save Type Data";
@@ -182,29 +188,31 @@ function pickSaveDB($type,$info){
 }
 
 ///save terms: ID,Category and Level ,Term, definition
-function saveTerms($data){
+function saveTerms($newData, $oldData){
  $string ="";   
-for ($i=0; $i < count($data); $i++) { 
-         $level =  trim($data[$i]["gradeLevel"]);        
-        $category = trim($data[$i]["category"]);   // category is first of the split string
-        $catID = matchCatID($category, $level);
+for ($i=0; $i < count($newData); $i++) { 
+         $newlevel =  trim($newData[$i]["gradeLevel"]);        
+        $newcategory = trim($newData[$i]["category"]);   // category is first of the split string
+        $oldlevel =  trim($oldData[$i]["gradeLevel"]);        
+        $oldcategory = trim($oldData[$i]["category"]);
+        $newcatID = matchCatID($newcategory, $newlevel); 
+        $oldcatID= matchCatID($oldcategory, $oldlevel);
         $where = array(0=>'name',1=> 'definition',2=> 'catID');
-        $what = array(0=>$data[$i]["word"],1=> $data[$i]["definition"],2=> $catID);
+        $what = array(0=>$oldData[$i]["word"],1=> $oldData[$i]["definition"],2=> $oldcatID);
    // If the entry is marked in order to detect changes 
-   if ($data[$i]["checked"] ) {
-    // we check to see if anthing in the tables. if one thing
-    // has changed then this will return false we update other wise do nothing.
-    if (!(checkIfInfoExists("terms",$where, $what ,3))){
-    
-     $string.= updateTerms($data[$i]["word"],$data[$i]["definition"],$catID);
-    } else $string.= "Did not save changes to" .$data[$i]["catName"]." ".$data[$i]["level"].". It already exists";
-}else{ // if ID doensn't exist then we have a new table entry thsu insert
-    // check if definition exists.
-    if(checkCustom("terms","definition", $data[$i]["definition"])){
-        $string .=  $data[$i]["definition"] ." already exists";
-     } else{
-          $string.= insertTermsIntoDB($data[$i]["word"],$data[$i]["definition"],$catID);
-        }
+   if ($newData[$i]["checked"]) {
+     // if changes were made we check if the old data exists if it does we update the db to the new data where the old data was 
+    if (checkIfInfoExists("terms",$where, $what ,3)){
+     $string.= updateTerms($newData[$i]["word"],$newData[$i]["definition"],$newcatID,$oldData[$i]["word"],$oldData[$i]["definition"],$oldcatID);
+    } else $string.= insertTermsIntoDB($newData[$i]["word"],$newData[$i]["definition"],$newcatID);
+}else{ // if changes aren't marked then we check if it is marked as new entry
+    if ($newData[$i]["newCheck"]){
+        if(checkCustom("terms","name", $newData[$i]["word"])){
+            $string .=  $newData[$i]["word"] ." already exists in database";
+         } else{
+        $string.= insertTermsIntoDB($newData[$i]["word"],$newData[$i]["definition"],$newcatID);
+       } 
+    }
 }
 
 }
@@ -212,50 +220,47 @@ for ($i=0; $i < count($data); $i++) {
 return $string;
 }
 
-function saveCategories($data){
+function saveCategories($newData, $oldData){
     $string ="";   
-    for ($i=0; $i < count($data); $i++) {
+    for ($i=0; $i < count($newData); $i++) {
         $where = array(0=>'name',1=> 'level');
-        $what = array(0=>$data[$i]["catName"],1=> $data[$i]["level"]);
-        if($data[$i]["checked"]){  // see if changees to exists
-       // we check to see if anthing in the tables. if one thing
-        // has changed then this will return false we update other wise do nothing.
-       
-        if (!(checkIfInfoExists("categories",$where,$what,2))){
-         $string.= updateCategories($data[$i]["catName"],$data[$i]["level"]);
-        } else $string.= "Did not save changes to" .$data[$i]["catName"]." ".$data[$i]["level"].". It already exists";
-      }  else{ // if name or category doesnt exist then we have a new table entry thsu insert
-        if (!(checkIfInfoExists("categories",$where,$what,2))){
-             $string.= insertCategoriesIntoDB($data[$i]['catName'],$data[$i]["level"]);
-            }
-    }
-    
+        $what = array(0=>$oldData[$i]["catName"],1=> $oldData[$i]["level"]); // use data before change to find it in DB
+        if($newData[$i]["checked"]){  // see if changees whree made from data sent
+       // if changes were made we check if the old data exists if it does we update the db to the new data where the old data was 
+        if ((checkIfInfoExists("categories",$where,$what,2))){ 
+         $string.= updateCategories($newData[$i]["catName"],$newData[$i]["level"],$oldData[$i]["catName"],$oldData[$i]["level"]);
+        } else $string.= insertCategoriesIntoDB($newData[$i]['catName'],$newData[$i]["level"]); // else we insert data into db if it doesn't exist
+      }  else{ // if changes aren't marked then we check if it is marked as new entry
+        if ($newData[$i]["newCheck"]){
+             $string.= insertCategoriesIntoDB($newData[$i]['catName'],$newData[$i]["level"]);
+            } 
+    }  
 }  
       
     return $string;
     
 }
 
-function saveSchools($data){
+function saveSchools($newData, $oldData){
     $string ="";   
-    for ($i=0; $i < count($data); $i++) { 
+    for ($i=0; $i < count($newData); $i++) { 
         $where = array(0=>'name');
-        $what = array(0=>$data[$i]["schoolName"]);
+        $what = array(0=>$oldData[$i]["schoolName"]);
        // If the ID  exist then we need to detect changes 
-       if ($data[$i]["checked"] ) {
-        // we check to see if anthing in the tables. if one thing
-        // has changed then this will return false we update other wise do nothing.
+       if ($newData[$i]["checked"] ) {
+       // see if changees whree made from data sent
+       // if changes were made we check if the old data exists if it does we update the db to the new data where the old data was
         if (checkIfInfoExists("schools",$where, $what, 1)){
-        
-         $string.= updateSchools($data[$i]["schoolName"]);
-        } else $string.= "Did not save changes to" .$data[$i]["schoolName"].". It already exists";
-    }else{ // if ID doensn't exist then we have a new table entry thsu insert
-        // check if definition exists.
-        if(checkCustom("schools","name", $data[$i]["schoolName"])){
-            $string .=  $data[$i]["schoolName"] ." already exists";
+         $string.= updateSchools($newData[$i]["schoolName"],$oldData[$i]['schoolName']);
+        } else $string.= insertSchoolIntoDB($newData[$i]['schoolName']);
+    }else{  // if changes aren't marked then we check if it is marked as new entry
+        if ($newData[$i]["newCheck"]){
+        if(checkCustom("schools","name", $newData[$i]["schoolName"])){
+            $string .=  $newData[$i]["schoolName"] ." already exists in database";
          } else{
-              $string.= insertSchoolIntoDB($data[$i]['schoolName']);
+              $string.= insertSchoolIntoDB($newData[$i]['schoolName']);
             }
+        }
     }
     
     }
@@ -263,30 +268,31 @@ function saveSchools($data){
     return $string;
 }
 
-function saveClasses($data){
-
-    $string ="";   
-for ($i=0; $i < count($data); $i++) { 
-         $schoolID =  matchSchoolName(trim($data[$i]["schoolName"]));                        // category is first of the split string
+function saveClasses($newData,$oldData){
+    $string ="";  
+for ($i=0; $i < count($newData); $i++) { 
+         $newschoolID =  matchSchoolName(trim($newData[$i]["schoolName"])); 
+         $oldschoolID =  matchSchoolName(trim($oldData[$i]["schoolName"]));                        // category is first of the split string
          $where = array(0=>'name',1=> 'gradeLevel',2=> 'schoolID');
-         $what = array(0=>$data[$i]["className"],1=> $data[$i]["gradeLevel"],2=> $schoolID);
-         if($data[$i]["checked"]){  // see if changees to exists
-   // If the changes  exist then we need to detect id changed for db 
-    // we check to see if anthing in the tables. if one thing
-    // has changed then this will return false we update other wise do nothing.
-    if (!(checkIfInfoExists("classes",$where, $what,3))){
-     $string.= updateClasses($data[$i]["className"],$data[$i]["gradeLevel"],$schoolID);
-    }else $string.= "Did not save changes to" .$data[$i]["schoolName"].". It already exists";
-}else{ // if name doensn't exist then we have a new table entry thsu insert
-    // check if definition exists.
-    if(checkCustom("classes","name", $data[$i]["className"])){
-        $string .=  $data[$i]["className"] ." already exists";
+         $what = array(0=>$oldData[$i]["className"],1=> $oldData[$i]["gradeLevel"],2=> $oldschoolID);
+         if($newData[$i]["checked"]){  
+             // see if changees whree made from data sent
+       // if changes were made we check if the old data exists if it does we update the db to the new data where the old data was
+    if (checkIfInfoExists("classes",$where, $what,3)){
+     $string.= updateClasses($newData[$i]["className"],$newData[$i]["gradeLevel"],$newschoolID,$oldData[$i]["className"],$oldData[$i]["gradeLevel"],$oldschoolID);
+    }else $string.= insertClassIntoDB($newData[$i]["className"],$newData[$i]["gradeLevel"],$newschoolID);
+}else{ // if changes aren't marked then we check if it is marked as new entry
+    if($newData[$i]["newCheck"]){
+    if(checkCustom("classes","name", $newData[$i]["className"])){
+        $string .=  $newData[$i]["className"] ." already exists in database";
      } else{
-          $string.= insertClassIntoDB($data[$i]["className"],$data[$i]["gradeLevel"],$schoolID);
+          $string.= insertClassIntoDB($newData[$i]["className"],$newData[$i]["gradeLevel"],$newschoolID);
         }
+    }
+}
 }
 return $string;
-}
+
 }
 
 function addWordsToTable(){

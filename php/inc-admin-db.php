@@ -1,7 +1,6 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/dbconfig.php");
 
-
 if(isset($_POST['categoriesSel'])){ // get sorting box for terms
     getSearchBox();
 }
@@ -35,11 +34,11 @@ function pdo_query($pdo, $query)
     return $result;
 }
 
-function pdo_error($message){
-
+function pdo_error($message,$function,$type){
+// $fucntion is delete, or update or add new // $type is categries. terms, etc
     $error =  $message->getCode();
     if($error == 23000){
-        return "Cannot Delete Class Because It Has Dependent Data In Assessments";
+        return "Cannot $function $type Because It Has Dependent Data In Assessments";
     }else return "Error". $message;}
       
 
@@ -67,7 +66,7 @@ function deleteFromTable($table, $where,$what ,$numItems){
          }
      catch(PDOException $e)
          {
-         echo pdo_error($e);
+         echo pdo_error($e,"Delete",$what);
          }
      $pdo = null;
 
@@ -86,7 +85,7 @@ function retrieveSelectedCatLevel($id){
               }
           catch(PDOException $e)
               {
-              echo pdo_error($e);
+              echo pdo_error($e,"","");
               }
           $pdo = null;
      return $level;
@@ -104,7 +103,7 @@ function retrieveSelectedClassLevel($id){
               }
           catch(PDOException $e)
               {
-              echo pdo_error($e);
+                echo pdo_error($e,"","");
               }
           $pdo = null;
      return $level;
@@ -122,7 +121,7 @@ function retrieveSelectedSchool($id){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $school;
@@ -146,7 +145,7 @@ function checkIfNameExists($type,$what){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $exists;
@@ -159,7 +158,6 @@ function checkIfNameExists($type,$what){
             $pdo = newPDO();
             $query = ("SELECT * FROM $type WHERE $where = \"$what\"");
             $result = pdo_query($pdo,$query);
-             
             $row = $result->fetch(PDO::FETCH_ASSOC);
             if(!$row){
                 $exists=false;
@@ -168,7 +166,7 @@ function checkIfNameExists($type,$what){
               }
           catch(PDOException $e)
               {
-              echo pdo_error($e);
+                echo pdo_error($e,"","");
               }
           $pdo = null;
      return $exists;
@@ -189,37 +187,37 @@ function checkIfNameExists($type,$what){
            $result = pdo_query($pdo,$query);
              
           $row = $result->fetch(PDO::FETCH_ASSOC);
-            if(!$row){
-                $exists=false;
+            if($row){
+                $exists=true;
             }
-            else $exists = true;
+            else $exists = false;
               }
           catch(PDOException $e)
               {
-              echo pdo_error($e);
+                echo pdo_error($e,"","");
               }
           $pdo = null;
      return $exists;
         
         }
 
-function updateTerms($term,$definition,$catID){
+function updateTerms($newterm,$newdefinition,$newcatID,$oldterm,$olddefinition,$oldcatID){
     try {
         $pdo = newPDO();
-        $query = ("UPDATE IGNORE terms SET name =:word , definition = :definition,
-                     catID = :catID WHERE name = :term");
-         $list = array(0 => ":word",1 => ":definition",2 => ":catID", 3 => ":term");
-         $data = array(0 => $term,1 => $definition,2 => $catID, 3 => $term);           
+        $query = ("UPDATE terms SET name =:newword , definition = :newdefinition,
+                     catID = :newcatID WHERE name = :oldword AND definition =:olddefinition And catID = :oldcatID");
+         $list = array(0 => ":newword",1 => ":newdefinition",2 => ":newcatID", 3=> ":oldword",4 => ":olddefinition",5 => ":oldcatID",);
+         $data = array(0 => $newterm,1 => $newdefinition,2 => $newcatID, 3 => $oldterm, 4=> $olddefinition, 5=> $oldcatID);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
-          return "Changed info for $term successfully";
+          return "Changed info for $oldterm  to $newterm successfully";
           }
-          else{ return "Update of $term Failed";}
+          else{ return "Update of $newterm Failed";}
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Update","Terms");
           }
       $pdo = null;
  
@@ -243,30 +241,30 @@ function insertTermsIntoDB($term,$definition,$catID){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Add","Terms");
           }
       $pdo = null;
 
 
 }
 
-function updateCategories($catName,$level){
+function updateCategories($newcatName,$newlevel,$oldcatName,$oldlevel){
     try {
         $pdo = newPDO();
-        $query = ("UPDATE IGNORE categories SET name =:catName , level = :level
-                      WHERE name =:cats AND level =:level");
-         $list = array(0 => ":catName",1 => ":level",2 => ":cats");
-         $data = array(0 => $catName,1 => $level,2 => $catName);           
+        $query = ("UPDATE categories SET name =:newcatName , level = :newlevel
+                      WHERE name =:oldcatName AND level = :oldlevel");
+         $list = array(0 => ":newcatName",1 => ":newlevel",2 => ":oldcatName" , 3 => ":oldlevel");
+         $data = array(0 => $newcatName,1 => $newlevel,2 => $oldcatName,3 => $oldlevel);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
-          return "Changed info for $catName level $level successfully <br>";
+          return "Changed info from $oldcatName level $oldlevel to $newcatName level $newlevel successfully <br>";
           }
-          else{ return "Update of $catName level $level Failed<br>";}
+          else{ return "Update of $newcatName level $newlevel Failed<br>";}
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Update","Categories");
           }
       $pdo = null;
  
@@ -290,20 +288,20 @@ function insertCategoriesIntoDB($name,$level){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Add","Categories");
           }
       $pdo = null;
 
 
 }
 
-function updateSchools($name){
+function updateSchools($newname,$oldname){
     try {
         $pdo = newPDO();
-        $query = ("UPDATE IGNORE schools SET name =:name
+        $query = ("UPDATE schools SET name =:name
                       WHERE name = :name1");
          $list = array(0 => ":name",1 =>":name1");
-         $data = array(0 => $name,1 => $name);           
+         $data = array(0 => $newname,1 => $oldname);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
@@ -313,7 +311,7 @@ function updateSchools($name){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Update","Schools");
           }
       $pdo = null;
  
@@ -338,30 +336,30 @@ function insertSchoolIntoDB($name){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Add","Schools");
           }
       $pdo = null;
 
 
 }
 
-function updateClasses($name,$level,$schoolID){
+function updateClasses($newname,$newlevel,$newschoolID,$oldname,$oldlevel,$oldschoolID){
     try {
         $pdo = newPDO();
-        $query = ("UPDATE IGNORE classes SET name = :name , gradeLevel = :gradeLevel, schoolID= :schoolID
-                      WHERE name = :name1");
-         $list = array(0 => ":name",1 => ":gradeLevel",2=> ":schoolID",3 => ":name1");
-         $data = array(0 => $name, 1 => $level, 2 => $schoolID,3 => $name);           
+        $query = ("UPDATE  classes SET name = :newname , gradeLevel = :newgradeLevel, schoolID= :newschoolID
+                      WHERE name = :oldname AND gradeLevel = :oldgradeLevel AND schoolID = :oldschoolID");
+         $list = array(0 => ":newname",1 => ":newgradeLevel",2=> ":newschoolID",3 => ":oldname",4 => ":oldgradeLevel",5 => ":oldschoolId");
+         $data = array(0 => $newname, 1 => $newlevel, 2 => $newschoolID,3 => $oldname,4 => $oldlevel, 5 => $oldschoolID);           
         $success = pdo_preparedStmt($pdo,$query,$list,$data);
          
           if($success){
-          return "Changed info for $name successfully";
+          return "Changed info for $oldname to $newname successfully";
           }
-          else{ return "Update of $name Failed";}
+          else{ return "Update of $newname Failed";}
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Update","Classes");
           }
       $pdo = null;
  
@@ -383,7 +381,7 @@ function insertClassIntoDB($name,$level,$schoolID){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"Add","Classes");
           }
       $pdo = null;
 
@@ -403,7 +401,7 @@ function getSchoolIDFromClasses($id){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $id;
@@ -424,7 +422,7 @@ function retrieveSelectedCategory($id){
               }
           catch(PDOException $e)
               {
-              echo pdo_error($e);
+                echo pdo_error($e,"","");
               }
           $pdo = null;
     return ($catName. " ". $level);
@@ -444,7 +442,7 @@ function  getCategoriesData($sortBy){
          }
      catch(PDOException $e)
          {
-         return pdo_error($e);
+            echo pdo_error($e,"","");
          }
      $pdo = null;
 return $row;
@@ -465,7 +463,7 @@ function getTermsData($sortBy){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $row;
@@ -486,7 +484,7 @@ function getTermsData($sortBy){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $row;
@@ -505,7 +503,7 @@ function getTermsData($sortBy){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $row;
@@ -524,7 +522,7 @@ function getTermsData($sortBy){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+            echo pdo_error($e,"","");
           }
       $pdo = null;
  return $row;
@@ -545,7 +543,7 @@ function getTermsData($sortBy){
           }
       catch(PDOException $e)
           {
-          echo pdo_error($e);
+         echo pdo_error($e,"","");
           }
       $pdo = null;
  return $row;
@@ -625,7 +623,7 @@ function matchSchoolName($name){
         }
         catch(PDOException $e)
             {
-                echo pdo_error($e);
+                echo pdo_error($e,"","");
             }
         $pdo = null;
         // close the html brackets
