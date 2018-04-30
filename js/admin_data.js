@@ -1106,8 +1106,8 @@ $(document).ready(function () {
                 oldData: oldInfo
             },
             success: function (data) {
-               // confirmModal(data);
-                console.log(data);
+                confirmModal(data);
+                //console.log(data);
                // currentPage = type;
                 // start out with categories
                 eraseAllCookies(); // this allows a fresh db screening

@@ -37,5 +37,8 @@
     <li class="nav-item">
       <a class="nav-link" href="deleteAccounts.php">Delete Accounts</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="backupdb.php">Backup Database</a>
+    </li>
       </ul>
       </nav>

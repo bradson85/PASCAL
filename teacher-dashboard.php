@@ -1,6 +1,6 @@
 <?php 
 session_start(); 
-if(isset($_SESSION['type']) ){
+if(isset($_SESSION['type']) && $_SESSION['type'] == 1 ){
   include ("php/inc-teacher-dashboard.php"); // directed to right page
 } else{
   echo "Unauthorized access";

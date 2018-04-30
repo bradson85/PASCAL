@@ -22,7 +22,7 @@ function getAccounts($type){
    
        
         // query to read admins
-        $sql = "SELECT * FROM accounts WHERE type = '$type'";
+        $sql = "SELECT * FROM accounts WHERE type = '$type' AND ID <> 0";
         $result = $pdo->query($sql);
         
          while($row = $result->fetch(PDO::FETCH_ASSOC) ){
