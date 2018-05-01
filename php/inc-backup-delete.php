@@ -19,11 +19,11 @@
               if (strcasecmp($row[0],"accounts")==0){
                 $sql = "DELETE FROM " .$row[0]. " WHERE ID <> 0;";
                 $success = $pdo->exec($sql);
-                echo( "Deleted $success items from" . $row[0].".");
+                //echo( "Deleted $success items from" . $row[0].".");
               }else{
               $sql = "DELETE FROM " .$row[0]. "";
               $success = $pdo->exec($sql);
-              echo( "Deleted $success items from" . $row[0].".");
+             // echo( "Deleted $success items from" . $row[0].".");
                  }
                 }
     
@@ -34,6 +34,8 @@
             } catch (PDOException $e) {
             die( $e->getMessage() );
             } 
+
+            header('Location: /backupdb.php');
         exit;   
 
 ?>

@@ -11,7 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `bradson8_formassess`
+-- Database: `formassess`
 --
 CREATE DATABASE IF NOT EXISTS `formassess` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 USE `formassess`;

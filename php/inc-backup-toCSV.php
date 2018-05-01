@@ -19,9 +19,9 @@ fputcsv($output, array('EntireDB'));
     $sql = 'SHOW Tables';
     
     $result = $pdo->query($sql);
-     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $result->fetch(PDO::FETCH_NUM)) {
         fputcsv($output, $row); // phph function that saves to csv
-        $sql = "SELECT * From " .$row['Tables_in_formassess']. "";
+        $sql = "SELECT * From " .$row['0']. "";
         $result2 = $pdo->query($sql);
            while($row2 = $result2->fetch(PDO::FETCH_ASSOC)){
             fputcsv($output, $row2);

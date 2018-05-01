@@ -7,7 +7,8 @@
      $newest_file = $dir[0];
      $file = ("dbbackups/".$newest_file);
      echo $file . " ";
-    exec("$CONFIGUREDIR  --host=localhost -uroot -proot -hlocalhost formassess < ".$file, $outtext);
+     echo $string = "$CONFIGUREDIR  --host=".DB_HOST." -u".DB_USER." -p".DB_PWD." ".DB_NAME." < ".$file;
+    exec($string, $outtext);
 
    print_r($outtext);
      exit;
