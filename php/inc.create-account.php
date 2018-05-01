@@ -99,7 +99,7 @@
                 $to = $email;
                 $subject = "Create Your Password";
                 $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: http://cafaprojectcs425.perado.tech/create-password.php?id=$guid";
-                $headers = "FROM: Formative Assessment <pascal-no-reply@hostgator.com>";
+                $headers = "FROM: Formative Assessment <s002722@siue.edu>";
 
                 mail($to, $subject, $txt, $headers);
             }
