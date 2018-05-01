@@ -6,6 +6,7 @@
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
         $email = $_POST['email'];
+        $email = substr($email, 7, (strlen($email)-1));
         $pwd = $_POST['password'];
         $confirmPwd = $_POST['confirm'];
         $errMsg = "true";
@@ -52,14 +53,6 @@
 
     function insert($email, $pwd)
     {
-        if(checkType($email, "teachers"))
-            $type = "teachers";
-        else
-        {
-            $type = "admins";
-        }
-            
-
         $sql = "UPDATE accounts SET password='$pwd' WHERE email='$email'";
         $pdo = pdo_construct();        
         if(pdo_exec($pdo, $sql))
@@ -71,7 +64,7 @@
 
     function checkType($email, $type)
     {
-        $sql = "SELECT ID FROM $type WHERE email='$email'";
+        $sql = "SELECT ID FROM acou WHERE email='$email'";
         $pdo = pdo_construct();
         $result = pdo_query($pdo, $sql);
         $pdo = null;

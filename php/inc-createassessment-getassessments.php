@@ -1,7 +1,6 @@
 <?php
 require_once("../db/dbconfig.php");
 include("inc-createassessment-functions.php");
-include("inc-createassessment-getcategories.php");
    
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -17,17 +16,18 @@ include("inc-createassessment-getcategories.php");
            $ID = $row['ID'];
            $start = new DateTime($row['start_date']);
            $start = $start->format('Y-m-d');
-           $startInput = "<input type=\"date\" value=\"$start\">";
+           $startInput = "<input type=\"date\" id=\"start_date\" value=\"$start\">";
            $end = new DateTime($row['end_date']);
            $end = $end->format('Y-m-d');
-           $endInput = "<input type=\"date\" value=\"$end\">";
+           $endInput = "<input type=\"date\" id=\"end_date\" value=\"$end\">";
           $splitString = explode(',',matchIDToCat($catID));  
-        //   $splitString[0] - $splitString[1]
-         echo ("<tr><td>$ID</td>  
+           
+         echo ("<tr><td id=\"ID\" value=\"$ID\">$ID</td>  
          <td>$startInput</td>
          <td>$endInput</td>   
-         <td>" . GetCategories("$ID", $catID) . "</td>" .
-          "</tr>");
+         <td>" . $splitString[0] . " - Level " . $splitString[1] . "</td>" .
+         "<td> <button class=\"btn\" id=\"delete\" value=\"$ID\">Delete</button></td>" .
+         "</tr>");
 
      }
     }

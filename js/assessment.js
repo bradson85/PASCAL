@@ -40,7 +40,7 @@ $(document).ready(function() {
     $('#drop1').droppable({
         drop: function(event, ui) {
             checkDrop(1, ui.draggable.find('span').attr('id'));
-            console.log(results);
+            // console.log(results);
         }
     });
     $('#drop2').droppable({
@@ -86,7 +86,7 @@ $(document).ready(function() {
     // text to speech function. Additional options are available for further customization
     // This uses the built in speech synthesis function from the HTML5 specification.
     $('.speak').click(function() {
-        console.log($(this).closest('div').find("span").text());
+        // console.log($(this).closest('div').find("span").text());
         let msg = new SpeechSynthesisUtterance($(this).closest('div').find('span').text());
         speechSynthesis.speak(msg);
     });
@@ -106,16 +106,16 @@ $(document).ready(function() {
     });
 
     $('#next').click(function() {
-        console.log("Number of terms: " + termCount);
+        // console.log("Number of terms: " + termCount);
         termCount = 0;
         page++;
         let correct = checkResults();
-        console.log(terms[currLevel - 1]);
+        // console.log(terms[currLevel - 1]);
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
         // Note: May change this to be configurable based on feedback.
-        console.log("Got " + correct + " terms correct on page " + page);
-        console.log("Current level before checking: " + currLevel);
+        // console.log("Got " + correct + " terms correct on page " + page);
+        // console.log("Current level before checking: " + currLevel);
         if(correct === 5){
             if(currLevel < maxLevel && terms[currLevel + 1].length > 0)
                 currLevel++;
@@ -125,7 +125,7 @@ $(document).ready(function() {
                 currLevel--;
         }
 
-        console.log("Current level after checking: " + currLevel);
+        // console.log("Current level after checking: " + currLevel);
         // If the page is less than 5, reset the draggable elements and the results array.
         // otherwise, the assessment is over, the results are displayed
         if(page < 5){
@@ -153,11 +153,11 @@ $(document).ready(function() {
             date: new Date().toLocaleString()
         },
         success: function(response){
-            console.log(response);
-            console.log(new Date().toLocaleString('en-US'));
+            // console.log(response);
+            // console.log(new Date().toLocaleString('en-US'));
             if(response.length > 0) {
                 getTerms(response);
-                console.log(terms);
+                // console.log(terms);
                 //randomize(terms);
                 getDefs(response);
                 //randomize(defs);
@@ -165,15 +165,15 @@ $(document).ready(function() {
                 setHeight();
             }
             else {
-                console.log(response);
+                // console.log(response);
                 alert("Oops! Error loading assessment");
             }
             
              
         },
         error: function(response){
-            console.log("Error!");
-            console.log(response);
+            // console.log("Error!");
+            // console.log(response);
         }
     })));
 
@@ -227,7 +227,7 @@ $(document).ready(function() {
     }
 
     function pageTimer() {
-        console.log("In pageTimer now.");
+        // console.log("In pageTimer now.");
         var pageTimer2 = "1:01";
         var pageInterval = setInterval(function() {
             var pageTimer = pageTimer2.split(':');
@@ -249,7 +249,7 @@ $(document).ready(function() {
             pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
 
             pageTimer2 = pageMinutes + ':' + pageSeconds;
-            console.log(pageTimer2);
+            // console.log(pageTimer2);
         }, 1000);
     }
 
@@ -258,7 +258,7 @@ $(document).ready(function() {
         results[i].dropID = drop;
         results[i].termID = tID;
         if(placement[results[i].termID.substring(4,5)] !== "" && placement[results[i].termID.substring(4,5)] !== results[i].dropID){
-            console.log(results[i].termID.substring(4,5));
+            // console.log(results[i].termID.substring(4,5));
             results[placement[results[i].termID.substring(4,5)].substring(4,5)].dropID = "";
             results[placement[results[i].termID.substring(4,5)].substring(4,5)].termID = "";
             placement[results[i].termID.substring(4,5)] = results[i].dropID;
@@ -335,13 +335,13 @@ $(document).ready(function() {
                 getLevel: "true"
             },
             success: function(response) {
-                //console.log(response);
+                //// console.log(response);
                 currLevel = (parseInt(response[0].gradeLevel));
                 minLevel = currLevel - 1;
                 maxLevel = currLevel + 1;
             },
             error: function(response) {
-                console.log("ERROR!: " + response);
+                // console.log("ERROR!: " + response);
             }
         });
         
@@ -426,7 +426,7 @@ $(document).ready(function() {
             }
             
         }
-        console.log(wasMatched);
+        // console.log(wasMatched);
         return numCorrect;
     }
     
@@ -447,7 +447,7 @@ $(document).ready(function() {
     }
 
     function submitResults(){
-        console.log(wasMatched);
+        // console.log(wasMatched);
         let matchCount = 0;
         if(wasMatched[0].length > 0) {
             for(let j = 0; j < ((page - 1) * 5); j++) {
@@ -471,13 +471,13 @@ $(document).ready(function() {
                 results: JSON.stringify(correct)
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
             }
         });
     }
 
     function resetHeight(){
-        console.log("Resetting height to: " + origHeight);
+        // console.log("Resetting height to: " + origHeight);
       //  $('.quizCard').height(origHeight * 1.8);
     }
 

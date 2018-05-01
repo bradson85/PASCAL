@@ -5,7 +5,8 @@ $(document).ready(function() {
     $('.alert').hide();
 
     form.addEventListener('submit', function(e) {
-        if(form.checkValidity() === false) {
+        if($('#password').val() === '' || $('#confirm').val() === '') {
+            showAlert('Fields cannot be blank.', 'alert-danger small');
             e.preventDefault();
             e.stopPropagation();
         }
@@ -23,24 +24,30 @@ $(document).ready(function() {
                     confirm: document.getElementById('confirm').value
                 },
                 success: function(response){
-                    if(response === "true"){
-                        $('#alertSuccess').show();
-                        $('#createPassword')[0].reset();
-                    }
-                    // Returns error messages if not true, could integrate those messages in the alert in the future.
-                    else {
-                        $('#alertFail').show();
-                        $('#createPassword')[0].reset();
-                    }
+                    showAlert('Successfully updated password.', 'alert-success small');
+                    $('#password').val('');
+                    $('#confirm').val('');
+
                         
                 },
                 error: function(response) {
-                    console.log("Error: " + response);
+                    showAlert('Passwords do not match.', 'alert-danger small');
+                    //console.log("Error: " + response);
                 }
             });
         }
-        form.classList.add('was-validated');
 
     }, false);
 
+    function showAlert(message,alertType) {
+
+        $('#alertPlaceholder').append('<div id="alertdiv" class="alert ' +  alertType + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>').fadeIn(500);
+    
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+    
+    
+          $("#alertdiv").remove();
+    
+        }, 5000);
+      }
 });

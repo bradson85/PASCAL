@@ -1,14 +1,50 @@
 <?php
 session_start();
  require_once("../dbconfig.php");
+ include ('inc.functions.php');
  
+ if(isset($_POST['email']))
+ {
+  resetPW($_POST['email']);
+ }
  
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
-  if($_POST['submit'] == 'true'){
+   if(isset($_POST['submit']))
+   {
+    if($_POST['submit'] == 'true'){
    
-   login();
-   
+      login();
+      
+      }
    }
+  
+   
+ }
+
+ function resetPW($email)
+ {
+  $guid = uniqid();
+  $guid = hash("md5", $guid);
+
+  $pdo = null;
+  $pdo = pdo_construct();
+  $date = date('Y-m-d h:m:s');
+  //echo ("\n" . $date . "\n");
+  $sql = "INSERT INTO password_change_requests (ID, time, userID) VALUES ('$guid', '$date', '$email')";
+
+  $result = pdo_exec($pdo, $sql);
+
+  // sends email to user
+  if($result)
+  {
+      $to = $email;
+      $subject = "Create Your Password";
+      $txt = "You are recieving this message because the administrator has created you an account. Click here to complete your account set up: http://cafaprojectcs425.perado.tech/create-password.php?id=$guid";
+      $headers = "FROM: Formative Assessment <pascal-no-reply@hostgator.com>";
+
+      //mail($to, $subject, $txt, $headers);
+  }
+    echo "we did it";
  }
  
  
@@ -79,7 +115,24 @@ function showLogin(){
       </div>
       <button type='submit' id='loginbutton' class='btn btn-primary'>Login</button>
     </form>
-    <br> ");
+    <br>
+    <p><a href='#' data-toggle='modal' data-target='#resetPWModal' id='resetPW'>Forgot your password?</a></p>
+    
+    <br> ". '<div class="modal fade" id="resetPWModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="your@email.com"><br> <button class="btn btn-primary" id="resetSubmit">Submit</button> <span id="resetSuccess" hidden>An e-mail has been sent to you.</span>
+        </div>
+      </div>
+    </div>
+  </div>');
   }  
   function reShowLoginForm(){
        echo ("<form method ='POST' action='php/processlogin.php'>
@@ -98,7 +151,27 @@ function showLogin(){
       </div>
       <button type='submit' id='loginbutton' class='btn btn-primary'>Login</button>
     </form>
-    <br>");
+    <br>
+    <p><a href='#' data-toggle='modal' data-target='resetPWModal' id='resetPW'>Forgot your password?</a></p>
+    <br>" . '<div class="modal fade" id="resetPWModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="text" placeholder="your@email.com"> <button class="btn btn-primary">Submit</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>');
   }
   
  

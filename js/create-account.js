@@ -24,7 +24,7 @@ $(document).ready(function() {
                     password: document.getElementById('password').value
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     if(response === "true"){
                         //$('#alertSuccess span').remove();
                         showAlert("Successfully created account.", "alert-success");
@@ -68,8 +68,8 @@ $(document).ready(function() {
         if($('#class').val !== "")
             $('#class').empty();
         // debug
-        //console.log('index changed');
-        //console.log(document.getElementById('school').value);
+        //// console.log('index changed');
+        //// console.log(document.getElementById('school').value);
 
         // send ajax request to get the classes in a school
         $.ajax({
@@ -77,7 +77,7 @@ $(document).ready(function() {
             url: "php/inc.get-classes.php",
             data: {school: document.getElementById('school').value},
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 addOptions(response);
             }
         });
@@ -92,7 +92,7 @@ $(document).ready(function() {
             }, this);
             
             //debug
-            //console.log("success");
+            //// console.log("success");
     }
 
     function showAlert(message,alertType) {

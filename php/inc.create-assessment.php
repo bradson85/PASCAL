@@ -13,7 +13,21 @@
     {
         submitStudents($_POST['students']);
     }
+    else if(isset($_POST['ID']) && isset($_POST['value']) && isset($_POST['type']))
+    {
+        updateAssessment($_POST['ID'], $_POST['value'], $_POST['type']);
+    }
+    else if(isset($_POST['deleteID'])) 
+    {
+        deleteAssessment($_POST['deleteID']);
+    }
 
+    function updateAssessment($ID, $val, $type) 
+    {
+        $sql = "UPDATE assessments SET $type = '$val' WHERE ID = $ID";
+        $pdo = pdo_construct();
+        $result = pdo_exec($pdo, $sql);
+    }
 
     function getStudents($classID)
     {
@@ -50,6 +64,15 @@
         }
         $pdo = null;
         echo "Success";
+    }
+
+    function deleteAssessment($delID) 
+    {
+        $sql = "DELETE FROM assessments WHERE ID = $delID";
+        $pdo = pdo_construct();
+        $resp = pdo_exec($pdo, $sql);
+
+        echo $resp;
     }
 
 ?>

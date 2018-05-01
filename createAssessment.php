@@ -1,4 +1,6 @@
-<?php session_start(); ?>
+<?php session_start();
+    //$_SESSION['user'] = 'User';
+ ?>
 <!DOCTYPE html>
 <html>
 
@@ -23,11 +25,8 @@ include "sidebar-header.php";
 
 <!-- Start main html-->
       <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main" id="createAssessment">
-
-      <H2> Create New Assessment</H2>
-
-      <div id="alertPlaceholder">
-      </div>
+          <H2>Create New Assessment</H2>
+          <span id="alertPlaceholder"></span>
 
       <div class="row">
         <div class="col-sm-4" id="categorychoice">
@@ -117,6 +116,7 @@ include "sidebar-header.php";
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Category And Level</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id = "t_body2"></tbody>

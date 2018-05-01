@@ -1,8 +1,8 @@
 <?php
     //testing variables
-     //$_SESSION['class'] = 1;
-     //$_SESSION['ID'] = 31;
-     //$_SESSION['type'] = 0;
+     $_SESSION['class'] = 1;
+     $_SESSION['ID'] = 31;
+     $_SESSION['type'] = 0;
 
     include('inc-createassessment-getTerms.php');
     require_once('../dbconfig.php');
@@ -31,6 +31,8 @@
 
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
+        $pdo = null;
+        echo $last_id;
 
         if($_SESSION['type'] == 0) {
             $assessmentID = $last_id;
@@ -41,7 +43,7 @@
             $result = $pdo->exec($sql);
         }
 
-        echo $last_id;
+        
     }
     else if(isset($_POST['catID']))
     {
@@ -73,7 +75,6 @@
         }
         $sql = substr($sql, 0, -2);
         $sql .= ";";
-
         if($pdo->exec($sql)) {
             echo "Success";
         } 
