@@ -16,7 +16,7 @@ session_start();
     crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link rel="stylesheet" href="/css/cssAddWords.css" />
+  <link rel="stylesheet" href="css/cssAddWords.css" />
 </head>
 
 <body>
@@ -151,12 +151,12 @@ include  __DIR__ ."/../sidebar-header.php"
   <script>
     $(function () {
       if ($('#bootstrapCssTest').is(':visible')) {
-        $("head").prepend('<link rel="stylesheet" href="/css/bootstrap.min.css">');
+        $("head").prepend('<link rel="stylesheet" href="css/bootstrap.min.css">');
       }
     });
   </script>
-  <script src="/js/dashboard.js"></script>
- <script src="/js/studentData.js"></script>
+  <script src="js/dashboard.js"></script>
+ <script src="js/studentData.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,26 @@ $(document).ready(function () {
 
 getLogin();
 
+// show modal on forgot password link click
+$(document).on("click", "#resetPW", function() {
+    $('#resetPWModal').modal('show');
+});
+// Submits the user entered e-mail to the database.
+$(document).on("click", "#resetSubmit", function() {
+    //console.log($('#resetPWModal').find('input').val());
+    $.ajax({
+        type: "POST",
+        url: "php/inc-login.php",
+        data: {
+            email: $('#resetPWModal').find('input').val()
+        },
+        success: function(response) {
+            //console.log(response);
+            $('#resetSuccess').attr('hidden', false);
+        }
+    })
+    
+});
 
 $(document).on("click", "#loginbutton", function (e) {
 e.preventDefault();
@@ -12,7 +32,7 @@ validateLogin();
 function getLogin(){
  $.ajax({
         type: "GET",
-        url: "/php/processlogin.php",
+        url: "php/processlogin.php",
         data: {
             data: ""
         },
@@ -25,7 +45,7 @@ function getLogin(){
 function getModalLogin(){
     $.ajax({
            type: "GET",
-           url: "/php/processlogin.php",
+           url: "php/processlogin.php",
            data: {
                data: ""
            },
@@ -52,7 +72,7 @@ function validateLogin(){
 
   $.ajax({ 
         type: "POST",
-        url: "/php/inc-login.php",
+        url: "php/inc-login.php",
         data: {
             email: $("#email").val(),
             psw:  $("#pwd").val(),

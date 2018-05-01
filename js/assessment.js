@@ -3,15 +3,14 @@ $('.quizCard').hide();
 $('#next').hide();
 
 $(document).ready(function() {
-    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner"});
+    $('.canDrag').draggable({revert: "invalid", snap: ".canDrop", snapMode: "inner", snapTolerance: 80, grid: [5, 5]});
     $('.canDrop').droppable();
     $('.countdown').hide();    
 
     $(window).on('beforeunload', function(){
         if(!complete) return("Are you sure?");
     });
-    // Hide timer (not visible)
-    // San serif font ( Arial 16pt)
+
     // Button color and clickability should change when all terms have been matched
 
     // Set up global variables
@@ -20,6 +19,9 @@ $(document).ready(function() {
     results = [];
     correct = [];
     placement = [];
+    wasMatched = [];
+    wasMatched[0] = [];
+    wasMatched[1] = [];
     page = 1;
     termCount = 0;
     requiredTerms = 5;
@@ -28,6 +30,7 @@ $(document).ready(function() {
     currLevel = getLevel();
     minLevel = 0;
     maxLevel = 0;
+    origHeight = $('#drop1').height();
 
     // initializes the results array
     setResults();
@@ -37,7 +40,7 @@ $(document).ready(function() {
     $('#drop1').droppable({
         drop: function(event, ui) {
             checkDrop(1, ui.draggable.find('span').attr('id'));
-            console.log(results);
+            // console.log(results);
         }
     });
     $('#drop2').droppable({
@@ -71,12 +74,19 @@ $(document).ready(function() {
         }
     });
 
-    $('#closeDirections').click(function() {
-        timer();
-    });
+    $('.canDrag').draggable({
+        start: function(){
+            $(this).css('z-index', 5);
+        },
+        stop: function(){
+            $(this).css('z-index', 2);
+        }
+    })
 
+    // text to speech function. Additional options are available for further customization
+    // This uses the built in speech synthesis function from the HTML5 specification.
     $('.speak').click(function() {
-        console.log($(this).closest('div').find("span").text());
+        // console.log($(this).closest('div').find("span").text());
         let msg = new SpeechSynthesisUtterance($(this).closest('div').find('span').text());
         speechSynthesis.speak(msg);
     });
@@ -86,6 +96,9 @@ $(document).ready(function() {
         $('#startButton').hide();
         $('.quizCard').show();
         $('#next').show();
+
+        timer();
+        pageTimer();
     });
 
     $(document).on('click', '#returnButton', function() {
@@ -93,18 +106,16 @@ $(document).ready(function() {
     });
 
     $('#next').click(function() {
-        console.log("Number of terms: " + termCount);
-        if(termCount < requiredTerms) {
-            //error message 
-            //return;
-        }
+        // console.log("Number of terms: " + termCount);
         termCount = 0;
         page++;
         let correct = checkResults();
-        console.log(terms[currLevel - 1]);
+        // console.log(terms[currLevel - 1]);
         // If all correct or none correct, switch level
         // if the current level is not at max level or min level.
         // Note: May change this to be configurable based on feedback.
+        // console.log("Got " + correct + " terms correct on page " + page);
+        // console.log("Current level before checking: " + currLevel);
         if(correct === 5){
             if(currLevel < maxLevel && terms[currLevel + 1].length > 0)
                 currLevel++;
@@ -113,6 +124,8 @@ $(document).ready(function() {
             if(currLevel > minLevel && terms[currLevel - 1].length > 0)
                 currLevel--;
         }
+
+        // console.log("Current level after checking: " + currLevel);
         // If the page is less than 5, reset the draggable elements and the results array.
         // otherwise, the assessment is over, the results are displayed
         if(page < 5){
@@ -120,6 +133,8 @@ $(document).ready(function() {
             $('.canDrag').css({'top':'', 'left':''});
             setResults();
             $('#next').attr('disabled', true);
+            pageTimer();
+            resetHeight();
         }
         else {
             // Go to results page
@@ -129,7 +144,7 @@ $(document).ready(function() {
         
     });
     
-    setTimeout(100, ($.ajax({
+    setTimeout(150, ($.ajax({
         type: "POST",
         url: "php/inc.assessment.php",
         dataType: "json",
@@ -138,11 +153,11 @@ $(document).ready(function() {
             date: new Date().toLocaleString()
         },
         success: function(response){
-            console.log(response);
-            console.log(new Date().toLocaleString('en-US'));
+            // console.log(response);
+            // console.log(new Date().toLocaleString('en-US'));
             if(response.length > 0) {
                 getTerms(response);
-                console.log(terms);
+                // console.log(terms);
                 //randomize(terms);
                 getDefs(response);
                 //randomize(defs);
@@ -150,15 +165,15 @@ $(document).ready(function() {
                 setHeight();
             }
             else {
-                console.log(response);
+                // console.log(response);
                 alert("Oops! Error loading assessment");
             }
             
              
         },
         error: function(response){
-            console.log("Error!");
-            console.log(response);
+            // console.log("Error!");
+            // console.log(response);
         }
     })));
 
@@ -187,6 +202,21 @@ $(document).ready(function() {
             if (minutes < 1 && seconds == 0) {
                 clearInterval(interval);
                 // end the assessment if time limit is reached
+                showResults();
+                if(wasMatched[0].length === 0) {
+                    for(let i = 0; i < 20; i++ )
+                    {
+                        correct.push({id: terms[currLevel][i].id, mID: null, correct: 0});
+                    }
+                }
+                else {
+                    for(let i = (page - 1) * 5; i < 20; i++ )
+                    {
+                        correct.push({id: terms[currLevel][i].id, mID: null, correct: 0});
+                    }
+                }
+                
+                submitResults();
             }
             seconds = (seconds < 0) ? 59 : seconds;
             seconds = (seconds < 10) ? '0' + seconds : seconds;
@@ -197,6 +227,7 @@ $(document).ready(function() {
     }
 
     function pageTimer() {
+        // console.log("In pageTimer now.");
         var pageTimer2 = "1:01";
         var pageInterval = setInterval(function() {
             var pageTimer = pageTimer2.split(':');
@@ -206,13 +237,19 @@ $(document).ready(function() {
             --pageSeconds;
             pageMinutes = (pageSeconds < 0) ? --pageMinutes : pageMinutes;
             if (pageMinutes < 1 && pageSeconds == 0) {
+                $('#next').attr('disabled', false);
                 clearInterval(pageInterval);
             }
+
+            $('#next').click(function() {
+                clearInterval(pageInterval);
+            });
 
             pageSeconds = (pageSeconds < 0) ? 59 : pageSeconds;
             pageSeconds = (pageSeconds < 10) ? '0' + pageSeconds : pageSeconds;
 
             pageTimer2 = pageMinutes + ':' + pageSeconds;
+            // console.log(pageTimer2);
         }, 1000);
     }
 
@@ -221,7 +258,7 @@ $(document).ready(function() {
         results[i].dropID = drop;
         results[i].termID = tID;
         if(placement[results[i].termID.substring(4,5)] !== "" && placement[results[i].termID.substring(4,5)] !== results[i].dropID){
-            console.log(results[i].termID.substring(4,5));
+            // console.log(results[i].termID.substring(4,5));
             results[placement[results[i].termID.substring(4,5)].substring(4,5)].dropID = "";
             results[placement[results[i].termID.substring(4,5)].substring(4,5)].termID = "";
             placement[results[i].termID.substring(4,5)] = results[i].dropID;
@@ -298,13 +335,13 @@ $(document).ready(function() {
                 getLevel: "true"
             },
             success: function(response) {
-                //console.log(response);
+                //// console.log(response);
                 currLevel = (parseInt(response[0].gradeLevel));
                 minLevel = currLevel - 1;
                 maxLevel = currLevel + 1;
             },
             error: function(response) {
-                console.log("ERROR!: " + response);
+                // console.log("ERROR!: " + response);
             }
         });
         
@@ -356,7 +393,7 @@ $(document).ready(function() {
             document.getElementById(defID).innerHTML = randDefs[i];
         }
 
-        
+        setHeight();
     }
     // Checks the results array and adds each item to the correct array
     function checkResults() {
@@ -377,14 +414,19 @@ $(document).ready(function() {
                 if(filterTerm[0].id === filterDef[0].id) {
                     numCorrect++;
                     correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 1});
+                    wasMatched[0].push(filterTerm[0].id);
+                    wasMatched[1].push(currLevel);
                 }
                 else {
                     correct.push({id: filterTerm[0].id, mID: filterDef[0].id, correct: 0});
+                    wasMatched[0].push(filterTerm[0].id);
+                    wasMatched[1].push(currLevel);
                 }
                     
             }
             
         }
+        // console.log(wasMatched);
         return numCorrect;
     }
     
@@ -400,11 +442,27 @@ $(document).ready(function() {
                 numCorrect++;
         }   
         complete = true;
-        $('.container-fluid').append("<h2 class='text-center'>You have successfully completed the assessment.</h2>");
+        $('.container-fluid').append('<img src="img/Assessment_Closing_Page.jpg" id="closingImage">');
         $('.container-fluid').append("<button class='btn btn-primary' id='returnButton'>Return</button>");
     }
 
     function submitResults(){
+        // console.log(wasMatched);
+        let matchCount = 0;
+        if(wasMatched[0].length > 0) {
+            for(let j = 0; j < ((page - 1) * 5); j++) {
+                if(matchCount === wasMatched[0].length) {
+                    correct.push({id: terms[currLevel][j].id, mID: null, correct: 0});
+                }
+                else if($.inArray(terms[wasMatched[1][matchCount]][j].id, wasMatched[0]) === -1) {
+                    correct.push({id: terms[currLevel][j].id, mID: null, correct: 0});
+                }
+                else {
+                    matchCount++;
+                }
+            }
+        } 
+        
         $.ajax({
             type: "POST",
             url: "php/inc.assessment.php",
@@ -413,20 +471,28 @@ $(document).ready(function() {
                 results: JSON.stringify(correct)
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
             }
         });
+    }
+
+    function resetHeight(){
+        // console.log("Resetting height to: " + origHeight);
+      //  $('.quizCard').height(origHeight * 1.8);
     }
 
     function setHeight(){
         // Thanks to ghayes for detecting max height: https://stackoverflow.com/questions/6781031/use-jquery-css-to-find-the-tallest-of-all-elements
         // Get an array of all element heights
         var elementHeights = $('.quizCard').map(function() {
-            return $(this).height();
+            return $(this).find('div span').outerHeight(true);
         }).get();
+        let maxHeight = origHeight * 1.8;
         // Math.max takes a variable number of arguments
         // `apply` is equivalent to passing each height as an argument
-        var maxHeight = Math.max.apply(null, elementHeights);
+        maxHeight = Math.max.apply(null, elementHeights);
+        if(maxHeight < origHeight * 1.8)
+            maxHeight = origHeight * 1.8;
         // Set each height to the max height
         $('.quizCard').height(maxHeight);
     }

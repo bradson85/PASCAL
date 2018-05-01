@@ -1,7 +1,7 @@
 <?php
 require_once("../db/dbconfig.php");
 
-   $selectString = "<select id=\"categorySelect\" class=\"styled-select slate\"><<option value = \"0\"> --Select Category/Level--</option>";
+    $selectString = "<select id=\"categorySelect\" class=\"styled-select slate\"><option value =\"0\">--Select Category/Level--</option>";
 
     try {
         $pdo = new PDO(DB_CONNECTION_STRING,
@@ -10,16 +10,16 @@ require_once("../db/dbconfig.php");
         PDO::ERRMODE_EXCEPTION);
     
      $sql = ("SELECT * FROM categories");
-    
+     $count = 0;
      $result = $pdo->query($sql);
+
      while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
            $catID = $row['ID'];
            $catName = $row['name'];
            $level = $row['level']; 
-
+            
            $selectString.= "<option value = \"$catID\"> $catName - Level $level</option>";
-
-     }
+      }
     }
     catch(PDOException $e)
         {
@@ -28,6 +28,6 @@ require_once("../db/dbconfig.php");
     $pdo = null;
  
     $selectString.= "</select></td>";
+    
     echo $selectString;
-
 ?>

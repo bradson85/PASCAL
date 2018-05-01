@@ -24,17 +24,15 @@ $(document).ready(function() {
                     password: document.getElementById('password').value
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     if(response === "true"){
                         //$('#alertSuccess span').remove();
-                        $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#alertSuccess").slideUp(500);
-                        });
+                        showAlert("Successfully created account.", "alert-success");
                         $('#createAccount')[0].reset();
                     }
                     else {
                         //$('#alertFail span').remove();
-                        $('#alertFail').show();
+                        showAlert("Error creating account.", "alert-danger");
                         
                     }
                     
@@ -42,10 +40,6 @@ $(document).ready(function() {
             });
         }
 
-    });
-
-    $('.alert').click(function() {
-        $(this).slideUp(500);
     });
 
 
@@ -74,8 +68,8 @@ $(document).ready(function() {
         if($('#class').val !== "")
             $('#class').empty();
         // debug
-        //console.log('index changed');
-        //console.log(document.getElementById('school').value);
+        //// console.log('index changed');
+        //// console.log(document.getElementById('school').value);
 
         // send ajax request to get the classes in a school
         $.ajax({
@@ -83,7 +77,7 @@ $(document).ready(function() {
             url: "php/inc.get-classes.php",
             data: {school: document.getElementById('school').value},
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 addOptions(response);
             }
         });
@@ -98,6 +92,15 @@ $(document).ready(function() {
             }, this);
             
             //debug
-            //console.log("success");
+            //// console.log("success");
     }
+
+    function showAlert(message,alertType) {
+
+        $('#alertPlaceholder').append('<div id="alertdiv" class="alert ' +  alertType + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+          $("#alertdiv").remove();
+        }, 5000);
+      }
 });

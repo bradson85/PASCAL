@@ -9,51 +9,39 @@
     $user = getUser($id);
 ?>
 
-    <body>
+    <body id="createPasswordPage">
 
     
     
         <div class="container">
         
             <h1>Create/Change Password</h1>
+            <span id="alertPlaceholder"></span>
+            <div class="card">
+                <div class="card-body">
+                    <form id="createPassword" novalidate method="POST">
+                        <div class="form-group">
+                            <input type="text" readonly class="form-control-plaintext" name="email" id="email" value="Email: <?php echo $user ?>">
+                        </div>
 
-            <div class="alert alert-success alert-dismissible" style="display: none" role="alert" id="alertSuccess">
-                <span>Successfully updated password</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <div class="invalid-feedback">
+                                Field cannot be blank.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            
+                            <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm Password" required>
+                            <div class="invalid-feedback">
+                                Field cannot be blank.
+                            </div>
+                        </div>
+            
+                        <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
             </div>
-
-            <div class="alert alert-danger alert-dismissible" style="display: none" role="alert" id="alertFail">
-                <span>Problem updating password! Ensure passwords match.</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <form id="createPassword" novalidate>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="text" readonly class="form-control-plaintext" name="email" id="email" value="<?php echo $user ?>">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                    <div class="invalid-feedback">
-                        Field cannot be blank.
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="confirm">Confirm Password:</label>
-                    <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm Password" required>
-                    <div class="invalid-feedback">
-                        Field cannot be blank.
-                    </div>
-                </div>
-    
-                <button id="submit" type="submit" class="btn btn-primary">Submit</button>
-            </form>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>

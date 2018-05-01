@@ -1,25 +1,49 @@
 <?php
+    //testing variables
+     $_SESSION['class'] = 1;
+     $_SESSION['ID'] = 31;
+     $_SESSION['type'] = 0;
+
     include('inc-createassessment-getTerms.php');
     require_once('../dbconfig.php');
 
-    if(isset($_POST['catID']) && isset($_POST['classID']) && isset($_POST['startDate']))
+    if(isset($_POST['catID']) && isset($_POST['startDate']))
     {
         $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $catID = $_POST['catID'];
         $startDate = $_POST['startDate'];
-        $classID = $_POST['classID'];
+        $classID = $_SESSION['class'];
         $endDate = (strtotime($startDate));
         $endDate = strtotime("+7 day", $endDate);
         $endDate = date('Y-m-d H:i:s', $endDate);
 
+        if($startDate == "" || $catID == 0)
+        {
+            echo "false";
+            return;
+        }
+            
 
-        $sql = "INSERT INTO assessments (start_date, end_date, catID, classID) VALUES ('$startDate', '$endDate', $catID, $classID)";
+
+        $sql = "INSERT INTO assessments (start_date, end_date, catID) VALUES ('$startDate', '$endDate', $catID)";
+
         $pdo->exec($sql);
         $last_id = $pdo->lastInsertId();
-
+        $pdo = null;
         echo $last_id;
+
+        if($_SESSION['type'] == 0) {
+            $assessmentID = $last_id;
+            $accountID = $_SESSION['ID'];
+            $sql = "INSERT INTO assessmentassignments (assessmentID, studentID) VALUES ($assessmentID, $accountID)";
+
+            $pdo = new PDO(DB_CONNECTION_STRING, DB_USER, DB_PWD);
+            $result = $pdo->exec($sql);
+        }
+
+        
     }
     else if(isset($_POST['catID']))
     {
@@ -51,8 +75,13 @@
         }
         $sql = substr($sql, 0, -2);
         $sql .= ";";
-        
-        if($pdo->exec($sql)) echo "Success";
+        if($pdo->exec($sql)) {
+            echo "Success";
+        } 
+
+        else {
+            echo "Fail";
+        }
 
 
     }

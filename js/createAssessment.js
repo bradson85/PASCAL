@@ -6,17 +6,13 @@ $(document).ready(function(){
     $('#terms').hide();
     $('#studentAssignments').hide();
     
-    //loadStudents(1);
     cats = [];
     checkedNum = 0;
     matchedNum = 0;
+    submitSuccess = 0;
 
     $('#class').change(function() {
         loadStudents(document.getElementById('#class').value());
-    });
-
-    $(document).on('hidden.bs.collapse', '#collapse2', function() {
-        console.log('i collapsed');
     });
     
     $('#selfSelect').click(function (){
@@ -27,6 +23,27 @@ $(document).ready(function(){
         $('#terms').hide();
     });  
 
+    // function to delete assessments. Tries to delete, and will only delete assessments that do not have data. Will fail otherwise.
+    $(document).on("click", "#delete", function() {
+        let ID = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "php/inc.create-assessment.php",
+            dataType: "json",
+            data: {
+                deleteID: ID
+            },
+            success: function(response){
+                //console.log(response);
+                loadAssessments();
+                showAlert("Successfully deleted assessment.", "alert-success small");
+            },
+            error: function(response){
+                //console.log("ERR: " + response);
+                showAlert("Error deleting assessment! Data already exists.", "alert-danger small");
+            }
+        })
+    });
 
     $(document).on("click", "#selectAll", function() {
         let table = $(this).closest('table');
@@ -34,16 +51,19 @@ $(document).ready(function(){
     });
     
     $(document).on('change', '.check', function() {
-        if(this.checked)
-            checkedNum++;
-        else
-            checkedNum--;
-        console.log(checkedNum);
+        let checkedNum = $(this).closest('table').find('td input[type="checkbox"]:checked').length;
+        if(checkedNum < 21)
+            $(this).closest('.card').find('span').text(checkedNum+"/20");
+        else {
+            $(this).prop('checked', false);
+        }
+        //console.log(checkedNum + "/20");
+        //console.log(checkedNum);
     });
 
     $(document).on("change", "select",function(){
         var catID = $(this).val();
-        console.log(catID);
+       // console.log(catID);
         $('#terms').empty();
         $.ajax({
             type: "POST",
@@ -53,12 +73,30 @@ $(document).ready(function(){
                 catID: catID
             },
             success: function(response) {
-                console.log(response);
+               // console.log(response);
                 cats = response;
-                for(let i = 0; i < response.length; i++) {
-                    setTimeout(2500,showTerms(response[i]));
-                    
-                }
+                let i = 0;
+
+                showTermsHelper(i, response);
+            }
+        });
+    });
+
+    // function for updating the dates of assessments (allows for start and end date to be edited)
+    $("#assess_table").on('change', function(e) {
+       // console.log(e.target.parentNode.parentNode);
+        let ID = e.target.parentNode.parentNode.firstChild.innerHTML;
+        //console.log("ID: " + ID + "\nVAL: " + e.target.value + "\nTYPE: " + e.target.id);
+        $.ajax({
+            type: "POST",
+            url: "php/inc.create-assessment.php",
+            data: {
+                type: e.target.id,
+                value: e.target.value,
+                ID: ID
+            },
+            success: function(response) {
+                showAlert("Successfully updated date!", "alert-success small");
             }
         });
     });
@@ -66,6 +104,16 @@ $(document).ready(function(){
                 loadCategorySelect();
     //this calls loading existing assessments to open
                 loadAssessments();
+    function showTermsHelper(i, array) {
+        if(i < array.length) {
+            setTimeout(function() {
+                showTerms(array[i]);
+                showTermsHelper(i+1, array);
+            }, 10);
+        }
+        else return;
+    }
+    
     
     
         function loadCategorySelect(){
@@ -73,10 +121,10 @@ $(document).ready(function(){
                 type: "POST",
                 url: "php/inc-createassessment-getcategories.php",
                 data: {
-                    data:  ""    
+                    
                 },
-                        success: function (data) {
-                    $("#categorychoice").append(data);
+                    success: function (response) {
+                    $("#categorychoice").append(response);
                     
                 }
             });
@@ -142,80 +190,121 @@ $(document).ready(function(){
         let students = [];
         if($('#selfInput').is(':checked')) {
             processChecks();
-            console.log("Self selection has been checked...");
+            //console.log("Self selection has been checked...");
         }    
         else {
-            console.log("Self select wasn't checked on submit!");
-            console.log($('#startDate').val());
-            $.ajax({
-                type: "POST",
-                url: "php/inc-createassessment-saveAssessment.php",
-                data: {
-                    catID: $('#categorySelect').val(),
-                    classID: 1,
-                    startDate: $('#startDate').val()
-                },
-                success: function(response) {
-                    console.log(response);
-                    asessmentID = response;
-                    for(let i = 0; i < cats.length; i++) {
-                        getTerms(cats[i].ID, response);
+            //console.log("Self select wasn't checked on submit!");
+            //console.log($('#startDate').val());
+            if($('#startDate').val() !== ""){
+                $.ajax({
+                    type: "POST",
+                    url: "php/inc-createassessment-saveAssessment.php",
+                    data: {
+                        catID: $('#categorySelect').val(),
+                        startDate: $('#startDate').val()
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if(typeof response !== "number") {
+                            //console.log("Error creating assessment because not a number (bad assessment creation)");
+                           // showAlert("Error creating assessment.", "alert-danger");
+                        }
+                            
+                        asessmentID = response;
+                        for(let i = 0; i < cats.length; i++) {
+                            getTerms(cats[i].ID, response);
+                        }
                     }
-                    //submitStudents(response);
-                }
-            });
+                });
+            }
+            else {
+               // console.log("Error creating assessment because start date was empty.");
+                showAlert("Error creating assessment, start date is not set.", "alert-danger small");
+            }
+            
         }
         
     });
 
     function processChecks(){
         let terms = [];
+        let extra = [];
         let assessmentID = 0;
+        let numChecked = 0;
         $.ajax({
             type: "POST",
             url: "php/inc-createassessment-saveAssessment.php",
             data: {
                 catID: $('#categorySelect').val(),
-                classID: 1,
                 startDate: $('#startDate').val()
             },
             success: function(response) {
-                console.log(response);
+                //console.log(response);
                 $('#terms tr').each(function() {
-                    $(this).find('td:eq(0) input:checked').each(function () {
-                        if($(this).closest('tr').find('td:eq(3) input:checked').length > 0){
-                            console.log($(this).val());
-                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 1});
-                        }
-                            
-                        else {
-                            console.log($(this).val());
-                            terms.push({ID: $(this).val(), assessmentID: assessmentID, isMatch: 0});
-                        }
-                    });
-                });
 
-                $.ajax({
-                    type: "POST",
-                    url: "php/inc-createassessment-saveAssessment.php",
-                    data: {
-                        assessData: JSON.stringify(terms)
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if(response === "Success") {
-                            $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
-                                $("#alertSuccess").slideUp(500);
-                            });
+                    let termID = $(this).find('td input[type="checkbox"]').val();
+                    assessmentID = response;
+                    if($(this).find('td input[type="checkbox"]').is(':checked')) {
+                        //console.log('Item is checked: ' + termID);
+                        terms.push({termID: termID, assessmentID: assessmentID, isMatch: 1});
+                        numChecked++;
+                    }
+                    else {
+                        //console.log('pushed term extra is now (+1): ' + extra.length);
+                        let ID = $(this).closest('.card').find('.card-header').attr('id');
+                        ID = ID.substr(ID.length - 1, ID.length);
+                        //console.log(ID);
+                        if(typeof extra[ID] == 'undefined')
+                            extra[ID] = [];
+                        if(typeof termID !== 'undefined')
+                            extra[ID].push({termID: termID, assessmentID: assessmentID, isMatch: 0});
+                    }
+                    
+                });
+                //console.log(terms);
+                //console.log(extra);
+                for(let i = 0; i < extra.length; i++) {
+                    if(typeof extra[i] !== 'undefined')
+                        extra[i] = randomize(extra[i]);
+                }
+                
+                for(let i = 0; i < extra.length; i++)
+                {
+                    if(typeof extra[i] !== 'undefined') {
+                        for(let j = 0; j < 8; j++) {
+                            terms.push(extra[i][j]);
                         }
                     }
-                });
-                submitStudents(assessmentID);
+                    
+                }
+    
+                if(numChecked === (cats.length * 20)) {
+                    $.ajax({
+                        type: "POST",
+                        url: "php/inc-createassessment-saveAssessment.php",
+                        data: {
+                            assessData: JSON.stringify(terms)
+                        },
+                        success: function(response) {
+                           // console.log(response);
+                            if(response === "Success") {
+                               // console.log("Success from processChecks");
+                                showAlert("Successfully created assessment.", "alert-success small");
+                            }
+                        }
+                    });
+                    submitStudents(assessmentID);
+                }
+                else {
+                    //console.log("Fail from processChecks");
+                    showAlert("Error creating assessment. Not enough terms were selected.", "alert-danger small");
+                }
+                
             }
         });        
 
     }
-
+    // this function is no longer used with the new assignment page.
     function submitStudents(assessmentID) {
         let students = [];
         $('#studentTable tr').find('td input:checked').each(function() {
@@ -230,11 +319,11 @@ $(document).ready(function(){
                 students: JSON.stringify(students)
             },
             success: function(response) {
-                console.log(response);
+               // console.log(response);
             }
         });
     }
-
+    // this function is no longer used with the new assignment page.
     function loadStudents(classID) {
         $.ajax({
             type: "POST",
@@ -244,7 +333,7 @@ $(document).ready(function(){
                 classID: classID
             },
             success: function(response) {
-                console.log(response);
+               // console.log(response);
                 let checkbox = '<input type="checkbox" class="form-check-input checkbox">';
                 $('#studentTable').append('<tbody><tr><td> <input type="checkbox" id="selectAll" class="form-check-input checkbox" value="0"> </td><td>(Check All)</td></tr>');
                 for(let i = 0; i < response.length; i++){
@@ -258,7 +347,7 @@ $(document).ready(function(){
 
     function getTerms(catID, formResponse) {
         let array = [];
-        console.log(catID);
+       // console.log(catID);
         $.ajax({
             type: "POST",
             url: "php/inc-createassessment-saveAssessment.php",
@@ -267,13 +356,15 @@ $(document).ready(function(){
                 catID: catID
             },
             success: function(response) {
-                console.log(response);
+                //console.log(response);
                 array = pickTerms(response, 20, 8);
-                console.log(array);
-                submit(array, formResponse);
+                //console.log(array);
+                submit(array, formResponse)
             },
             error: function(response) {
-                console.log(response);
+                //console.log(response);
+                //console.log("Error creating assessment in getTerms.");
+                showAlert("Error creating assessment.", "alert-danger small");
             }
         });
 
@@ -283,9 +374,9 @@ $(document).ready(function(){
     function submit(array, formResponse) {
         let assessArray = [];
         let count = 0;
-        console.log(array);
+       // console.log(array);
         if(typeof array[1][7] == 'undefined'){
-            console.log("There were less than 28 terms found");
+          //  console.log("There were less than 28 terms found");
         }     
         else {
             for(let i = 0; i < array[0].length; i++) {
@@ -296,7 +387,7 @@ $(document).ready(function(){
                 assessArray[count] = {termID: array[1][i].ID, assessmentID: formResponse, isMatch: 0};
                 count++;
             }
-            console.log(assessArray);
+           // console.log(assessArray);
             $.ajax({
                 type: "POST",
                 url: "php/inc-createassessment-saveAssessment.php",
@@ -304,11 +395,20 @@ $(document).ready(function(){
                     assessData: JSON.stringify(assessArray)
                 },
                 success: function(response) {
-                    console.log(response);
+                  //  console.log(response);
                     if(response === "Success") {
-                        $("#alertSuccess").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#alertSuccess").slideUp(500);
-                        });
+                        loadAssessments();
+                        submitSuccess++;
+                        if(submitSuccess == cats.length) {
+                           // console.log("Success from submit function");
+                            showAlert("Successfully created assessment.", "alert-success small");
+                            submitSuccess = 0;
+                        }
+                            
+                    }
+                    else {
+                       // console.log("Error in submit function");
+                        showAlert("Error creating assessment.", "alert-danger small");
                     }
                 }
             });
@@ -316,7 +416,6 @@ $(document).ready(function(){
         
     }
 
-    // This should be used when creating the assessment to randomize which words are tested.
     // This function randomizes the set of terms, then chooses the first n terms for matching,
     // with remaining terms used for the extra definitions.
     // Thanks to Laurens Holst for this implementation of Durstenfeld shuffle
@@ -344,7 +443,32 @@ $(document).ready(function(){
         // Store these arrays in an array for returning
         result[0] = terms;
         result[1] = extra;
-        console.log(result);
+        //console.log(result);
         return result;
     }
+
+    function showAlert(message,alertType) {
+
+        $('#alertPlaceholder').append('<div id="alertdiv" class="alert ' +  alertType + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>').fadeIn(500);
+    
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+    
+    
+          $("#alertdiv").remove();
+    
+        }, 5000);
+      }
 });
+
+function randomize(array) {
+    // Rearranges terms in a random order
+    if(typeof array[0] == 'undefined') {
+        return array;
+    }
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array;
+}

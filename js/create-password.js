@@ -5,41 +5,49 @@ $(document).ready(function() {
     $('.alert').hide();
 
     form.addEventListener('submit', function(e) {
-        if(form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+        if($('#password').val() === '' || $('#confirm').val() === '') {
+            showAlert('Fields cannot be blank.', 'alert-danger small');
+            e.preventDefault();
+            e.stopPropagation();
         }
         else {
             $('.invalid-feedback').hide();
-            event.preventDefault();
-            event.stopPropagation();
+            e.preventDefault();
+            e.stopPropagation();
             $.ajax({
                 type: "POST",
                 url: "php/inc.create-password.php",
+                dataType: "json",
                 data: {
                     email: document.getElementById('email').value,
                     password: document.getElementById('password').value,
                     confirm: document.getElementById('confirm').value
                 },
                 success: function(response){
-                    // Encountered a bug here where an extra space was being added to the return value when returning
-                    // from the PHP function. The problem was an extra space after the ?> at the end of the php code.
-                    // Fixed by removing the extra space and return value returned as expected.
-                    if(response === "true"){
-                        $('#alertSuccess').show();
-                        $('#createPassword')[0].reset();
-                    }
-                    // Returns error messages if not true, could integrate those messages in the alert in the future.
-                    else {
-                        $('#alertFail').show();
-                        $('#createPassword')[0].reset();
-                    }
+                    showAlert('Successfully updated password.', 'alert-success small');
+                    $('#password').val('');
+                    $('#confirm').val('');
+
                         
+                },
+                error: function(response) {
+                    showAlert('Passwords do not match.', 'alert-danger small');
+                    //console.log("Error: " + response);
                 }
             });
         }
-        form.classList.add('was-validated');
 
     }, false);
 
+    function showAlert(message,alertType) {
+
+        $('#alertPlaceholder').append('<div id="alertdiv" class="alert ' +  alertType + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>').fadeIn(500);
+    
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+    
+    
+          $("#alertdiv").remove();
+    
+        }, 5000);
+      }
 });
