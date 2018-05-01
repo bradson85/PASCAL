@@ -44,7 +44,6 @@ session_start();
 
       mail($to, $subject, $txt, $headers);
   }
-    echo "we did it";
  }
  
  
