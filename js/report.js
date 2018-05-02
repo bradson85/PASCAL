@@ -169,7 +169,7 @@ $(document).ready(function () {
             ' <label class="form-check-label" for="secondCheckbox0">Show Words Without Student Names (Words in One Vertical Column)</label></div>' +
             '<div class="form-check form-check-inline">' +
             '<input class="form-check-input check2" type="checkbox" id="secondCheckbox1" value="1">' +
-            ' <label class="form-check-label" for="secondCheckbox1">Show Words Per Student (Words in Horizotal Row with Student Names in 1 Column)</label></div>';
+            ' <label class="form-check-label" for="secondCheckbox1">Show Words Per Student (Words in Horizontal Row with Student Names in 1 Column)</label></div>';
 
 
     }
